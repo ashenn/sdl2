@@ -1,0 +1,515 @@
+# depslib dependency file v1.0
+1534776557 source:c:\work\cpp\sdl2\base\basic.c
+	"basic.h"
+	<stdio.h>
+	<stdlib.h>
+	<unistd.h>
+	<string.h>
+
+1530852698 c:\work\cpp\sdl2\base\basic.h
+
+1535126434 source:c:\work\cpp\sdl2\base\liblist.c
+	"libList.h"
+
+1535125990 c:\work\cpp\sdl2\base\liblist.h
+	<assert.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<stdarg.h>
+	<pthread.h>
+
+1535123985 source:c:\work\cpp\sdl2\base\libparse.c
+	<stdio.h>
+	<stdlib.h>
+	<unistd.h>
+	<string.h>
+	"basic.h"
+	"libParse.h"
+
+1534776888 c:\work\cpp\sdl2\base\libparse.h
+	"libList.h"
+
+1530852698 source:c:\work\cpp\sdl2\base\listdoc.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"libList.h"
+
+1535546651 source:c:\work\cpp\sdl2\main.c
+	<SDL2\SDL.h>
+	<SDL2\SDL_Image.h>
+	"common.h"
+	"base/math.h"
+	"core/view/view.h"
+	"core/object/object.h"
+	"core/event/event.h"
+	"core/project/project.h"
+	"core/view/render/render.h"
+	"core/asset/asset.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl.h
+	"SDL_main.h"
+	"SDL_stdinc.h"
+	"SDL_assert.h"
+	"SDL_atomic.h"
+	"SDL_audio.h"
+	"SDL_clipboard.h"
+	"SDL_cpuinfo.h"
+	"SDL_endian.h"
+	"SDL_error.h"
+	"SDL_events.h"
+	"SDL_filesystem.h"
+	"SDL_gamecontroller.h"
+	"SDL_haptic.h"
+	"SDL_hints.h"
+	"SDL_joystick.h"
+	"SDL_loadso.h"
+	"SDL_log.h"
+	"SDL_messagebox.h"
+	"SDL_mutex.h"
+	"SDL_power.h"
+	"SDL_render.h"
+	"SDL_rwops.h"
+	"SDL_shape.h"
+	"SDL_system.h"
+	"SDL_thread.h"
+	"SDL_timer.h"
+	"SDL_version.h"
+	"SDL_video.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_main.h
+	"SDL_stdinc.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_stdinc.h
+	"SDL_config.h"
+	<sys/types.h>
+	<stdio.h>
+	<stdlib.h>
+	<stddef.h>
+	<stdarg.h>
+	<stdlib.h>
+	<malloc.h>
+	<stddef.h>
+	<stdarg.h>
+	<memory.h>
+	<string.h>
+	<strings.h>
+	<wchar.h>
+	<inttypes.h>
+	<stdint.h>
+	<ctype.h>
+	<math.h>
+	<float.h>
+	<sal.h>
+	"begin_code.h"
+	<alloca.h>
+	<malloc.h>
+	<malloc.h>
+	<malloc.h>
+	<stdlib.h>
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_config.h
+	"SDL_platform.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_platform.h
+	"AvailabilityMacros.h"
+	"TargetConditionals.h"
+	<winapifamily.h>
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\begin_code.h
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\close_code.h
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_assert.h
+	"SDL_config.h"
+	"begin_code.h"
+	<signal.h>
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_atomic.h
+	"SDL_stdinc.h"
+	"SDL_platform.h"
+	"begin_code.h"
+	<mbarrier.h>
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_audio.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"SDL_endian.h"
+	"SDL_mutex.h"
+	"SDL_thread.h"
+	"SDL_rwops.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_error.h
+	"SDL_stdinc.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_endian.h
+	"SDL_stdinc.h"
+	<endian.h>
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_mutex.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_thread.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"SDL_atomic.h"
+	"SDL_mutex.h"
+	"begin_code.h"
+	<process.h>
+	<process.h>
+	<stdlib.h>
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_rwops.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_clipboard.h
+	"SDL_stdinc.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_cpuinfo.h
+	"SDL_stdinc.h"
+	<intrin.h>
+	<intrin.h>
+	<altivec.h>
+	<mm3dnow.h>
+	<immintrin.h>
+	<mmintrin.h>
+	<xmmintrin.h>
+	<emmintrin.h>
+	<pmmintrin.h>
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_events.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"SDL_video.h"
+	"SDL_keyboard.h"
+	"SDL_mouse.h"
+	"SDL_joystick.h"
+	"SDL_gamecontroller.h"
+	"SDL_quit.h"
+	"SDL_gesture.h"
+	"SDL_touch.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_video.h
+	"SDL_stdinc.h"
+	"SDL_pixels.h"
+	"SDL_rect.h"
+	"SDL_surface.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_pixels.h
+	"SDL_stdinc.h"
+	"SDL_endian.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_rect.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"SDL_pixels.h"
+	"SDL_rwops.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_surface.h
+	"SDL_stdinc.h"
+	"SDL_pixels.h"
+	"SDL_rect.h"
+	"SDL_blendmode.h"
+	"SDL_rwops.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_blendmode.h
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_keyboard.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"SDL_keycode.h"
+	"SDL_video.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_keycode.h
+	"SDL_stdinc.h"
+	"SDL_scancode.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_scancode.h
+	"SDL_stdinc.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_mouse.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"SDL_video.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_joystick.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_gamecontroller.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"SDL_rwops.h"
+	"SDL_joystick.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_quit.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_gesture.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"SDL_video.h"
+	"SDL_touch.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_touch.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"SDL_video.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_filesystem.h
+	"SDL_stdinc.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_haptic.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"SDL_joystick.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_hints.h
+	"SDL_stdinc.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_loadso.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_log.h
+	"SDL_stdinc.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_messagebox.h
+	"SDL_stdinc.h"
+	"SDL_video.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_power.h
+	"SDL_stdinc.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_render.h
+	"SDL_stdinc.h"
+	"SDL_rect.h"
+	"SDL_video.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_shape.h
+	"SDL_stdinc.h"
+	"SDL_pixels.h"
+	"SDL_rect.h"
+	"SDL_surface.h"
+	"SDL_video.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_system.h
+	"SDL_stdinc.h"
+	"SDL_keyboard.h"
+	"SDL_render.h"
+	"SDL_video.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_timer.h
+	"SDL_stdinc.h"
+	"SDL_error.h"
+	"begin_code.h"
+	"close_code.h"
+
+1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_version.h
+	"SDL_stdinc.h"
+	"begin_code.h"
+	"close_code.h"
+
+1535118646 c:\work\cpp\sdl2\base\logger.h
+	"libParse.h"
+	<pthread.h>
+	<sys\stat.h>
+
+1535541351 source:c:\work\cpp\sdl2\base\math.c
+	<stdio.h>
+	"math.h"
+
+1535540532 c:\work\cpp\sdl2\base\math.h
+	<math.h>
+	<stdlib.h>
+	<SDL2\SDL.h>
+
+1535124013 source:c:\work\cpp\sdl2\base\logger.c
+	<stdio.h>
+	<stdlib.h>
+	<unistd.h>
+	<string.h>
+	<stdarg.h>
+	<time.h>
+	<fcntl.h>
+	<errno.h>
+	"basic.h"
+	"logger.h"
+
+1535359551 c:\work\cpp\sdl2\common.h
+	<string.h>
+	<stdio.h>
+	<stdlib.h>
+	<unistd.h>
+	<assert.h>
+	<pthread.h>
+	"base/logger.h"
+
+1535541907 source:c:\work\cpp\sdl2\core\object\object.c
+	"object.h"
+	"../view/view.h"
+	"../view/layer/layer.h"
+
+1535542794 c:\work\cpp\sdl2\core\object\object.h
+	"../../common.h"
+	<SDL2\SDL.h>
+
+1535128006 c:\work\cpp\sdl2\core\view\view.h
+	<SDL2\SDL.h>
+	"../../common.h"
+	"../../base/libList.h"
+	"../object/object.h"
+	"./layer/layer.h"
+
+1535542806 source:c:\work\cpp\sdl2\core\view\view.c
+	"view.h"
+
+1519932871 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_image.h
+	"SDL.h"
+	"SDL_version.h"
+	"begin_code.h"
+	"close_code.h"
+
+1535126375 c:\work\cpp\sdl2\core\view\layer\layer.h
+	"../../object/object.h"
+	"../../../base/libList.h"
+
+1535126379 source:c:\work\cpp\sdl2\core\view\layer\layer.c
+	"layer.h"
+
+1535118647 source:c:\work\cpp\sdl2\common.c
+	"common.h"
+
+1535546363 source:c:\work\cpp\sdl2\core\asset\asset.c
+	<SDL2/SDL.h>
+	<SDL2/SDL_image.h>
+	<SDL2/SDL_ttf.h>
+	"asset.h"
+
+1535544746 c:\work\cpp\sdl2\core\asset\asset.h
+	"../../common.h"
+	"../../base/libList.h"
+
+1535359080 source:c:\work\cpp\sdl2\core\event\event.c
+	"event.h"
+	"../project/project.h"
+
+1535542697 c:\work\cpp\sdl2\core\event\event.h
+	<SDL2/SDL.h>
+	"../../common.h"
+
+1535463195 source:c:\work\cpp\sdl2\core\project\project.c
+	"project.h"
+	"../object/object.h"
+	"../asset/asset.h"
+
+1535461406 c:\work\cpp\sdl2\core\project\project.h
+	"../../common.h"
+	"../../base/logger.h"
+	"../../base/libParse.h"
+
+1535357998 c:\work\cpp\sdl2\core\view\render\render.h
+	"../view.h"
+
+1535360379 source:c:\work\cpp\sdl2\core\view\render\render.c
+	"render.h"
+	"../../project/project.h"
+
+1535463712 source:c:\work\cpp\sdl2\core\character\character.c
+	"character.h"
+
+1535538461 c:\work\cpp\sdl2\core\character\character.h
+	"../../common.h"
+	"../../base/math.h"
+	"../object/object.h"
+	"../controller/controller.h"
+
+1535465258 c:\work\cpp\sdl2\core\controller\controller.h
+	<SDL2/SDL.h>
+	"../object/object.h"
+	"../character/character.h"
+
+1535543535 source:c:\work\cpp\sdl2\core\object\collisionobj\collisionobj.c
+	"collisionObj.h"
+
+1535542532 c:\work\cpp\sdl2\core\object\collisionobj\collisionobj.h
+	"../object.h"
+
+1535542931 source:c:\work\cpp\sdl2\core\object\spriteobj\spriteobj.c
+	"./spriteObj.h"
+
+1535542891 c:\work\cpp\sdl2\core\object\spriteobj\spriteobj.h
+	"../collisionObj/collisionObj.h"
+
