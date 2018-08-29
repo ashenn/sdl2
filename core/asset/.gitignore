@@ -1,2 +1,8 @@
 *.o
-bin/
+bin
+bin/*
+*.cbp
+*.log
+*.depend
+*.layout
+*.out
