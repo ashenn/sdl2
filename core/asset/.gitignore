@@ -6,3 +6,4 @@ bin/*
 *.depend
 *.layout
 *.out
+obj/*
