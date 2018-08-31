@@ -1,9 +1,8 @@
-#ifndef OBJECT_H
-#define OBJECT_H
+#ifndef CONTROLLER_H
+#define CONTROLLER_H
 
 #include <SDL2/SDL.h>
 #include "../object/object.h"
-#include "../character/character.h"
 
 typedef enum ControllerType
 {
@@ -14,16 +13,17 @@ typedef enum ControllerType
 
 
 typedef struct Controller Controller;
+#include "../character/character.h"
 
 #define CONTROLLER_BODY \
 	CLASS_BODY \
 	bool enabled; \
 	\
+	Character* character; \
 	ControllerType* controller; \
-	Character* character \
 	\
-	void (*move)(Controller* ctrl, SDL_Rect pos); \
-	void (*moveToObj)(Controller* ctrl, Object* obj); \
+	bool (*move)(Controller* ctrl, SDL_Rect pos); \
+	bool (*moveToObj)(Controller* ctrl, Object* obj); \
 	\
 	void (*setCharacter)(Controller* ctrl, Character* c); \
 	void (*removeCharacter)(Controller* ctrl, Character* c);

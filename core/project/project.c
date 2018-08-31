@@ -21,7 +21,7 @@ void addDebugFlag(char* flag) {
 void initProjectFlags(Project* pro) {
 	pro->flagList = initListMgr();
 
-	static unsigned int flags[11] = {
+	static unsigned int flags[12] = {
 	    LOG_NONE,
 		LOG_MAIN,
 		LOG_OBJ,
@@ -31,7 +31,8 @@ void initProjectFlags(Project* pro) {
 		LOG_EVENT,
 		LOG_COMMON,
 		LOG_PROJECT,
-		LOG_RENDER
+		LOG_RENDER,
+		LOG_ANIM
 	};
 
 
@@ -64,6 +65,9 @@ void initProjectFlags(Project* pro) {
 
 	addNodeV(pro->flagList, "render", &flags[9], 0);
 	addLoggerTag(flags[9], "render", 0);
+
+	addNodeV(pro->flagList, "anim", &flags[10], 0);
+	addLoggerTag(flags[10], "anim", 0);
 }
 
 
@@ -117,7 +121,7 @@ void changeStatus(ProjectState state) {
 	logger->inf(LOG_PROJECT, "-- Project: ASK-LOCK");
 	LOCK(pro);
 	logger->inf(LOG_PROJECT, "-- Project: LOCKED");
-	
+
 
 	pro->status = state;
 	logger->inf(LOG_PROJECT, "STATE CHANGED");

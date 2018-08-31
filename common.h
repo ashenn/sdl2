@@ -44,24 +44,28 @@ typedef enum bool
 #define LOG_COMMON 64
 #define LOG_PROJECT 128
 #define LOG_RENDER 256
-
-
-
+#define LOG_ANIM 512
 
 
 Class* newClass(size_t s);
-
 #define new(T) ((T*) newClass(sizeof(T)))
 
-#define LOCK(T) (th_lock((Class*) T))
-#define UNLOCK(T) (th_unlock((Class*) T))
 
 char* Str(const char* str);
 char* StrE(const int len);
 
+
 void th_lock(Class* cl);
-void th_unlock(Class* cl);
 void th_wait(Class* cl);
+void th_unlock(Class* cl);
 void th_signal(Class* cl);
+
+#define LOCK(T) (th_lock((Class*) T))
+#define WAIT(T) (th_wait((Class*) T))
+#define UNLOCK(T) (th_unlock((Class*) T))
+#define SIGNAL(T) (th_signal((Class*) T))
+
+
+void tickWait(int next);
 
 #endif

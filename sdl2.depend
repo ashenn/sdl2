@@ -36,7 +36,7 @@
 	<string.h>
 	"libList.h"
 
-1535546651 source:c:\work\cpp\sdl2\main.c
+1535731543 source:c:\work\cpp\sdl2\main.c
 	<SDL2\SDL.h>
 	<SDL2\SDL_Image.h>
 	"common.h"
@@ -47,6 +47,7 @@
 	"core/project/project.h"
 	"core/view/render/render.h"
 	"core/asset/asset.h"
+	"core/animation/animation.h"
 
 1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl.h
 	"SDL_main.h"
@@ -387,7 +388,7 @@
 	<pthread.h>
 	<sys\stat.h>
 
-1535541351 source:c:\work\cpp\sdl2\base\math.c
+1535731881 source:c:\work\cpp\sdl2\base\math.c
 	<stdio.h>
 	"math.h"
 
@@ -408,7 +409,7 @@
 	"basic.h"
 	"logger.h"
 
-1535359551 c:\work\cpp\sdl2\common.h
+1535716752 c:\work\cpp\sdl2\common.h
 	<string.h>
 	<stdio.h>
 	<stdlib.h>
@@ -449,7 +450,8 @@
 1535126379 source:c:\work\cpp\sdl2\core\view\layer\layer.c
 	"layer.h"
 
-1535118647 source:c:\work\cpp\sdl2\common.c
+1535730148 source:c:\work\cpp\sdl2\common.c
+	<SDL2/SDL.h>
 	"common.h"
 
 1535546363 source:c:\work\cpp\sdl2\core\asset\asset.c
@@ -462,7 +464,7 @@
 	"../../common.h"
 	"../../base/libList.h"
 
-1535359080 source:c:\work\cpp\sdl2\core\event\event.c
+1535731393 source:c:\work\cpp\sdl2\core\event\event.c
 	"event.h"
 	"../project/project.h"
 
@@ -470,7 +472,7 @@
 	<SDL2/SDL.h>
 	"../../common.h"
 
-1535463195 source:c:\work\cpp\sdl2\core\project\project.c
+1535731229 source:c:\work\cpp\sdl2\core\project\project.c
 	"project.h"
 	"../object/object.h"
 	"../asset/asset.h"
@@ -483,7 +485,7 @@
 1535357998 c:\work\cpp\sdl2\core\view\render\render.h
 	"../view.h"
 
-1535360379 source:c:\work\cpp\sdl2\core\view\render\render.c
+1535716560 source:c:\work\cpp\sdl2\core\view\render\render.c
 	"render.h"
 	"../../project/project.h"
 
@@ -496,7 +498,7 @@
 	"../object/object.h"
 	"../controller/controller.h"
 
-1535465258 c:\work\cpp\sdl2\core\controller\controller.h
+1535708838 c:\work\cpp\sdl2\core\controller\controller.h
 	<SDL2/SDL.h>
 	"../object/object.h"
 	"../character/character.h"
@@ -504,12 +506,24 @@
 1535543535 source:c:\work\cpp\sdl2\core\object\collisionobj\collisionobj.c
 	"collisionObj.h"
 
-1535542532 c:\work\cpp\sdl2\core\object\collisionobj\collisionobj.h
+1535708397 c:\work\cpp\sdl2\core\object\collisionobj\collisionobj.h
 	"../object.h"
 
 1535542931 source:c:\work\cpp\sdl2\core\object\spriteobj\spriteobj.c
 	"./spriteObj.h"
 
-1535542891 c:\work\cpp\sdl2\core\object\spriteobj\spriteobj.h
+1535708397 c:\work\cpp\sdl2\core\object\spriteobj\spriteobj.h
 	"../collisionObj/collisionObj.h"
+
+1535715597 source:c:\work\cpp\sdl2\core\controller\controller.c
+	"controller.h"
+
+1535731897 source:c:\work\cpp\sdl2\core\animation\animation.c
+	"animation.h"
+
+1535731138 c:\work\cpp\sdl2\core\animation\animation.h
+	<SDL2/SDL.h>
+	"../../common.h"
+	"../../base/math.h"
+	"../object/object.h"
 

@@ -97,7 +97,7 @@ void eventKeyUp(int key) {
 
         if (evt->fnc != NULL) {
             logger->dbg(LOG_EVENT, "Call FNC");
-            doBreak = !doBreak || !evt->fnc((Event*) evt);
+            doBreak = !evt->fnc((Event*) evt) || !doBreak;
         }
 
         if (doBreak) {

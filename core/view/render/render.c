@@ -24,7 +24,7 @@ short iterateObjects(int i, Node* n) {
 		logger->inf(LOG_RENDER, "SURFACE IS NULL");
 		return 1;
 	}
-	
+
 	Object* obj = (Object*) n->value;
 	logger->inf(LOG_RENDER, "RENDER Obj: %s", obj->name);
 	renderObject(obj);
@@ -50,22 +50,19 @@ void* renderThread(void* arg) {
 	SDL_Renderer* rend = getRenderer();
 	ListManager* layerList = getLayers();
 
+	int nextTick = SDL_GetTicks();
 	while (pro->status != PRO_CLOSE) {
-		logger->inf(LOG_RENDER, "===== RENDER LOOP =====");
 		UNLOCK(pro);
-		logger->dbg(LOG_RENDER, "-- Project: UN-LOCK");
-		
+        nextTick += (1000 / FPS);
+
 		SDL_RenderClear(rend);
 		listIterateFnc(layerList, iterateLayers, NULL);
 
 		SDL_RenderPresent(rend);
+		tickWait(nextTick);
 
-		logger->dbg(LOG_RENDER, "-- Project: ASK-LOCK");
+		nextTick = SDL_GetTicks();
 		LOCK(pro);
-		logger->dbg(LOG_RENDER, "-- Project: LOCKED");
-		usleep(FPS / 1000000);
-		
-		logger->inf(LOG_RENDER, "===== END RENDER LOOP =====");
 	}
 
 	return NULL;

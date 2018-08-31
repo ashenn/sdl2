@@ -8,25 +8,15 @@
 #include "core/project/project.h"
 #include "core/view/render/render.h"
 #include "core/asset/asset.h"
+#include "core/animation/animation.h"
 
-bool printHello(Event* evt) {
-    logger->err(LOG_MAIN, "HELLO !!!");
+Object* testObj = NULL;
+
+bool moveTest(Event* evt) {
+    logger->err(LOG_ANIM, "####### MOVE INPUT");
+
+    moveTo(testObj, 350, 350, 5, 0);
     return true;
-}
-
-bool printBye(Event* evt) {
-    logger->err(LOG_MAIN, "Bye Bye !!!");
-    return true;
-}
-
-bool printTest0(Event* evt) {
-    logger->err(LOG_MAIN, "TESTING !!!");
-    return false;
-}
-
-bool printTest1(Event* evt) {
-    logger->err(LOG_MAIN, "FAILD!!!");
-    return false;
 }
 
 int main(int arc, char* argv[]) {
@@ -57,9 +47,9 @@ int main(int arc, char* argv[]) {
         return 1;
     }
 
+    bindKeyEvent("moveTest", SDLK_LEFT, moveTest);
 
-
-    addSimpleObject("test", NULL, &pos, 1);
+    testObj = addSimpleObject("test", img, &pos, 1);
 
     //pos.x += 100;
     //SDL_Surface* img2 = IMG_Load("asset/lg-button-red.png");

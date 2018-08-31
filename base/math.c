@@ -11,8 +11,8 @@ double rad2deg(double rad) {
 
 vector getVector(SDL_Rect rect1, SDL_Rect rect2) {
 	vector vec;
-	vec.x = rect2.x - rect1.x;
-	vec.y = rect2.y - rect1.y;
+	vec.x = (double) (rect2.x - rect1.x);
+	vec.y = (double) (rect2.y - rect1.y);
 
 	return vec;
 }

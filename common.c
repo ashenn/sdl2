@@ -1,3 +1,4 @@
+#include <SDL2/SDL.h>
 #include "common.h"
 
 Class* newClass(size_t s) {
@@ -47,4 +48,14 @@ void th_wait(Class* cl) {
 
 void th_signal(Class* cl) {
 	pthread_cond_signal(&cl->cond);
+}
+
+void tickWait(int next) {
+	int now = SDL_GetTicks();
+
+    if(next <= now){
+        return;
+    }
+
+	SDL_Delay(next - now);
 }
