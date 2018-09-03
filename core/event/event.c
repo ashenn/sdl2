@@ -58,8 +58,9 @@ ListManager* getEventsByKey(int key) {
     return (ListManager*) n->value;
 }
 
-void eventKeyUp(int key) {
+void eventKey(int key, bool up) {
     logger->inf(LOG_EVENT, "==== Key EVENT ====");
+
     if (key == SDLK_ESCAPE) {
 		logger->dbg(LOG_EVENT, "-- Event: Quit");
 		logger->err(LOG_EVENT, "############# Event: Quit ##################");
@@ -90,9 +91,13 @@ void eventKeyUp(int key) {
 
         logger->dbg(LOG_EVENT, "++ Call EVENT: %s", n->name);
 
-        if (evt->pressed != NULL) {
+        if (!up && evt->pressed != NULL) {
             logger->dbg(LOG_EVENT, "Call Pressed");
             doBreak = !evt->pressed(evt);
+        }
+        else if(up && evt->released != NULL) {
+            logger->dbg(LOG_EVENT, "Call Pressed");
+            doBreak = !evt->released(evt);
         }
 
         if (evt->fnc != NULL) {
@@ -119,10 +124,17 @@ void handleEvents() {
 				break;
 
             case SDL_KEYUP:
+                key = event.key.keysym.sym;
+                eventKey(key, true);
+                break;
+
+            case SDL_KEYDOWN:
 				key = event.key.keysym.sym;
-				eventKeyUp(key);
+				eventKey(key, false);
 				break;
         }
+
+        //SDL_Delay(25);
     }
 }
 

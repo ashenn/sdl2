@@ -12,10 +12,67 @@
 
 Object* testObj = NULL;
 
-bool moveTest(Event* evt) {
-    logger->err(LOG_ANIM, "####### MOVE INPUT");
+bool leftTest(KeyEvent* evt) {
+    logger->err(LOG_ANIM, "CLICKED LEFT !!!");
 
-    moveTo(testObj, 350, 350, 5, 0);
+
+    logger->inf(LOG_ANIM, "###### CLEAR ANIM LEFT ######");
+    animRemoveObject(testObj);
+
+    logger->inf(LOG_ANIM, "###### CLEAR ADD ANIM LEFT ######");
+    moveTo(
+       testObj,
+       10,
+       150,
+       5, 0
+    );
+
+    logger->inf(LOG_ANIM, "###### ANIM LEFT ADDED ######");
+    return false;
+}
+
+bool topTest(KeyEvent* evt) {
+    logger->err(LOG_ANIM, "CLICKED TOP !!!");
+    
+    logger->inf(LOG_ANIM, "###### CLEAR ANIM TOP ######");
+    animRemoveObject(testObj);
+    
+    logger->inf(LOG_ANIM, "###### CLEAR ADD ANIM TOP ######");
+    moveTo(
+        testObj,
+        150,
+        10,
+        5, 0
+    );
+
+
+    logger->inf(LOG_ANIM, "###### ANIM TOP ADDED ######");
+
+    return false;
+}
+
+bool rightTest(KeyEvent* evt) {
+    logger->err(LOG_ANIM, "CLICKED RIGHT !!!");
+
+    logger->inf(LOG_ANIM, "###### CLEAR ANIM RIGHT ######");
+    animRemoveObject(testObj);
+
+    logger->inf(LOG_ANIM, "###### CLEAR ADD ANIM RIGHT ######");
+    moveTo(testObj, 790 - (testObj->pos.w / 2), (SCREEN_H / 2) - (testObj->pos.h / 2), 5, 0);
+
+    logger->inf(LOG_ANIM, "###### ANIM RIGHT ADDED ######");
+
+    return false;
+}
+
+bool bottomTest(KeyEvent* evt) {
+    logger->err(LOG_ANIM, "CLICKED BOTTOM !!!");
+
+    animRemoveObject(testObj);
+    moveTo(testObj, (SCREEN_W / 2) - testObj->pos.w, 590 - testObj->pos.h, 5, 0);
+
+    logger->inf(LOG_ANIM, "###### ANIM BOTTOM ADDED ######");
+
     return true;
 }
 
@@ -47,7 +104,17 @@ int main(int arc, char* argv[]) {
         return 1;
     }
 
-    bindKeyEvent("moveTest", SDLK_LEFT, moveTest);
+    KeyEvent* evt = bindKeyEvent("leftTest", SDLK_LEFT, NULL);
+    evt->pressed = leftTest;
+
+    evt = bindKeyEvent("leftTest", SDLK_UP, NULL);
+    evt->pressed = topTest;
+
+    evt = bindKeyEvent("leftTest", SDLK_RIGHT, NULL);
+    evt->pressed = rightTest;
+
+    evt = bindKeyEvent("leftTest", SDLK_DOWN, NULL);
+    evt->pressed = bottomTest;
 
     testObj = addSimpleObject("test", img, &pos, 1);
 
@@ -60,7 +127,6 @@ int main(int arc, char* argv[]) {
 
     while (pro->status != PRO_CLOSE) {
         handleEvents();
-        usleep(500);
     }
 
     logger->inf(LOG_MAIN, "#### JOIN TRHEAD");

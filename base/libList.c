@@ -5,11 +5,13 @@
  * @return ListManager
  */
 ListManager* initListMgr(){
+	static int id = 0;
 	ListManager* lstMgr = malloc(sizeof(ListManager));
 	if (lstMgr == NULL){
 		return NULL;
 	}
 
+	lstMgr->ID = id++;
 	lstMgr->lastId = 0;
 	lstMgr->nodeCount = 0;
 	lstMgr->first = NULL;
@@ -72,6 +74,7 @@ void* addNode(ListManager* lstMgr, void* params){
 	lstMgr->nodeCount++;
 
 	pthread_mutex_unlock(&lstMgr->mutex);
+
 	return newNode;
 }
 
@@ -190,7 +193,6 @@ Node* getNode(ListManager* lstMgr, int id){
 	}
 
 	//fprintf(stdout, "--GET END !!\n");
-
 	pthread_mutex_unlock(&lstMgr->mutex);
 
 	if (found) {
@@ -209,18 +211,21 @@ Node* getNode(ListManager* lstMgr, int id){
 Node* getNodeByName(ListManager* lstMgr, char* name){
 	short found = 0;
 	Node* currentNode = NULL;
-	//fprintf(stdout, "GETTING NODE: %s\n", name);
+	fprintf(stdout, "GETTING NODE: %s\n", name);
 
 	if (strlen(name) == 0) {
 		printf("## Error: name param for getNode is invalid\n");
 		return NULL;
 	}
 
+	fprintf(stdout, "ASK LOCK !!!\n");
 	pthread_mutex_lock(&lstMgr->mutex);
+	fprintf(stdout, "LOCKED !!!\n");
 
 	int i;
 	for (i = 0; i < lstMgr->nodeCount; ++i)
 	{
+		fprintf(stdout, "SEARCHING: %d !!!\n", i);
 		if (currentNode == NULL)
 		{
 			currentNode = lstMgr->first;
@@ -230,13 +235,13 @@ Node* getNodeByName(ListManager* lstMgr, char* name){
 		}
 
 		if (!strcmp(currentNode->name, name)) {
+			fprintf(stdout, "FOUND !!!\n");
 			found = 1;
 			break;
 		}
 	}
 
-	// printf("## Error: Node with name: %s not found", name);
-
+	fprintf(stdout, "UNLOCKED !!!\n");
 	pthread_mutex_unlock(&lstMgr->mutex);
 
 	if (found) {
@@ -276,27 +281,27 @@ Node* deleteNodeByNameNoFree(ListManager* lstMgr, char* name) {
 	return deleteNodeNoFree(lstMgr, n->id);
 }
 
-/**
- * Delete Node By Id
- * @param lstMgr List
- * @param id     Id
- */
-Node* deleteNodeNoFree(ListManager* lstMgr, int id){
-	//fprintf(stdout, "DELETING NODE NO FREE: %u\n", id);
-	Node* node = getNode(lstMgr, id);
-	if (node == NULL){
-		//fprintf(stdout, "NOt FOUND\n");
-		return NULL;
+void freeNodeKey(Node* n) {
+	if (n->keyIsAlloc) {
+		free(n->key);
 	}
+}
 
-	//fprintf(stdout, "FOUND !!!\n");
+void freeNodeValue(Node* n) {
+	if (n->valIsAlloc) {
+		free(n->value);
+	}
+}
 
-	//fprintf(stdout, "Lock List\n");
-	pthread_mutex_lock(&lstMgr->mutex);
-	//fprintf(stdout, "Lock Node\n");
-	pthread_mutex_lock(&node->mutex);
+void freeNode(Node* node) {
+	freeNodeKey(node);
+	freeNodeValue(node);
 
-	//fprintf(stdout, "Working\n");
+	free(node->name);
+	free(node);
+}
+
+void removeNode(ListManager* lstMgr, Node* node) {
 	Node* prev = node->prev;
 	Node* next = node->next;
 
@@ -324,10 +329,39 @@ Node* deleteNodeNoFree(ListManager* lstMgr, int id){
 		lstMgr->first = NULL;
 		lstMgr->last = NULL;
 	}
+}
+
+void removeAndFreeNode(ListManager* lstMgr, Node* node) {
+	removeNode(lstMgr, node);
+	freeNode(node);
+}
+
+/**
+ * Delete Node By Id
+ * @param lstMgr List
+ * @param id     Id
+ */
+Node* deleteNodeNoFree(ListManager* lstMgr, int id){
+	//fprintf(stdout, "DELETING NODE NO FREE: %u\n", id);
+	Node* node = getNode(lstMgr, id);
+	if (node == NULL){
+		//fprintf(stdout, "NOt FOUND\n");
+		return NULL;
+	}
+
+	//fprintf(stdout, "FOUND !!!\n");
+
+	pthread_mutex_lock(&lstMgr->mutex);
+	//fprintf(stdout, "Lock Node\n");
+	pthread_mutex_lock(&node->mutex);
+
+	//fprintf(stdout, "Working\n");
+	removeNode(lstMgr, node);
 
 	//fprintf(stdout, "NO FREE DONE\n");
 	pthread_mutex_unlock(&lstMgr->mutex);
 	pthread_mutex_unlock(&node->mutex);
+
 	return node;
 }
 
@@ -352,16 +386,7 @@ void* deleteNode(ListManager* lstMgr, int id){
 		node->del(node->value);
 	}
 
-	if (node->valIsAlloc){
-		free(node->value);
-	}
-
-	if (node->keyIsAlloc){
-		free(node->key);
-	}
-
-	free(node->name);
-	free(node);
+	freeNode(node);
 
 	//fprintf(stdout, "DELETE DONE\n");
 	pthread_mutex_unlock(&node->mutex);
@@ -474,19 +499,20 @@ Node* listIterate(ListManager* list, Node* n) {
 		return NULL;
 	}
 
-    pthread_mutex_unlock(&list->mutex);
     if (n != NULL) {
         pthread_mutex_unlock(&n->mutex);
     }
 
+    pthread_mutex_unlock(&list->mutex);
 	return n->next;
 }
 
 
-void listIterateFnc(ListManager* list, short (*fnc)(int i, Node*), Node* n) {
+void listIterateFnc(ListManager* list, short (*fnc)(int , Node*, short*), Node* n) {
 	pthread_mutex_lock(&list->mutex);
 
 	int i = 0;
+	short delete = 0;
 	short process = 1;
 
 	if (n == NULL) {
@@ -496,11 +522,48 @@ void listIterateFnc(ListManager* list, short (*fnc)(int i, Node*), Node* n) {
 	while (process && n != NULL) {
 		pthread_mutex_lock(&n->mutex);
 
-		process = fnc(i++, n);
 		Node* tmp = n;
+		process = fnc(i++, n, &delete);
 		n = n->next;
 
 		pthread_mutex_unlock(&tmp->mutex);
+
+		if (delete) {
+			removeAndFreeNode(list, tmp);
+		}
+
+		delete = 0;
+	}
+
+	pthread_mutex_unlock(&list->mutex);
+}
+
+
+void listRevIterateFnc(ListManager* list, short (*fnc)(int , Node*, short*), Node* n) {
+	pthread_mutex_lock(&list->mutex);
+
+	int i = 0;
+	short delete = 0;
+	short process = 1;
+
+	if (n == NULL) {
+        n = list->last;
+	}
+
+	while (process && n != NULL) {
+		pthread_mutex_lock(&n->mutex);
+
+		Node* tmp = n;
+		process = fnc(i++, n, &delete);
+		n = n->prev;
+
+		pthread_mutex_unlock(&tmp->mutex);
+
+		if (delete) {
+			removeAndFreeNode(list, tmp);
+		}
+
+		delete = 0;
 	}
 
 	pthread_mutex_unlock(&list->mutex);
@@ -555,6 +618,7 @@ short listInsertAfter(ListManager* lst, Node* n, short id) {
 	//printNodes(lst);
 
 	pthread_mutex_lock(&lst->mutex);
+
 	pthread_mutex_lock(&n->mutex);
 	Node* tmpP = n->prev;
 	Node* tmpN = n->next;
@@ -609,20 +673,20 @@ short listInsertAfter(ListManager* lst, Node* n, short id) {
 
 
 	pthread_mutex_unlock(&n->mutex);
+
 	pthread_mutex_unlock(&lst->mutex);
 	return 1;
 }
 
 void sortList(ListManager * lst, short (*fnc)(void*, void*)) {
-	//fprintf(stdout, "========= SORTING LIST =========\n");
 
 	int i;
 	short sort = 0;
 	Node* tmp = NULL;
 	Node* comp = NULL;
 
-
 	pthread_mutex_lock(&lst->mutex);
+
 	Node* key = lst->first->next;
 	for (i = 1; i < lst->nodeCount; i++) {
     	comp = lst->first;
@@ -686,6 +750,9 @@ void sortList(ListManager * lst, short (*fnc)(void*, void*)) {
 		//fprintf(stdout, "--------------------------------------------------------------------\n");
 		//
 		pthread_mutex_unlock(&key->mutex);
+
+		pthread_mutex_lock(&lst->mutex);
+
    		key = key->next;
         if (key == NULL) {
         	break;

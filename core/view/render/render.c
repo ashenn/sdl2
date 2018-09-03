@@ -1,5 +1,6 @@
 #include "render.h"
 #include "../../project/project.h"
+#include "../../animation/animation.h"
 
 void renderObject(Object* obj) {
 	logger->inf(LOG_RENDER, "PRINT OBJECT: #%s", obj->name);
@@ -18,7 +19,7 @@ void renderObject(Object* obj) {
 	}
 }
 
-short iterateObjects(int i, Node* n) {
+short iterateObjects(int i, Node* n, short* delete) {
 	logger->inf(LOG_RENDER, "OBJECT: #%d", n->id);
 	if (n->value == NULL) {
 		logger->inf(LOG_RENDER, "SURFACE IS NULL");
@@ -32,7 +33,7 @@ short iterateObjects(int i, Node* n) {
 	return 1;
 }
 
-short iterateLayers(int i, Node* n) {
+short iterateLayers(int i, Node* n, short* delete) {
 	if (n->value == NULL) {
 		return 1;
 	}
@@ -56,10 +57,14 @@ void* renderThread(void* arg) {
         nextTick += (1000 / FPS);
 
 		SDL_RenderClear(rend);
+
+        animate();
 		listIterateFnc(layerList, iterateLayers, NULL);
 
 		SDL_RenderPresent(rend);
-		tickWait(nextTick);
+
+		int waited = tickWait(nextTick);
+		logger->dbg(LOG_RENDER, "Frame Wait: %d ms", waited);
 
 		nextTick = SDL_GetTicks();
 		LOCK(pro);

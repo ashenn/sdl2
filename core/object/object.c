@@ -1,6 +1,7 @@
 #include "object.h"
 #include "../view/view.h"
 #include "../view/layer/layer.h"
+#include "../animation/animation.h"
 
 
 ListManager* getObjectList() {
@@ -158,8 +159,8 @@ void deleteObject(Object* obj) {
 		logger->dbg(LOG_OBJ, "-- Deleting From : %s", layer->name);
 		deleteNode(layer->value, obj->id);
 
-		/*logger->dbg(LOG_OBJ, "-- Remove From Anim");
-		animRemoveObject(obj);*/
+		logger->dbg(LOG_OBJ, "-- Remove From Anim");
+		animRemoveObject(obj);
 	}
 
 	/*if (obj->container != NULL) {

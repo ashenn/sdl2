@@ -50,12 +50,15 @@ void th_signal(Class* cl) {
 	pthread_cond_signal(&cl->cond);
 }
 
-void tickWait(int next) {
+int tickWait(int next) {
 	int now = SDL_GetTicks();
 
     if(next <= now){
-        return;
+        return 0;
     }
 
-	SDL_Delay(next - now);
+    int time = next- now;
+	SDL_Delay(time);
+
+	return time;
 }

@@ -8,10 +8,10 @@
 
 1530852698 c:\work\cpp\sdl2\base\basic.h
 
-1535126434 source:c:\work\cpp\sdl2\base\liblist.c
+1535991742 source:c:\work\cpp\sdl2\base\liblist.c
 	"libList.h"
 
-1535125990 c:\work\cpp\sdl2\base\liblist.h
+1535977037 c:\work\cpp\sdl2\base\liblist.h
 	<assert.h>
 	<stdio.h>
 	<stdlib.h>
@@ -36,7 +36,7 @@
 	<string.h>
 	"libList.h"
 
-1535731543 source:c:\work\cpp\sdl2\main.c
+1535992374 source:c:\work\cpp\sdl2\main.c
 	<SDL2\SDL.h>
 	<SDL2\SDL_Image.h>
 	"common.h"
@@ -409,7 +409,7 @@
 	"basic.h"
 	"logger.h"
 
-1535716752 c:\work\cpp\sdl2\common.h
+1535991127 c:\work\cpp\sdl2\common.h
 	<string.h>
 	<stdio.h>
 	<stdlib.h>
@@ -418,10 +418,11 @@
 	<pthread.h>
 	"base/logger.h"
 
-1535541907 source:c:\work\cpp\sdl2\core\object\object.c
+1535970311 source:c:\work\cpp\sdl2\core\object\object.c
 	"object.h"
 	"../view/view.h"
 	"../view/layer/layer.h"
+	"../animation/animation.h"
 
 1535542794 c:\work\cpp\sdl2\core\object\object.h
 	"../../common.h"
@@ -434,7 +435,7 @@
 	"../object/object.h"
 	"./layer/layer.h"
 
-1535542806 source:c:\work\cpp\sdl2\core\view\view.c
+1535965981 source:c:\work\cpp\sdl2\core\view\view.c
 	"view.h"
 
 1519932871 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_image.h
@@ -450,11 +451,11 @@
 1535126379 source:c:\work\cpp\sdl2\core\view\layer\layer.c
 	"layer.h"
 
-1535730148 source:c:\work\cpp\sdl2\common.c
+1535991259 source:c:\work\cpp\sdl2\common.c
 	<SDL2/SDL.h>
 	"common.h"
 
-1535546363 source:c:\work\cpp\sdl2\core\asset\asset.c
+1535968324 source:c:\work\cpp\sdl2\core\asset\asset.c
 	<SDL2/SDL.h>
 	<SDL2/SDL_image.h>
 	<SDL2/SDL_ttf.h>
@@ -464,7 +465,7 @@
 	"../../common.h"
 	"../../base/libList.h"
 
-1535731393 source:c:\work\cpp\sdl2\core\event\event.c
+1535992197 source:c:\work\cpp\sdl2\core\event\event.c
 	"event.h"
 	"../project/project.h"
 
@@ -485,9 +486,10 @@
 1535357998 c:\work\cpp\sdl2\core\view\render\render.h
 	"../view.h"
 
-1535716560 source:c:\work\cpp\sdl2\core\view\render\render.c
+1535991682 source:c:\work\cpp\sdl2\core\view\render\render.c
 	"render.h"
 	"../../project/project.h"
+	"../../animation/animation.h"
 
 1535463712 source:c:\work\cpp\sdl2\core\character\character.c
 	"character.h"
@@ -518,10 +520,10 @@
 1535715597 source:c:\work\cpp\sdl2\core\controller\controller.c
 	"controller.h"
 
-1535731897 source:c:\work\cpp\sdl2\core\animation\animation.c
+1535992067 source:c:\work\cpp\sdl2\core\animation\animation.c
 	"animation.h"
 
-1535731138 c:\work\cpp\sdl2\core\animation\animation.h
+1535970284 c:\work\cpp\sdl2\core\animation\animation.h
 	<SDL2/SDL.h>
 	"../../common.h"
 	"../../base/math.h"

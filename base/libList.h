@@ -35,6 +35,7 @@ struct Node{
 
 struct ListManager
 {
+	int ID;
 	int lastId;
 	int nodeCount;
 
@@ -53,22 +54,31 @@ void printNodes(ListManager* lstMgr);
 Node* getNode(ListManager* lstMgr, int id);
 Node* getNodeByName(ListManager* lstMgr, char* name);
 
+void removeNode(ListManager* lstMgr, Node* node);
 void* deleteNode(ListManager* lstMgr, int id);
 Node* deleteNodeNoFree(ListManager* lstMgr, int id);
 Node* deleteNodeByNameNoFree(ListManager* lstMgr, char* name);
 void deleteNodeByName(ListManager* lstMgr, char* name);
 
+void freeNode(Node* n);
+void freeNodeKey(Node* n);
+void freeNodeValue(Node* n);
+void removeAndFreeNode(ListManager* lstMgr, Node* node);
+
 int setValue(Node* node, void* value, short asAlloc);
+
+
 int* getIds(ListManager* lstMgr, int* ids);
 void clearList(ListManager* lstMgr);
 void deleteList(ListManager* lstMgr);
 
 Node* listIterate(ListManager* list, Node* n);
-void listIterateFnc(ListManager* list, short (*fnc)(int i, Node*), Node* n);
+void listIterateFnc(ListManager* list, short (*fnc)(int i, Node* n, short* delete), Node* n);
 
 Node* listRevIterate(ListManager* list, Node* n);
+void listRevIterateFnc(ListManager* list, short (*fnc)(int , Node*, short*), Node* n);
 
 short listInsertAfter(ListManager* lst, Node* n, short id);
-
 void sortList(ListManager * lst, short (*fnc)(void*, void*));
+
 #endif

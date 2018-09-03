@@ -66,6 +66,6 @@ void th_signal(Class* cl);
 #define SIGNAL(T) (th_signal((Class*) T))
 
 
-void tickWait(int next);
+int tickWait(int next);
 
 #endif

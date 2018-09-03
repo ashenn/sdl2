@@ -20,19 +20,24 @@ typedef struct AnimParam AnimParam;
 	\
 	float delay;	 \
 	float duration;	 \
+	\
 	bool breakAnim;	 \
 	int frames; \
+	int initialFrames; \
 	\
 	SDL_Rect originPos;	\
 	SDL_Rect targetPos;	\
 	\
 	Object* obj;	\
+	\
+	bool loop;	 \
 	bool deleteObject;	\
 	\
 	AnimDistance move[2];	\
 	\
 	void (*fnc)();	\
-	void (*callBack)(AnimParam* param);
+	void (*stepFnc)(AnimParam* param);	\
+	void (*callback)(AnimParam* param);
 
 
 struct AnimParam {
@@ -42,14 +47,16 @@ struct AnimParam {
 
 #define ANIMATOR_BODY \
 	CLASS_BODY	\
-	ListManager* anims;
+	ListManager* moves; \
+	ListManager* sprites;
 
 typedef struct Animator {
 	ANIMATOR_BODY
 } Animator;
 
 
+void animate();
 Animator* getAnimator();
+void animRemoveObject(Object* obj);
 AnimParam* moveTo(Object* obj, int x, int y, float time, float delay);
-
 #endif
