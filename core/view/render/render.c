@@ -1,6 +1,7 @@
 #include "render.h"
 #include "../../project/project.h"
 #include "../../animation/animation.h"
+#include <stdarg.h>
 
 void renderObject(Object* obj) {
 	logger->inf(LOG_RENDER, "PRINT OBJECT: #%s", obj->name);
@@ -19,7 +20,7 @@ void renderObject(Object* obj) {
 	}
 }
 
-short iterateObjects(int i, Node* n, short* delete) {
+short iterateObjects(int i, Node* n, short* delete, void* param, va_list* args) {
 	logger->inf(LOG_RENDER, "OBJECT: #%d", n->id);
 	if (n->value == NULL) {
 		logger->inf(LOG_RENDER, "SURFACE IS NULL");
@@ -33,14 +34,14 @@ short iterateObjects(int i, Node* n, short* delete) {
 	return 1;
 }
 
-short iterateLayers(int i, Node* n, short* delete) {
+short iterateLayers(int i, Node* n, short* delete, void* param, va_list* args) {
 	if (n->value == NULL) {
 		return 1;
 	}
 
 	logger->inf(LOG_RENDER, "LAYER: #%d", n->id);
 	ListManager* layer = (ListManager*) n->value;
-	listIterateFnc(layer, iterateObjects, NULL);
+	listIterateFnc(layer, iterateObjects, NULL, 0);
 
 	return 1;
 }
@@ -58,8 +59,8 @@ void* renderThread(void* arg) {
 
 		SDL_RenderClear(rend);
 
-        animate();
-		listIterateFnc(layerList, iterateLayers, NULL);
+        //animate();
+		//listIterateFnc(layerList, iterateLayers, NULL, NULL);
 
 		SDL_RenderPresent(rend);
 
@@ -70,5 +71,6 @@ void* renderThread(void* arg) {
 		LOCK(pro);
 	}
 
+	UNLOCK(pro);
 	return NULL;
 }

@@ -73,10 +73,10 @@ void clearList(ListManager* lstMgr);
 void deleteList(ListManager* lstMgr);
 
 Node* listIterate(ListManager* list, Node* n);
-void listIterateFnc(ListManager* list, short (*fnc)(int i, Node* n, short* delete), Node* n);
-
 Node* listRevIterate(ListManager* list, Node* n);
-void listRevIterateFnc(ListManager* list, short (*fnc)(int , Node*, short*), Node* n);
+
+void listIterateFnc(ListManager* list, short (*fnc)(int , Node*, short*, void*, va_list* args), Node* n, void* param, ...);
+void listRevIterateFnc(ListManager* list, short (*fnc)(int , Node*, short*, void*, va_list* args), Node* n, void* param, ...);
 
 short listInsertAfter(ListManager* lst, Node* n, short id);
 void sortList(ListManager * lst, short (*fnc)(void*, void*));

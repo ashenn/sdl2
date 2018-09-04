@@ -1,6 +1,7 @@
 #include "project.h"
 #include "../object/object.h"
 #include "../asset/asset.h"
+#include "../timer/timer.h"
 
 void addDebugFlag(char* flag) {
 	Project* pro = getProject();
@@ -32,7 +33,8 @@ void initProjectFlags(Project* pro) {
 		LOG_COMMON,
 		LOG_PROJECT,
 		LOG_RENDER,
-		LOG_ANIM
+		LOG_ANIM,
+		LOG_TIMER
 	};
 
 
@@ -68,6 +70,9 @@ void initProjectFlags(Project* pro) {
 
 	addNodeV(pro->flagList, "anim", &flags[10], 0);
 	addLoggerTag(flags[10], "anim", 0);
+
+	addNodeV(pro->flagList, "timer", &flags[11], 0);
+	addLoggerTag(flags[11], "timer", 0);
 }
 
 
@@ -134,6 +139,9 @@ void changeStatus(ProjectState state) {
 void closeProject() {
 	logger->inf(LOG_PROJECT, "==== Closing Project ====");
 	Project* pro = getProject();
+
+	logger->inf(LOG_PROJECT, "-- Clear Timers");
+	clearDelayedFunctions();
 
 	logger->inf(LOG_PROJECT, "-- Clear Objects");
 	clearObjects();

@@ -8,10 +8,11 @@
 
 1530852698 c:\work\cpp\sdl2\base\basic.h
 
-1535991742 source:c:\work\cpp\sdl2\base\liblist.c
+1536054914 source:c:\work\cpp\sdl2\base\liblist.c
 	"libList.h"
+	<stdarg.h>
 
-1535977037 c:\work\cpp\sdl2\base\liblist.h
+1536052984 c:\work\cpp\sdl2\base\liblist.h
 	<assert.h>
 	<stdio.h>
 	<stdlib.h>
@@ -36,7 +37,7 @@
 	<string.h>
 	"libList.h"
 
-1535992374 source:c:\work\cpp\sdl2\main.c
+1536077427 source:c:\work\cpp\sdl2\main.c
 	<SDL2\SDL.h>
 	<SDL2\SDL_Image.h>
 	"common.h"
@@ -48,6 +49,7 @@
 	"core/view/render/render.h"
 	"core/asset/asset.h"
 	"core/animation/animation.h"
+	"core/timer/timer.h"
 
 1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl.h
 	"SDL_main.h"
@@ -397,7 +399,7 @@
 	<stdlib.h>
 	<SDL2\SDL.h>
 
-1535124013 source:c:\work\cpp\sdl2\base\logger.c
+1536050436 source:c:\work\cpp\sdl2\base\logger.c
 	<stdio.h>
 	<stdlib.h>
 	<unistd.h>
@@ -409,7 +411,7 @@
 	"basic.h"
 	"logger.h"
 
-1535991127 c:\work\cpp\sdl2\common.h
+1536059681 c:\work\cpp\sdl2\common.h
 	<string.h>
 	<stdio.h>
 	<stdlib.h>
@@ -465,18 +467,19 @@
 	"../../common.h"
 	"../../base/libList.h"
 
-1535992197 source:c:\work\cpp\sdl2\core\event\event.c
+1536056196 source:c:\work\cpp\sdl2\core\event\event.c
 	"event.h"
 	"../project/project.h"
 
-1535542697 c:\work\cpp\sdl2\core\event\event.h
+1536056202 c:\work\cpp\sdl2\core\event\event.h
 	<SDL2/SDL.h>
 	"../../common.h"
 
-1535731229 source:c:\work\cpp\sdl2\core\project\project.c
+1536078720 source:c:\work\cpp\sdl2\core\project\project.c
 	"project.h"
 	"../object/object.h"
 	"../asset/asset.h"
+	"../timer/timer.h"
 
 1535461406 c:\work\cpp\sdl2\core\project\project.h
 	"../../common.h"
@@ -486,10 +489,11 @@
 1535357998 c:\work\cpp\sdl2\core\view\render\render.h
 	"../view.h"
 
-1535991682 source:c:\work\cpp\sdl2\core\view\render\render.c
+1536056036 source:c:\work\cpp\sdl2\core\view\render\render.c
 	"render.h"
 	"../../project/project.h"
 	"../../animation/animation.h"
+	<stdarg.h>
 
 1535463712 source:c:\work\cpp\sdl2\core\character\character.c
 	"character.h"
@@ -520,12 +524,23 @@
 1535715597 source:c:\work\cpp\sdl2\core\controller\controller.c
 	"controller.h"
 
-1535992067 source:c:\work\cpp\sdl2\core\animation\animation.c
+1536056200 source:c:\work\cpp\sdl2\core\animation\animation.c
 	"animation.h"
+	<stdarg.h>
 
 1535970284 c:\work\cpp\sdl2\core\animation\animation.h
 	<SDL2/SDL.h>
 	"../../common.h"
 	"../../base/math.h"
 	"../object/object.h"
+
+1536078704 c:\work\cpp\sdl2\core\timer\timer.h
+	<stdarg.h>
+	"../../common.h"
+
+1536078742 source:c:\work\cpp\sdl2\core\timer\timer.c
+	"timer.h"
+	<SDL2/SDL.h>
+	"../../base/libList.h"
+	"../project/project.h"
 

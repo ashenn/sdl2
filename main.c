@@ -9,6 +9,7 @@
 #include "core/view/render/render.h"
 #include "core/asset/asset.h"
 #include "core/animation/animation.h"
+#include "core/timer/timer.h"
 
 Object* testObj = NULL;
 
@@ -76,6 +77,20 @@ bool bottomTest(KeyEvent* evt) {
     return true;
 }
 
+void* testTimer(void* arg) {
+    static int i = 0;
+    logger->inf(LOG_TIMER, "==== TESTING TIMER DELAYED ====");
+
+    int res = i++ > 5;
+    pthread_exit((void*) res);
+    return NULL;
+}
+
+void* callBackTimer() {
+    logger->inf(LOG_TIMER, "==== TESTING TIMER Call Back ====");
+    return NULL;
+}
+
 int main(int arc, char* argv[]) {
     logger = initLogger(arc, argv);
 
@@ -116,14 +131,18 @@ int main(int arc, char* argv[]) {
     evt = bindKeyEvent("leftTest", SDLK_DOWN, NULL);
     evt->pressed = bottomTest;
 
-    testObj = addSimpleObject("test", img, &pos, 1);
+    testObj = addSimpleObject("Test Object", img, &pos, 1);
 
     //pos.x += 100;
     //SDL_Surface* img2 = IMG_Load("asset/lg-button-red.png");
     //addSimpleObject("test-2", img2, &pos, 1);
 
+
     logger->inf(LOG_MAIN, "#### CREATE TRHEAD");
     pthread_create(&pro->renderThread, NULL, renderThread, (void*)NULL);
+
+
+    delayed(1.0f, true, testTimer, NULL);
 
     while (pro->status != PRO_CLOSE) {
         handleEvents();

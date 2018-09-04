@@ -32,6 +32,7 @@ struct Event {
 typedef struct KeyEvent KeyEvent;
 #define KEY_EVT_BODY \
     EVENT_BODY  \
+    bool allowRepeat;  \
     bool (*pressed)(KeyEvent* evt);  \
     bool (*released)(KeyEvent* evt);
 

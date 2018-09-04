@@ -1,4 +1,5 @@
 #include "libList.h"
+#include <stdarg.h>
 
 /**
  * Initialize A list
@@ -211,21 +212,17 @@ Node* getNode(ListManager* lstMgr, int id){
 Node* getNodeByName(ListManager* lstMgr, char* name){
 	short found = 0;
 	Node* currentNode = NULL;
-	fprintf(stdout, "GETTING NODE: %s\n", name);
 
 	if (strlen(name) == 0) {
 		printf("## Error: name param for getNode is invalid\n");
 		return NULL;
 	}
 
-	fprintf(stdout, "ASK LOCK !!!\n");
 	pthread_mutex_lock(&lstMgr->mutex);
-	fprintf(stdout, "LOCKED !!!\n");
 
 	int i;
 	for (i = 0; i < lstMgr->nodeCount; ++i)
 	{
-		fprintf(stdout, "SEARCHING: %d !!!\n", i);
 		if (currentNode == NULL)
 		{
 			currentNode = lstMgr->first;
@@ -235,13 +232,11 @@ Node* getNodeByName(ListManager* lstMgr, char* name){
 		}
 
 		if (!strcmp(currentNode->name, name)) {
-			fprintf(stdout, "FOUND !!!\n");
 			found = 1;
 			break;
 		}
 	}
 
-	fprintf(stdout, "UNLOCKED !!!\n");
 	pthread_mutex_unlock(&lstMgr->mutex);
 
 	if (found) {
@@ -386,10 +381,11 @@ void* deleteNode(ListManager* lstMgr, int id){
 		node->del(node->value);
 	}
 
-	freeNode(node);
 
 	//fprintf(stdout, "DELETE DONE\n");
 	pthread_mutex_unlock(&node->mutex);
+	freeNode(node);
+	
 	return NULL;
 }
 
@@ -508,12 +504,15 @@ Node* listIterate(ListManager* list, Node* n) {
 }
 
 
-void listIterateFnc(ListManager* list, short (*fnc)(int , Node*, short*), Node* n) {
+void listIterateFnc(ListManager* list, short (*fnc)(int , Node*, short*, void*, va_list* args), Node* n, void* param, ...) {
 	pthread_mutex_lock(&list->mutex);
 
 	int i = 0;
 	short delete = 0;
 	short process = 1;
+
+	va_list args;
+	va_start(args, param);
 
 	if (n == NULL) {
         n = list->first;
@@ -523,7 +522,7 @@ void listIterateFnc(ListManager* list, short (*fnc)(int , Node*, short*), Node* 
 		pthread_mutex_lock(&n->mutex);
 
 		Node* tmp = n;
-		process = fnc(i++, n, &delete);
+		process = fnc(i++, n, &delete, param, &args);
 		n = n->next;
 
 		pthread_mutex_unlock(&tmp->mutex);
@@ -535,16 +534,21 @@ void listIterateFnc(ListManager* list, short (*fnc)(int , Node*, short*), Node* 
 		delete = 0;
 	}
 
+	va_end(args);
+
 	pthread_mutex_unlock(&list->mutex);
 }
 
 
-void listRevIterateFnc(ListManager* list, short (*fnc)(int , Node*, short*), Node* n) {
+void listRevIterateFnc(ListManager* list, short (*fnc)(int , Node*, short*, void*, va_list* args), Node* n, void* param, ...) {
 	pthread_mutex_lock(&list->mutex);
 
 	int i = 0;
 	short delete = 0;
 	short process = 1;
+
+	va_list args;
+	va_start(args, param);
 
 	if (n == NULL) {
         n = list->last;
@@ -554,7 +558,7 @@ void listRevIterateFnc(ListManager* list, short (*fnc)(int , Node*, short*), Nod
 		pthread_mutex_lock(&n->mutex);
 
 		Node* tmp = n;
-		process = fnc(i++, n, &delete);
+		process = fnc(i++, n, &delete, param, &args);
 		n = n->prev;
 
 		pthread_mutex_unlock(&tmp->mutex);
@@ -566,6 +570,7 @@ void listRevIterateFnc(ListManager* list, short (*fnc)(int , Node*, short*), Nod
 		delete = 0;
 	}
 
+	va_end(args);
 	pthread_mutex_unlock(&list->mutex);
 }
 

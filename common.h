@@ -45,6 +45,7 @@ typedef enum bool
 #define LOG_PROJECT 128
 #define LOG_RENDER 256
 #define LOG_ANIM 512
+#define LOG_TIMER 1024
 
 
 Class* newClass(size_t s);
