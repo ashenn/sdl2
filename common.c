@@ -1,3 +1,4 @@
+#include <sys/time.h>
 #include <SDL2/SDL.h>
 #include "common.h"
 
@@ -44,6 +45,20 @@ void th_unlock(Class* cl) {
 
 void th_wait(Class* cl) {
 	pthread_cond_wait(&cl->cond, &cl->mutex);
+}
+
+void th_wait_time(Class* cl, float delay) {
+	struct timespec waitTime;
+    struct timeval now;
+	int seconds = (int)delay;
+    float microsec =  (delay - ((float) seconds)) * 1000.0f;
+
+	gettimeofday(&now,NULL);
+
+    waitTime.tv_sec = now.tv_sec + (int) delay;
+    waitTime.tv_nsec = (now.tv_usec + microsec) *1000UL;
+	
+	pthread_cond_timedwait(&cl->cond, &cl->mutex, &waitTime);
 }
 
 void th_signal(Class* cl) {

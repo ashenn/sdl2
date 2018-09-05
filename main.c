@@ -16,6 +16,9 @@ Object* testObj = NULL;
 bool leftTest(KeyEvent* evt) {
     logger->err(LOG_ANIM, "CLICKED LEFT !!!");
 
+    pauseDelayedFunction((DelayedFncLauncher*) evt->arg);
+    //killDelayedFunction((DelayedFncLauncher*) evt->arg, true, true);
+    return false;
 
     logger->inf(LOG_ANIM, "###### CLEAR ANIM LEFT ######");
     animRemoveObject(testObj);
@@ -34,10 +37,12 @@ bool leftTest(KeyEvent* evt) {
 
 bool topTest(KeyEvent* evt) {
     logger->err(LOG_ANIM, "CLICKED TOP !!!");
-    
+    resumeDelayedFunction((DelayedFncLauncher*) evt->arg);
+    return false;
+
     logger->inf(LOG_ANIM, "###### CLEAR ANIM TOP ######");
     animRemoveObject(testObj);
-    
+
     logger->inf(LOG_ANIM, "###### CLEAR ADD ANIM TOP ######");
     moveTo(
         testObj,
@@ -79,15 +84,31 @@ bool bottomTest(KeyEvent* evt) {
 
 void* testTimer(void* arg) {
     static int i = 0;
-    logger->inf(LOG_TIMER, "==== TESTING TIMER DELAYED ====");
+    DelayedFunction* param = (DelayedFunction*) arg;
 
-    int res = i++ > 5;
-    pthread_exit((void*) res);
+    if (++i > 25) {
+        param->doBreak = true;
+    }
+
+    logger->inf(LOG_TIMER, "==== TESTING TIMER DELAYED  %d ====", i);
+    logger->inf(LOG_TIMER, "-- Do Break: %d", param->doBreak);
+
     return NULL;
 }
 
-void* callBackTimer() {
-    logger->inf(LOG_TIMER, "==== TESTING TIMER Call Back ====");
+void* testTimer2(void* arg) {
+    static int i = 0;
+    DelayedFunction* param = (DelayedFunction*) arg;
+    param->doBreak = i++ > 7;
+
+    logger->inf(LOG_TIMER, "==== TESTING TIMER 2 DELAYED  %d ====", i);
+    logger->inf(LOG_TIMER, "-- Do Break: %d", param->doBreak);
+
+    return NULL;
+}
+
+void* callBackTimer(DelayedFunction* fncParam) {
+    logger->inf(LOG_TIMER, "==== Call Back: %s ====", fncParam->name);
     return NULL;
 }
 
@@ -119,16 +140,10 @@ int main(int arc, char* argv[]) {
         return 1;
     }
 
-    KeyEvent* evt = bindKeyEvent("leftTest", SDLK_LEFT, NULL);
-    evt->pressed = leftTest;
-
-    evt = bindKeyEvent("leftTest", SDLK_UP, NULL);
-    evt->pressed = topTest;
-
-    evt = bindKeyEvent("leftTest", SDLK_RIGHT, NULL);
+    KeyEvent* evt = bindKeyEvent("rightTest", SDLK_RIGHT, NULL);
     evt->pressed = rightTest;
 
-    evt = bindKeyEvent("leftTest", SDLK_DOWN, NULL);
+    evt = bindKeyEvent("bottomTest", SDLK_DOWN, NULL);
     evt->pressed = bottomTest;
 
     testObj = addSimpleObject("Test Object", img, &pos, 1);
@@ -142,7 +157,16 @@ int main(int arc, char* argv[]) {
     pthread_create(&pro->renderThread, NULL, renderThread, (void*)NULL);
 
 
-    delayed(1.0f, true, testTimer, NULL);
+    DelayedFncLauncher* launcher = delayed(1.0f, true, testTimer, callBackTimer);
+
+    evt = bindKeyEvent("leftTest", SDLK_LEFT, NULL);
+    evt->pressed = leftTest;
+    evt->arg = (void*) launcher;
+
+    evt = bindKeyEvent("upTest", SDLK_UP, NULL);
+    evt->pressed = topTest;
+    evt->arg = (void*) launcher;
+    //delayed(1.0f, true, testTimer2, callBackTimer);
 
     while (pro->status != PRO_CLOSE) {
         handleEvents();

@@ -8,7 +8,7 @@
 
 1530852698 c:\work\cpp\sdl2\base\basic.h
 
-1536054914 source:c:\work\cpp\sdl2\base\liblist.c
+1536079170 source:c:\work\cpp\sdl2\base\liblist.c
 	"libList.h"
 	<stdarg.h>
 
@@ -37,7 +37,7 @@
 	<string.h>
 	"libList.h"
 
-1536077427 source:c:\work\cpp\sdl2\main.c
+1536146289 source:c:\work\cpp\sdl2\main.c
 	<SDL2\SDL.h>
 	<SDL2\SDL_Image.h>
 	"common.h"
@@ -411,7 +411,7 @@
 	"basic.h"
 	"logger.h"
 
-1536059681 c:\work\cpp\sdl2\common.h
+1536145991 c:\work\cpp\sdl2\common.h
 	<string.h>
 	<stdio.h>
 	<stdlib.h>
@@ -453,7 +453,8 @@
 1535126379 source:c:\work\cpp\sdl2\core\view\layer\layer.c
 	"layer.h"
 
-1535991259 source:c:\work\cpp\sdl2\common.c
+1536145788 source:c:\work\cpp\sdl2\common.c
+	<sys/time.h>
 	<SDL2/SDL.h>
 	"common.h"
 
@@ -471,11 +472,11 @@
 	"event.h"
 	"../project/project.h"
 
-1536056202 c:\work\cpp\sdl2\core\event\event.h
+1536140396 c:\work\cpp\sdl2\core\event\event.h
 	<SDL2/SDL.h>
 	"../../common.h"
 
-1536078720 source:c:\work\cpp\sdl2\core\project\project.c
+1536140662 source:c:\work\cpp\sdl2\core\project\project.c
 	"project.h"
 	"../object/object.h"
 	"../asset/asset.h"
@@ -534,11 +535,11 @@
 	"../../base/math.h"
 	"../object/object.h"
 
-1536078704 c:\work\cpp\sdl2\core\timer\timer.h
+1536146307 c:\work\cpp\sdl2\core\timer\timer.h
 	<stdarg.h>
 	"../../common.h"
 
-1536078742 source:c:\work\cpp\sdl2\core\timer\timer.c
+1536146652 source:c:\work\cpp\sdl2\core\timer\timer.c
 	"timer.h"
 	<SDL2/SDL.h>
 	"../../base/libList.h"

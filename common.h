@@ -60,12 +60,14 @@ void th_lock(Class* cl);
 void th_wait(Class* cl);
 void th_unlock(Class* cl);
 void th_signal(Class* cl);
+void th_wait_time(Class* cl, float delay);
 
 #define LOCK(T) (th_lock((Class*) T))
-#define WAIT(T) (th_wait((Class*) T))
 #define UNLOCK(T) (th_unlock((Class*) T))
-#define SIGNAL(T) (th_signal((Class*) T))
 
+#define WAIT(T) (th_wait((Class*) T))
+#define SIGNAL(T) (th_signal((Class*) T))
+#define WAIT_TIME(T, D) (th_wait_time((Class*) T, D));
 
 int tickWait(int next);
 

@@ -8,34 +8,48 @@ typedef struct DelayedFunction DelayedFunction;
 typedef struct DelayedFncLauncher DelayedFncLauncher;
 
 struct DelayedFncLauncher {
-	int id;
+	CLASS_BODY
 	Node* node;
 	Node* fnc_node;
 	
-	va_list args;
-
+	//va_list args;
+	bool killed;
+	bool paused;
+	bool completed;
+	DelayedFunction* fnc;
 
 	pthread_t thread;
-	pthread_t fnc_thread;
+	pthread_t* fnc_thread;
 };
 
 struct DelayedFunction {
-	bool loop;
-	char* name;
+	CLASS_BODY
 	double delay;
+
+	bool loop;
+	bool killed;
+	bool doBreak;
+	bool completed;
 
 	Node* node;
 	Node* timer_node;
+
+	DelayedFncLauncher* launcher;
 	
 	va_list args;
 	pthread_t thread;
-	pthread_t timer_thread;
+	pthread_t* timer_thread;
 	
 	void* (*callback)();
 	void* (*fnc)(void*);
 };
 
 void clearDelayedFunctions();
-void delayed(double delay, bool loop, void* (*fnc)(void* arg), void* (*callback)(), ...);
+bool killDelayedFunction(DelayedFncLauncher* launcher, bool force, bool join);
+
+DelayedFncLauncher* delayed(double delay, bool loop, void* (*fnc)(void*), void* (*callback)(DelayedFunction*), ...);
+
+bool pauseDelayedFunction(DelayedFncLauncher* launcher);
+bool resumeDelayedFunction(DelayedFncLauncher* launcher);
 
 #endif

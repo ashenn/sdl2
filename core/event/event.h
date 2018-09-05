@@ -21,6 +21,7 @@ typedef struct Event Event;
 #define EVENT_BODY \
     CLASS_BODY \
     bool enabled; \
+    void* arg; \
     bool (*fnc)(Event* evt); \
     void (*remove)(Event* evt);
 
