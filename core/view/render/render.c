@@ -59,9 +59,13 @@ void* renderThread(void* arg) {
 
 		SDL_RenderClear(rend);
 
-        //animate();
-		//listIterateFnc(layerList, iterateLayers, NULL, NULL);
+        animate();
 
+        if (!layerList->nodeCount) {
+        	logger->war(LOG_RENDER, "NO LAYERS TO RENDER !!!");
+        }
+
+		listIterateFnc(layerList, iterateLayers, NULL, NULL);
 		SDL_RenderPresent(rend);
 
 		int waited = tickWait(nextTick);

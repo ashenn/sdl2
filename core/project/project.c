@@ -1,4 +1,5 @@
 #include "project.h"
+#include "../../base/logger.h"
 #include "../object/object.h"
 #include "../asset/asset.h"
 #include "../timer/timer.h"
@@ -22,8 +23,9 @@ void addDebugFlag(char* flag) {
 void initProjectFlags(Project* pro) {
 	pro->flagList = initListMgr();
 
-	static unsigned int flags[12] = {
+	static unsigned int flags[15] = {
 	    LOG_NONE,
+		LOG_ALL,
 		LOG_MAIN,
 		LOG_OBJ,
 		LOG_ASSET,
@@ -34,45 +36,52 @@ void initProjectFlags(Project* pro) {
 		LOG_PROJECT,
 		LOG_RENDER,
 		LOG_ANIM,
-		LOG_TIMER
+		LOG_TIMER,
+		LOG_SPRITE
 	};
 
 
 	addNodeV(pro->flagList, "none", &flags[0], 0);
 	addLoggerTag(flags[0], "none", 0);
 
-	addNodeV(pro->flagList, "main", &flags[1], 0);
-	addLoggerTag(flags[1], "main", 0);
+	addNodeV(pro->flagList, "all", &flags[1], 0);
+	addLoggerTag(flags[1], "all", 0);
 
-	addNodeV(pro->flagList, "obj", &flags[2], 0);
-	addLoggerTag(flags[2], "obj", 0);
+	addNodeV(pro->flagList, "main", &flags[2], 0);
+	addLoggerTag(flags[2], "main", 0);
 
-	addNodeV(pro->flagList, "asset", &flags[3], 0);
-	addLoggerTag(flags[3], "asset", 0);
+	addNodeV(pro->flagList, "obj", &flags[3], 0);
+	addLoggerTag(flags[3], "obj", 0);
 
-	addNodeV(pro->flagList, "view", &flags[4], 0);
-	addLoggerTag(flags[4], "view", 0);
+	addNodeV(pro->flagList, "asset", &flags[4], 0);
+	addLoggerTag(flags[4], "asset", 0);
 
-	addNodeV(pro->flagList, "layer", &flags[5], 0);
-	addLoggerTag(flags[5], "layer", 0);
+	addNodeV(pro->flagList, "view", &flags[5], 0);
+	addLoggerTag(flags[5], "view", 0);
 
-	addNodeV(pro->flagList, "event", &flags[6], 0);
-	addLoggerTag(flags[6], "event", 0);
+	addNodeV(pro->flagList, "layer", &flags[6], 0);
+	addLoggerTag(flags[6], "layer", 0);
 
-	addNodeV(pro->flagList, "common", &flags[7], 0);
-	addLoggerTag(flags[7], "common", 0);
+	addNodeV(pro->flagList, "event", &flags[7], 0);
+	addLoggerTag(flags[7], "event", 0);
 
-	addNodeV(pro->flagList, "project", &flags[8], 0);
-	addLoggerTag(flags[8], "project", 0);
+	addNodeV(pro->flagList, "common", &flags[8], 0);
+	addLoggerTag(flags[8], "common", 0);
 
-	addNodeV(pro->flagList, "render", &flags[9], 0);
-	addLoggerTag(flags[9], "render", 0);
+	addNodeV(pro->flagList, "project", &flags[9], 0);
+	addLoggerTag(flags[9], "project", 0);
 
-	addNodeV(pro->flagList, "anim", &flags[10], 0);
-	addLoggerTag(flags[10], "anim", 0);
+	addNodeV(pro->flagList, "render", &flags[10], 0);
+	addLoggerTag(flags[10], "render", 0);
 
-	addNodeV(pro->flagList, "timer", &flags[11], 0);
-	addLoggerTag(flags[11], "timer", 0);
+	addNodeV(pro->flagList, "anim", &flags[11], 0);
+	addLoggerTag(flags[11], "anim", 0);
+
+	addNodeV(pro->flagList, "timer", &flags[12], 0);
+	addLoggerTag(flags[12], "timer", 0);
+
+	addNodeV(pro->flagList, "sprite", &flags[13], 0);
+	addLoggerTag(flags[13], "sprite", 0);
 }
 
 

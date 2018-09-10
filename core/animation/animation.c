@@ -29,10 +29,10 @@ AnimParam* animAddObject(Object* obj, AnimParam* param) {
 }
 
 
-AnimParam* initAnimParam(Object* obj, float time, float delay, void* fnc) {
+void initAnimParam(AnimParam* param, Object* obj, float time, float delay, void* fnc) {
 	logger->inf(LOG_ANIM, "=== INIT ANIM PARAM ===");
 
-	AnimParam* param = new(AnimParam);
+	//AnimParam* param = new(AnimParam);
 	logger->inf(LOG_ANIM, "=== Instance OK");
 
 	param->isInit = true;
@@ -41,7 +41,6 @@ AnimParam* initAnimParam(Object* obj, float time, float delay, void* fnc) {
 
 	param->stepFnc = NULL;
 	param->callback = NULL;
-	param->duration = time;
 
 	param->loop = false;
 	param->breakAnim = false;
@@ -51,7 +50,6 @@ AnimParam* initAnimParam(Object* obj, float time, float delay, void* fnc) {
 	param->initialFrames = param->frames = time * FPS;
 
 	logger->inf(LOG_ANIM, "=== PARAM READY ===");
-	return param;
 }
 
 
@@ -107,7 +105,7 @@ AnimDistance animDistanceByFrame(int dist, float time) {
 	return animDist;
 }
 
-void animMoveTo(AnimParam* param) {
+void animMoveTo(AnimMoveParam* param) {
 	logger->inf(LOG_ANIM, "==== ANIM Move: %s ====", param->obj->name);
 	Object* obj = param->obj;
 
@@ -189,6 +187,15 @@ void animMoveTo(AnimParam* param) {
 	}
 }
 
+AnimMoveParam* newMoveParam(Object* obj, float time, float delay, void* fnc) {
+	AnimMoveParam* param = new(AnimMoveParam);
+	initAnimParam((AnimParam*) param, obj, time, delay, fnc);
+
+	param->duration = time;
+
+	return param;
+}
+
 AnimParam* moveTo(Object* obj, int x, int y, float time, float delay) {
 	logger->err(LOG_ANIM, "==== Animation: Moving: %s to %d | %d (%fs) ====", obj->name, x, y, time);
 
@@ -200,7 +207,7 @@ AnimParam* moveTo(Object* obj, int x, int y, float time, float delay) {
 	vector vec = getVector(obj->pos, targetPos);
 	logger->dbg(LOG_ANIM, "-- Move Vector: %lf | %lf", vec.x, vec.y);
 
-	AnimParam* param = initAnimParam(obj, time, delay, animMoveTo);
+	AnimMoveParam* param = newMoveParam(obj, time, delay, animMoveTo);
 
 	logger->dbg(LOG_ANIM, "-- Time: %f", time);
 	logger->dbg(LOG_ANIM, "-- Frames: %d", param->frames);
@@ -214,9 +221,10 @@ AnimParam* moveTo(Object* obj, int x, int y, float time, float delay) {
 	param->fnc = animMoveTo;
 
     logger->dbg(LOG_ANIM, "==== ADDING OBJ TO ANIMATOR !!!!");
-    animAddObject(obj, param);
+
+    animAddObject(obj, (AnimParam*) param);
     logger->dbg(LOG_ANIM, "==== Animation Added ====");
-    return param;
+    return (AnimParam*) param;
 }
 
 short animateObject(int index, Node* n, short* delete, void* data, va_list* args) {
@@ -247,7 +255,6 @@ short animateObject(int index, Node* n, short* delete, void* data, va_list* args
 
 	param->frames--;
 	logger->dbg(LOG_ANIM, "-- Frames Left: %d", param->frames);
-	logger->dbg(LOG_ANIM, "-- REST: X: %d | Y: %d", param->move[0].rest, param->move[1].rest);
 
 	if (param->frames > 0 && !param->breakAnim) {
 		return true;

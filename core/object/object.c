@@ -70,14 +70,15 @@ Object* genObject(char* name, void* comp, SDL_Rect* pos, short z, void* click, v
 
 void addObjectToView(Object* obj) {
 	ListManager* objects = getObjectList();
-	logger->dbg(LOG_OBJ, "-- Adding Node");
 
+	logger->dbg(LOG_OBJ, "-- Adding Node");
 	Node* n = addNodeV(objects, obj->name, obj, 1);
 
 	if (n == NULL) {
 		logger->err(LOG_OBJ, "==== Fail to insert object in list ====");
-		return ;
+		return;
 	}
+	logger->dbg(LOG_OBJ, "-- Adding TEST");
 
 	logger->dbg(LOG_OBJ, "-- nodeID: %d", n->id);
 	obj->id = n->id;
@@ -199,6 +200,7 @@ void initSimpleObject(Object* obj, char* name, void* comp, SDL_Rect* pos, short 
 
 	setObjSurface(obj, comp);
 
+	obj->clip = NULL;
 	obj->parent = NULL;
 	obj->childs = NULL;
 	obj->onDelete = NULL;

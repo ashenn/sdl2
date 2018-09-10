@@ -37,19 +37,21 @@
 	<string.h>
 	"libList.h"
 
-1536146289 source:c:\work\cpp\sdl2\main.c
+1536596900 source:c:\work\cpp\sdl2\main.c
 	<SDL2\SDL.h>
 	<SDL2\SDL_Image.h>
 	"common.h"
 	"base/math.h"
-	"core/view/view.h"
+	"core/asset/asset.h"
 	"core/object/object.h"
+	"core/object/SpriteObj/spriteObj.h"
 	"core/event/event.h"
 	"core/project/project.h"
-	"core/view/render/render.h"
+	"core/view/view.h"
 	"core/asset/asset.h"
-	"core/animation/animation.h"
+	"core/view/render/render.h"
 	"core/timer/timer.h"
+	"core/animation/animation.h"
 
 1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl.h
 	"SDL_main.h"
@@ -385,7 +387,7 @@
 	"begin_code.h"
 	"close_code.h"
 
-1535118646 c:\work\cpp\sdl2\base\logger.h
+1536597436 c:\work\cpp\sdl2\base\logger.h
 	"libParse.h"
 	<pthread.h>
 	<sys\stat.h>
@@ -399,7 +401,7 @@
 	<stdlib.h>
 	<SDL2\SDL.h>
 
-1536050436 source:c:\work\cpp\sdl2\base\logger.c
+1536597862 source:c:\work\cpp\sdl2\base\logger.c
 	<stdio.h>
 	<stdlib.h>
 	<unistd.h>
@@ -411,7 +413,7 @@
 	"basic.h"
 	"logger.h"
 
-1536145991 c:\work\cpp\sdl2\common.h
+1536597305 c:\work\cpp\sdl2\common.h
 	<string.h>
 	<stdio.h>
 	<stdlib.h>
@@ -420,13 +422,13 @@
 	<pthread.h>
 	"base/logger.h"
 
-1535970311 source:c:\work\cpp\sdl2\core\object\object.c
+1536596828 source:c:\work\cpp\sdl2\core\object\object.c
 	"object.h"
 	"../view/view.h"
 	"../view/layer/layer.h"
 	"../animation/animation.h"
 
-1535542794 c:\work\cpp\sdl2\core\object\object.h
+1536596585 c:\work\cpp\sdl2\core\object\object.h
 	"../../common.h"
 	<SDL2\SDL.h>
 
@@ -437,7 +439,7 @@
 	"../object/object.h"
 	"./layer/layer.h"
 
-1535965981 source:c:\work\cpp\sdl2\core\view\view.c
+1536596615 source:c:\work\cpp\sdl2\core\view\view.c
 	"view.h"
 
 1519932871 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl_image.h
@@ -458,7 +460,7 @@
 	<SDL2/SDL.h>
 	"common.h"
 
-1535968324 source:c:\work\cpp\sdl2\core\asset\asset.c
+1536593782 source:c:\work\cpp\sdl2\core\asset\asset.c
 	<SDL2/SDL.h>
 	<SDL2/SDL_image.h>
 	<SDL2/SDL_ttf.h>
@@ -472,12 +474,13 @@
 	"event.h"
 	"../project/project.h"
 
-1536140396 c:\work\cpp\sdl2\core\event\event.h
+1536162029 c:\work\cpp\sdl2\core\event\event.h
 	<SDL2/SDL.h>
 	"../../common.h"
 
-1536140662 source:c:\work\cpp\sdl2\core\project\project.c
+1536597804 source:c:\work\cpp\sdl2\core\project\project.c
 	"project.h"
+	"../../base/logger.h"
 	"../object/object.h"
 	"../asset/asset.h"
 	"../timer/timer.h"
@@ -490,7 +493,7 @@
 1535357998 c:\work\cpp\sdl2\core\view\render\render.h
 	"../view.h"
 
-1536056036 source:c:\work\cpp\sdl2\core\view\render\render.c
+1536595813 source:c:\work\cpp\sdl2\core\view\render\render.c
 	"render.h"
 	"../../project/project.h"
 	"../../animation/animation.h"
@@ -516,32 +519,41 @@
 1535708397 c:\work\cpp\sdl2\core\object\collisionobj\collisionobj.h
 	"../object.h"
 
-1535542931 source:c:\work\cpp\sdl2\core\object\spriteobj\spriteobj.c
+1536597075 source:c:\work\cpp\sdl2\core\object\spriteobj\spriteobj.c
 	"./spriteObj.h"
+	"../../animation/sprite/spriteAnim.h"
 
-1535708397 c:\work\cpp\sdl2\core\object\spriteobj\spriteobj.h
+1536596676 c:\work\cpp\sdl2\core\object\spriteobj\spriteobj.h
+	"../object.h"
 	"../collisionObj/collisionObj.h"
 
 1535715597 source:c:\work\cpp\sdl2\core\controller\controller.c
 	"controller.h"
 
-1536056200 source:c:\work\cpp\sdl2\core\animation\animation.c
+1536590276 source:c:\work\cpp\sdl2\core\animation\animation.c
 	"animation.h"
 	<stdarg.h>
 
-1535970284 c:\work\cpp\sdl2\core\animation\animation.h
+1536595202 c:\work\cpp\sdl2\core\animation\animation.h
 	<SDL2/SDL.h>
 	"../../common.h"
 	"../../base/math.h"
 	"../object/object.h"
 
-1536146307 c:\work\cpp\sdl2\core\timer\timer.h
+1536162026 c:\work\cpp\sdl2\core\timer\timer.h
 	<stdarg.h>
 	"../../common.h"
 
-1536146652 source:c:\work\cpp\sdl2\core\timer\timer.c
+1536162024 source:c:\work\cpp\sdl2\core\timer\timer.c
 	"timer.h"
 	<SDL2/SDL.h>
 	"../../base/libList.h"
 	"../project/project.h"
+
+1536595464 source:c:\work\cpp\sdl2\core\animation\sprite\spriteanim.c
+	"spriteAnim.h"
+
+1536595450 c:\work\cpp\sdl2\core\animation\sprite\spriteanim.h
+	"../animation.h"
+	"../../object/spriteObj/spriteObj.h"
 

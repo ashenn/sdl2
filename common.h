@@ -34,18 +34,18 @@ typedef enum bool
 
 #define FPS 60
 
-#define LOG_NONE 0
-#define LOG_MAIN 1
-#define LOG_OBJ 2
-#define LOG_ASSET 4
-#define LOG_VIEW 8
-#define LOG_LAYER 16
-#define LOG_EVENT 32
-#define LOG_COMMON 64
-#define LOG_PROJECT 128
-#define LOG_RENDER 256
-#define LOG_ANIM 512
-#define LOG_TIMER 1024
+#define LOG_MAIN 2
+#define LOG_OBJ 4
+#define LOG_ASSET 8
+#define LOG_VIEW 16
+#define LOG_LAYER 21
+#define LOG_EVENT 64
+#define LOG_COMMON 128
+#define LOG_PROJECT 256
+#define LOG_RENDER 512
+#define LOG_ANIM 1024
+#define LOG_TIMER 2048
+#define LOG_SPRITE 4096
 
 
 Class* newClass(size_t s);

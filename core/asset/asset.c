@@ -11,7 +11,7 @@ SDL_Surface* getImg(char* name) {
 
 	if (img == NULL){
 		char imgPath[100];
-		snprintf(imgPath, 100, "asset/%s.png", name);
+		snprintf(imgPath, 100, "asset\\%s.png", name);
 
 		logger->dbg(LOG_ASSET, "-- Fething File: %s", imgPath);
 

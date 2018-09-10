@@ -2,14 +2,21 @@
 #include<SDL2\SDL_Image.h>
 #include "common.h"
 #include "base/math.h"
-#include "core/view/view.h"
+
+#include "core/asset/asset.h"
+
 #include "core/object/object.h"
+#include "core/object/SpriteObj/spriteObj.h"
+
 #include "core/event/event.h"
 #include "core/project/project.h"
-#include "core/view/render/render.h"
+
+#include "core/view/view.h"
 #include "core/asset/asset.h"
-#include "core/animation/animation.h"
+#include "core/view/render/render.h"
+
 #include "core/timer/timer.h"
+#include "core/animation/animation.h"
 
 Object* testObj = NULL;
 
@@ -123,57 +130,32 @@ int main(int arc, char* argv[]) {
     logger->dbg(LOG_MAIN, "-- Init Window");
     getWindow();
 
-    SDL_Rect pos = {10, 10, 250, 150};
-    SDL_Surface* imgTmp = IMG_Load("asset/lg-button-green.png");
 
-    if (imgTmp == NULL) {
+
+    SDL_Rect pos = {10, 10, 250, 150};
+    //SDL_Surface* img = IMG_Load("asset/lg-button-green.png");
+
+    AssetMgr* ast = getAssets();
+    //SDL_Surface* img = ast->getImg("lg-button-green");
+    SDL_Surface* img = ast->getImg("adventurer\\adventurer");
+
+    if (img == NULL) {
         logger->err(LOG_MAIN, "Fail To Load Image");
         logger->err(LOG_MAIN, "%s", SDL_GetError());
         return 1;
     }
 
+    testObj = (Object*) newSpriteObject("testSprite", img, &pos, 2);
+    //testObj = (Object*) newSpriteObject("testSprite", img, &pos, 2);
 
-    SDL_Surface* img = scaleImg(imgTmp, 1.0f, 1.0f);
-
-    if (img == NULL) {
-        logger->err(LOG_MAIN, "Fail To SCALE Image");
-        return 1;
-    }
-
-    KeyEvent* evt = bindKeyEvent("rightTest", SDLK_RIGHT, NULL);
-    evt->pressed = rightTest;
-
-    evt = bindKeyEvent("bottomTest", SDLK_DOWN, NULL);
-    evt->pressed = bottomTest;
-
-    testObj = addSimpleObject("Test Object", img, &pos, 1);
-
-    //pos.x += 100;
-    //SDL_Surface* img2 = IMG_Load("asset/lg-button-red.png");
-    //addSimpleObject("test-2", img2, &pos, 1);
-
-
-    logger->inf(LOG_MAIN, "#### CREATE TRHEAD");
+    logger->inf(LOG_MAIN, "#### CREATE RENDER TRHEAD");
     pthread_create(&pro->renderThread, NULL, renderThread, (void*)NULL);
-
-
-    DelayedFncLauncher* launcher = delayed(1.0f, true, testTimer, callBackTimer);
-
-    evt = bindKeyEvent("leftTest", SDLK_LEFT, NULL);
-    evt->pressed = leftTest;
-    evt->arg = (void*) launcher;
-
-    evt = bindKeyEvent("upTest", SDLK_UP, NULL);
-    evt->pressed = topTest;
-    evt->arg = (void*) launcher;
-    //delayed(1.0f, true, testTimer2, callBackTimer);
 
     while (pro->status != PRO_CLOSE) {
         handleEvents();
     }
 
-    logger->inf(LOG_MAIN, "#### JOIN TRHEAD");
-
+    logger->inf(LOG_MAIN, "#### JOIN RENDER TRHEAD");
     pthread_join(pro->renderThread, NULL);
     logger->inf(LOG_MAIN, "#### TRHEAD CLOSED");
 

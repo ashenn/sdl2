@@ -19,6 +19,7 @@ typedef struct Controller Controller;
 	unsigned int color;		\
 	\
 	SDL_Rect pos;		\
+	SDL_Rect* clip; \
 	\
 	Controller* controller;		\
 	\
@@ -46,6 +47,8 @@ void initSimpleObject(Object* obj, char* name, void* comp, SDL_Rect* pos, short 
 
 Object* addObject(char* name, void* comp, SDL_Rect* pos, short z, void* click, void* hover, void* container);
 Object* addSimpleObject(char* name, void* comp, SDL_Rect* pos, short z); // Add Object No Click / Hover / Container
+
+void addObjectToView(Object* obj);
 
 
 // DELETING

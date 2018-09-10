@@ -51,7 +51,7 @@ void printObject(Object* obj) {
 			logger->inf(LOG_RENDER, "-- Clip: x: %d, y: %d, w: %d, h: %d", obj->clip->x, obj->clip->y, obj->clip->w, obj->clip->h);
 		}*/
 
-		if (SDL_RenderCopy(renderer, obj->texture, NULL, &obj->pos)) {
+		if (SDL_RenderCopy(renderer, obj->texture, obj->clip, &obj->pos)) {
             logger->inf(LOG_RENDER, "Fail To RENDER OBJECT");
             logger->inf(LOG_RENDER, "%s", SDL_GetError());
             assert(0);

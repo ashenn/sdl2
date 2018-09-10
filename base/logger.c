@@ -52,7 +52,8 @@ void logg(short lvl, unsigned int  tag, char* msg, va_list* args){
             return;
         }
         else if(n != NULL){
-        	if (! *((short*) n->value) && lvl < WARNING) {
+        	short val = *((short*) n->value);
+        	if (!*((short*) n->value) && lvl < WARNING) {
         		return;
         	}
 
