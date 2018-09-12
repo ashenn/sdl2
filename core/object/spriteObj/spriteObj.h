@@ -8,7 +8,10 @@
 	COLLISION_OBJ_BODY	\
 	SDL_Rect curClip; \
 	short clipIndex; \
-	ListManager* animList;
+	ListManager* animList;	\
+	\
+	unsigned short spriteRows;	\
+	unsigned short spriteColumns;
 
 
 typedef struct SpriteObject {

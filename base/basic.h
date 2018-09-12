@@ -19,4 +19,12 @@ char int2char(int a);
 char* int2str(int num);
 float percent(const float x, const float y);
 
+void validatePath(char* path);
+void charReplace(char search, char replace, unsigned int index, char* str);
+
+
+
+char* Str(const char* str);
+char* StrE(const int len);
+
 #endif

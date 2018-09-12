@@ -1,5 +1,27 @@
 #include "spriteAnim.h"
 
+void applySpriteAnim(AnimParam* animParam) {
+	//logger->inf(LOG_SPRITE, "-- OBJECT: %s", animParam->obj->name);
+	SpriteAnimParam* param = (SpriteAnimParam*) animParam;
+
+	param->wait--;
+	if (param->wait > 0) {
+		//logger->inf(LOG_SPRITE, "TEST WAITING: %d", param->wait);
+		return;
+	}
+
+	param->wait = param->anim->wait;
+	//logger->inf(LOG_SPRITE, "NEW WAITING: %d", param->anim->wait);
+	if (++param->clipIndex >= param->clipMax) {
+		//logger->inf(LOG_SPRITE, "-- Max Clip Reached: %d", param->clipMax);
+		param->clipIndex = 0;
+	}
+
+	logger->inf(LOG_SPRITE, "-- New Clip: %d", param->clipIndex);
+	param->obj->clip = &(param->anim->clipPos[param->clipIndex]);
+	logger->inf(LOG_SPRITE, "-- X: %d", param->obj->clip->x);
+}
+
 SpriteAnimParam* spriteAnim(SpriteObject* obj, unsigned int animID, unsigned int clipIndex) {
 	if (obj == NULL) {
 		logger->war(LOG_SPRITE, "Trying To Animate NULL Object !!!");
@@ -7,8 +29,16 @@ SpriteAnimParam* spriteAnim(SpriteObject* obj, unsigned int animID, unsigned int
 	}
 
 	logger->inf(LOG_SPRITE, "==== Sprite Animate: %s ====", obj->name);
-	if (obj->animList == NULL || !obj->animList->nodeCount) {
-		logger->war(LOG_SPRITE, "No Animation Associated With Object: %s !!!", obj->name);
+
+	logger->inf(LOG_SPRITE, "-- Removing Old Sprite Anim");
+	spriteRemoveObject((Object*) obj);
+
+	if (obj->animList == NULL) {
+		logger->war(LOG_SPRITE, "Animation List Is Null For Object: %s !!!", obj->name);
+		return NULL;
+	}
+	else if(!obj->animList->nodeCount) {
+		logger->war(LOG_SPRITE, "Animation List Is Empty For Object: %s !!!", obj->name);
 		return NULL;
 	}
 
@@ -32,21 +62,26 @@ SpriteAnimParam* spriteAnim(SpriteObject* obj, unsigned int animID, unsigned int
 		clipIndex = 0;
 	}
 
+	logger->dbg(LOG_SPRITE, "-- New Anim Param");
 	SpriteAnimParam* animParam = new(SpriteAnimParam);
 
-	animParam->animID = animID;
-	animParam->clipMax = anim->clipCnt;
-	animParam->spriteData = anim;
-	animParam->clipIndex = clipIndex;
+	initAnimParam((AnimParam*) animParam, (Object*) obj, anim->duration, 0, applySpriteAnim);
 
+	animParam->loop = true;
+	animParam->anim = anim;
+	animParam->animID = animID;
+	animParam->wait = 1;
+	animParam->breakAnim = false;
+	animParam->clipIndex = clipIndex;
+	animParam->clipMax = anim->clipCnt;
+
+	animParam->fnc = applySpriteAnim;
 	animParam->clip = anim->clipPos[clipIndex];
 
-	char animName[150];
-	memset(animName, 0, 150);
-	snprintf(animName, 150, "%s-%d", obj->name, animID);
+	logger->dbg(LOG_SPRITE, "-- Param: %s", obj->name);
 
 	Animator* animator = getAnimator();
-	n = addNodeV(animator->sprites, animName, animParam, 1);
+	n = addNodeV(animator->sprites, obj->name, animParam, 1);
 
 	return animParam;
 }

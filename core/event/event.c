@@ -1,12 +1,16 @@
 #include "event.h"
 #include "../project/project.h"
+#include "../../base/basic.h"
 
 
 KeyEvent* bindKeyEvent(char* label, SDL_Keycode key, bool (*fnc)(Event* evt)) {
     logger->inf(LOG_EVENT, "BINDING EVENT: %s", label);
     EventMgr* mgr = getEventMgr();
+    logger->inf(LOG_EVENT, "testing");
 
+    logger->inf(LOG_EVENT, "Getting Node: %s", label);
     Node* n = getNode(mgr->keyEvts, (int)key);
+    logger->inf(LOG_EVENT, "CHECKING Node");
     if (n == NULL) {
         char name[150];
         memset(name, 0, 150);
@@ -17,6 +21,7 @@ KeyEvent* bindKeyEvent(char* label, SDL_Keycode key, bool (*fnc)(Event* evt)) {
         n->id = key;
     }
 
+    logger->inf(LOG_EVENT, "-- Init Event");
     ListManager* keyEvents = (ListManager*) n->value;
     KeyEvent* evt = new(KeyEvent);
     evt->fnc = fnc;
@@ -35,14 +40,19 @@ KeyEvent* bindKeyEvent(char* label, SDL_Keycode key, bool (*fnc)(Event* evt)) {
 }
 
 EventMgr* getEventMgr() {
+    logger->inf(LOG_EVENT, "==== GETTTING EVNT MANAGER ====");
     static EventMgr* mgr = NULL;
 
     if (mgr != NULL) {
+        logger->inf(LOG_EVENT, "Already Init");
         return mgr;
     }
 
+    logger->inf(LOG_EVENT, "-- Initinialize !");
     mgr = new(EventMgr);
+    logger->inf(LOG_EVENT, "-- Key list !");
     mgr->keyEvts = initListMgr();
+    logger->inf(LOG_EVENT, "-- input list !");
     mgr->inputEvts = initListMgr();
 
     return mgr;
@@ -129,26 +139,41 @@ void eventKey(int key, bool up, SDL_Event* evt) {
 }
 
 void handleEvents() {
+    logger->inf(LOG_EVENT, "==== HANDLE EVENTS ====");
     int key = -1;
     SDL_Event event;
 
-    while (SDL_PollEvent(&event)) {
+    if (SDL_PollEvent(&event)) {
+        logger->inf(LOG_EVENT, "-- LOOP");
+        logger->inf(LOG_EVENT, "-- Type: %d", event.type);
         switch (event.type) {
             case SDL_QUIT:
+                logger->inf(LOG_EVENT, "Evt Quit");
                 changeStatus(PRO_CLOSE);
-				break;
+                break;
 
             case SDL_KEYUP:
+                logger->inf(LOG_EVENT, "Evt Key Up");
                 key = event.key.keysym.sym;
                 eventKey(key, true, &event);
                 break;
 
             case SDL_KEYDOWN:
-				key = event.key.keysym.sym;
-				eventKey(key, false, &event);
-				break;
+                logger->inf(LOG_EVENT, "Evt Key Down");
+                key = event.key.keysym.sym;
+                eventKey(key, false, &event);
+                break;
+
+            default:
+                logger->inf(LOG_EVENT, "Unknown Event Type");
+                break;
+
         }
+
+        logger->inf(LOG_EVENT, "-- End Loop");
     }
+
+    logger->inf(LOG_EVENT, "-- Loop Done");
 }
 
 void removeKeyEvent(Event* evt) {

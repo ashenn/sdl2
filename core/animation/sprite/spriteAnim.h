@@ -6,21 +6,29 @@
 
 
 typedef struct SpriteAnimData {
+	CLASS_BODY
 	unsigned int fps;
+	unsigned int row;
+	unsigned int wait;
 	unsigned int animID;
-	unsigned int clipCnt;
+	unsigned int duration;
+	unsigned int startIndex;
+	
+
 	SDL_Rect* clipPos;
+	unsigned int clipCnt;
 } SpriteAnimData;
 
 #define ANIM_SPRITE_PARAM_BODY \
 	ANIM_PARAM_BODY	\
 	\
 	SDL_Rect clip;	\
+	unsigned int wait;	\
 	unsigned int animID; \
 	unsigned short clipMax;	\
 	unsigned short clipIndex;	\
 	\
-	SpriteAnimData* spriteData;
+	SpriteAnimData* anim;
 
 
 typedef struct SpriteAnimParam {

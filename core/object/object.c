@@ -199,6 +199,8 @@ void initSimpleObject(Object* obj, char* name, void* comp, SDL_Rect* pos, short 
 	obj->texture = NULL;
 
 	setObjSurface(obj, comp);
+	obj->rotation = 0;
+	obj->flip = FLIP_N;
 
 	obj->clip = NULL;
 	obj->parent = NULL;

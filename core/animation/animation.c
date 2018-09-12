@@ -278,17 +278,31 @@ short animateObject(int index, Node* n, short* delete, void* data, va_list* args
 	return true;
 }
 
+short animateSprite(int index, Node* n, short* delete, void* data, va_list* args) {
+	AnimParam* param = (AnimParam*) n->value;
+
+	if (param->fnc != NULL) {
+		param->fnc(param);
+	}
+
+	return true;
+}
+
 
 void animate() {
 	Animator* anim = getAnimator();
 
-	if (!anim->moves->nodeCount) {
-		logger->inf(LOG_ANIM, "No Objects To Animate");
+	if (anim->moves->nodeCount) {
+		logger->inf(LOG_ANIM, "Objects To Animate: #%d", anim->moves->nodeCount);
+		listIterateFnc(anim->moves, animateObject, NULL, NULL);
 		return;
 	}
 
-	logger->inf(LOG_ANIM, "Objects To Animate: #%d", anim->moves->nodeCount);
-	listIterateFnc(anim->moves, animateObject, NULL, NULL);
+
+	if (anim->sprites->nodeCount) {
+		//logger->inf(LOG_SPRITE, "==== ANIMATING SPRITES =====");
+		listIterateFnc(anim->sprites, animateSprite, NULL, NULL);
+	}
 }
 
 void animRemoveObject(Object* obj) {
@@ -323,4 +337,20 @@ void animRemoveObject(Object* obj) {
 	//pthread_mutex_unlock(anim->moves->mutex);
 
 	logger->dbg(LOG_ANIM, "==== Removing Anim %s DONE ====", obj->name);
+}
+
+void spriteRemoveObject(Object* obj) {
+	if (obj == NULL) {
+		return;
+	}
+
+	logger->inf(LOG_ANIM, "==== Removing Sprite Animation For Object: %s ====", obj->name);
+	Animator* anim = getAnimator();
+
+	Node* n = getNodeByName(anim->sprites, obj->name);
+	if (n == NULL) {
+		return;
+	}
+
+	removeNode(anim->sprites, n);
 }

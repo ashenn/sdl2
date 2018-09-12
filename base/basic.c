@@ -288,3 +288,47 @@ void explode(char c, char* str, int offset, int limit, char* res[]){
 float percent(const float x, const float y) {
 	return (y / 100) * x;
 }
+
+void charReplace(char search, char replace, unsigned int index, char* str) {
+	int len = strlen(str);
+	if (index >= len) {
+		return;
+	}
+
+	for (unsigned int i = index; i < len; ++i) {
+		if (str[i] == search) {
+			str[i] = replace;
+		}
+	}
+}
+
+void validatePath(char* path) {
+	#ifdef _WIN32
+		char search = '/';
+		char replace = '\\';
+	#else
+		char search = '\\';
+		char replace = '/';
+	#endif
+
+
+	charReplace(search, replace, 0, path);
+}
+
+
+char* Str(const char* str) {
+    int len = strlen(str)+1;
+    char* res =  malloc(len);
+
+    memset(res, 0, len);
+    strcpy(res, str);
+
+    return res;
+}
+
+char* StrE(const int len) {
+    char* res =  malloc(len);
+    memset(res, 0, len);
+
+    return res;
+}

@@ -17,107 +17,45 @@
 
 #include "core/timer/timer.h"
 #include "core/animation/animation.h"
+#include "core/animation/sprite/spriteAnim.h"
 
 Object* testObj = NULL;
 
-bool leftTest(KeyEvent* evt) {
-    logger->err(LOG_ANIM, "CLICKED LEFT !!!");
+bool leftPress(KeyEvent* evt) {
+    logger->err(LOG_SPRITE, "LEFT Pressed !!!");
+    testObj->flip = FLIP_H;
 
-    pauseDelayedFunction((DelayedFncLauncher*) evt->arg);
-    //killDelayedFunction((DelayedFncLauncher*) evt->arg, true, true);
-    return false;
-
-    logger->inf(LOG_ANIM, "###### CLEAR ANIM LEFT ######");
-    animRemoveObject(testObj);
-
-    logger->inf(LOG_ANIM, "###### CLEAR ADD ANIM LEFT ######");
-    moveTo(
-       testObj,
-       10,
-       150,
-       5, 0
-    );
-
-    logger->inf(LOG_ANIM, "###### ANIM LEFT ADDED ######");
-    return false;
-}
-
-bool topTest(KeyEvent* evt) {
-    logger->err(LOG_ANIM, "CLICKED TOP !!!");
-    resumeDelayedFunction((DelayedFncLauncher*) evt->arg);
-    return false;
-
-    logger->inf(LOG_ANIM, "###### CLEAR ANIM TOP ######");
-    animRemoveObject(testObj);
-
-    logger->inf(LOG_ANIM, "###### CLEAR ADD ANIM TOP ######");
-    moveTo(
-        testObj,
-        150,
-        10,
-        5, 0
-    );
-
-
-    logger->inf(LOG_ANIM, "###### ANIM TOP ADDED ######");
+    spriteAnim((SpriteObject*) testObj, 2, 0);
 
     return false;
 }
 
-bool rightTest(KeyEvent* evt) {
-    logger->err(LOG_ANIM, "CLICKED RIGHT !!!");
-
-    logger->inf(LOG_ANIM, "###### CLEAR ANIM RIGHT ######");
-    animRemoveObject(testObj);
-
-    logger->inf(LOG_ANIM, "###### CLEAR ADD ANIM RIGHT ######");
-    moveTo(testObj, 790 - (testObj->pos.w / 2), (SCREEN_H / 2) - (testObj->pos.h / 2), 5, 0);
-
-    logger->inf(LOG_ANIM, "###### ANIM RIGHT ADDED ######");
+bool release(KeyEvent* evt) {
+    logger->err(LOG_SPRITE, "BTN Realeased !!!");
+    spriteRemoveObject(testObj);
+    spriteAnim((SpriteObject*) testObj, 1, 0);
 
     return false;
 }
 
-bool bottomTest(KeyEvent* evt) {
-    logger->err(LOG_ANIM, "CLICKED BOTTOM !!!");
+bool rightPress(KeyEvent* evt) {
+    logger->err(LOG_SPRITE, "Right Pressed !!!");
+    testObj->flip = FLIP_N;
 
-    animRemoveObject(testObj);
-    moveTo(testObj, (SCREEN_W / 2) - testObj->pos.w, 590 - testObj->pos.h, 5, 0);
+    spriteAnim((SpriteObject*) testObj, 2, 0);
 
-    logger->inf(LOG_ANIM, "###### ANIM BOTTOM ADDED ######");
-
-    return true;
+    return false;
 }
 
-void* testTimer(void* arg) {
-    static int i = 0;
-    DelayedFunction* param = (DelayedFunction*) arg;
+bool downPress(KeyEvent* evt) {
+    logger->err(LOG_SPRITE, "Down Pressed !!!");
+    testObj->flip = FLIP_N;
 
-    if (++i > 25) {
-        param->doBreak = true;
-    }
+    spriteAnim((SpriteObject*) testObj, 3, 0);
 
-    logger->inf(LOG_TIMER, "==== TESTING TIMER DELAYED  %d ====", i);
-    logger->inf(LOG_TIMER, "-- Do Break: %d", param->doBreak);
-
-    return NULL;
+    return false;
 }
 
-void* testTimer2(void* arg) {
-    static int i = 0;
-    DelayedFunction* param = (DelayedFunction*) arg;
-    param->doBreak = i++ > 7;
-
-    logger->inf(LOG_TIMER, "==== TESTING TIMER 2 DELAYED  %d ====", i);
-    logger->inf(LOG_TIMER, "-- Do Break: %d", param->doBreak);
-
-    return NULL;
-}
-
-void* callBackTimer(DelayedFunction* fncParam) {
-    logger->inf(LOG_TIMER, "==== Call Back: %s ====", fncParam->name);
-    return NULL;
-}
 
 int main(int arc, char* argv[]) {
     logger = initLogger(arc, argv);
@@ -130,6 +68,8 @@ int main(int arc, char* argv[]) {
     logger->dbg(LOG_MAIN, "-- Init Window");
     getWindow();
 
+    loadJson("animation/adventurer");
+    return 0;
 
 
     SDL_Rect pos = {10, 10, 250, 150};
@@ -137,7 +77,7 @@ int main(int arc, char* argv[]) {
 
     AssetMgr* ast = getAssets();
     //SDL_Surface* img = ast->getImg("lg-button-green");
-    SDL_Surface* img = ast->getImg("adventurer\\adventurer");
+    SDL_Surface* img = ast->getImg("adventurer/adventurer");
 
     if (img == NULL) {
         logger->err(LOG_MAIN, "Fail To Load Image");
@@ -146,11 +86,29 @@ int main(int arc, char* argv[]) {
     }
 
     testObj = (Object*) newSpriteObject("testSprite", img, &pos, 2);
-    //testObj = (Object*) newSpriteObject("testSprite", img, &pos, 2);
+
+
+    logger->err(LOG_MAIN, "BIND EVENT RIGHT");
+    KeyEvent* evt = bindKeyEvent("RIGHT", SDLK_RIGHT, NULL);
+    evt->pressed = rightPress;
+    evt->released = release;
+
+    logger->err(LOG_MAIN, "BIND EVENT LEFT");
+    evt = bindKeyEvent("LEFT", SDLK_LEFT, NULL);
+    evt->pressed = leftPress;
+    evt->released = release;
+
+    logger->err(LOG_MAIN, "BIND EVENT Down");
+    evt = bindKeyEvent("DOWN", SDLK_DOWN, NULL);
+    evt->pressed = downPress;
+    evt->released = release;
+
+
 
     logger->inf(LOG_MAIN, "#### CREATE RENDER TRHEAD");
     pthread_create(&pro->renderThread, NULL, renderThread, (void*)NULL);
 
+    logger->err(LOG_MAIN, "EVENT LOOP");
     while (pro->status != PRO_CLOSE) {
         handleEvents();
     }

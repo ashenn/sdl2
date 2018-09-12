@@ -3,6 +3,10 @@
 #include <SDL2/SDL_ttf.h>
 
 #include "asset.h"
+#include "../../base/basic.h"
+#include "../../lib/jsmn/jsmn.h"
+#include "../../base/file.h"
+#include "../../base/json.h"
 
 SDL_Surface* getImg(char* name) {
 	logger->inf(LOG_ASSET, "=== GETTING IMG: %s ===", name);
@@ -11,12 +15,14 @@ SDL_Surface* getImg(char* name) {
 
 	if (img == NULL){
 		char imgPath[100];
-		snprintf(imgPath, 100, "asset\\%s.png", name);
+		snprintf(imgPath, 100, "asset/%s.png", name);
+		validatePath(imgPath);
 
-		logger->dbg(LOG_ASSET, "-- Fething File: %s", imgPath);
+		logger->err(LOG_ASSET, "-- Fething File: %s", imgPath);
 
 		img = IMG_Load(imgPath);
 		if (img == NULL){
+
 			logger->err(LOG_ASSET, "-- Fail to get Image: %s", imgPath);
 			logger->dbg(LOG_ASSET, "==== GETTING IMG FAILD ====");
 			return NULL;
@@ -230,4 +236,118 @@ SDL_Surface* scaleImg(SDL_Surface* surf, float scaleX, float scaleY) {
 
  	SDL_FreeSurface(tmp);
  	return res;
+}
+
+
+void loadJson(char* path) {
+    logger->err(LOG_ASSET,"=== TEST JSON !! ===");
+	jsmn_parser parser;
+
+
+	char jsonPath[350];
+	memset(jsonPath, 0, 350);
+	snprintf(jsonPath, 350, "asset/%s.json", path);
+	loadJsonFile(jsonPath);
+
+	return;
+    logger->err(LOG_ASSET,"-- init");
+    Json* json = newJson(NULL);
+
+    float f = 15;
+    jsonSetValue(json, "KEY-1", &f, JSON_NUM);
+    jsonSetValue(json, "KEY-2", "TESTING", JSON_STRING);
+    jsonSetValue(json, "KEY-3", NULL, JSON_NULL);
+
+
+    ListManager* test = initListMgr();
+    Json* array = jsonSetValue(json, "ARRAY", test, JSON_ARRAY);
+
+    jsonSetValue(array, "1", "NEW VALUE", JSON_STRING);
+
+    jsonPrint(json, 0);
+	return;
+
+
+    logger->err(LOG_ASSET,"-- init");
+	jsmn_init(&parser);
+
+	logger->err(LOG_ASSET,"-- Parsing");
+
+	logger->err(LOG_ASSET, "LODING: %s", jsonPath);
+	char* jsonStr = fileGetContent(jsonPath);
+	logger->err(LOG_ASSET, "CONTENT: %s", jsonStr);
+
+
+	int tokenCnt = jsmn_parse(&parser, jsonStr, strlen(jsonStr), NULL, 1500);
+    logger->err(LOG_ASSET,"-- Total Count: %d", tokenCnt);
+
+
+	jsmntok_t tokens[tokenCnt];
+	jsmn_init(&parser);
+	int res = jsmn_parse(&parser, jsonStr, strlen(jsonStr), tokens, tokenCnt);
+
+	if (res < 0) {
+        logger->err(LOG_ASSET,"-- Error !!!!");
+        switch (res) {
+            case JSMN_ERROR_INVAL:
+                logger->err(LOG_ASSET, "JSON CORRUPTED");
+                break;
+
+            case JSMN_ERROR_NOMEM:
+                logger->err(LOG_ASSET, "Not Enought TOKENS");
+                break;
+
+            case JSMN_ERROR_PART:
+                logger->err(LOG_ASSET, "JSON string is too short, expecting more JSON data");
+                break;
+
+            default:
+                logger->err(LOG_ASSET,"-- UNKNOWN Error !!!!");
+                break;
+        }
+
+        return;
+	}
+
+	for (int i = 1; i < res; ++i) {
+		logger->err(LOG_ASSET, "==== TOKEN: #%d ====", i);
+
+		switch (tokens[i].type) {
+			case JSMN_UNDEFINED:
+				logger->err(LOG_ASSET, "-- Type: Undefined");
+				break;
+
+			case JSMN_OBJECT:
+				logger->err(LOG_ASSET, "-- Type: Object");
+				continue;
+				break;
+
+			case JSMN_ARRAY:
+				logger->err(LOG_ASSET, "-- Type: ARRAY");
+				continue;
+				break;
+
+			case JSMN_STRING:
+				logger->err(LOG_ASSET, "-- Type: STRING");
+				break;
+
+			case JSMN_PRIMITIVE:
+				logger->err(LOG_ASSET, "-- Type: NUMBER");
+				break;
+
+	        default:
+	            logger->err(LOG_ASSET,"-- Type: UNKNOWN");
+	            break;
+		}
+
+		logger->err(LOG_ASSET, "-- Position: %d | %d => %d", tokens[i].start, tokens[i].end, tokens[i].size);
+
+		char test[150];
+		memset(test, 0, 150);
+		memcpy(test, &jsonStr[tokens[i].start], tokens[i].end - tokens[i].start);
+
+		logger->err(LOG_ASSET, "-- Value: %s", test);
+		/* code */
+	}
+
 }

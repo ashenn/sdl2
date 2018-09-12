@@ -3,7 +3,10 @@
 #include "common.h"
 
 Class* newClass(size_t s) {
+	logger->err(LOG_MAIN, "=== NEW CLASS: %u ===", s);
+
 	static int id = 0;
+	logger->err(LOG_MAIN, "-- malloc");
 	Class* cl = (Class*) malloc(s);
 
 	if (cl == NULL) {
@@ -11,28 +14,14 @@ Class* newClass(size_t s) {
 		return NULL;
 	}
 
+	logger->err(LOG_MAIN, "-- init");
 	cl->id = id++;
+	logger->err(LOG_MAIN, "-- init Thread");
 	cl->cond = (pthread_cond_t) PTHREAD_COND_INITIALIZER;
 	cl->mutex = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
 
+	logger->err(LOG_MAIN, "-- DONE");
 	return cl;
-}
-
-char* Str(const char* str) {
-    int len = strlen(str)+1;
-    char* res =  malloc(len);
-
-    memset(res, 0, len);
-    strcpy(res, str);
-
-    return res;
-}
-
-char* StrE(const int len) {
-    char* res =  malloc(len);
-    memset(res, 0, len);
-
-    return res;
 }
 
 void th_lock(Class* cl) {
@@ -57,7 +46,7 @@ void th_wait_time(Class* cl, float delay) {
 
     waitTime.tv_sec = now.tv_sec + (int) delay;
     waitTime.tv_nsec = (now.tv_usec + microsec) *1000UL;
-	
+
 	pthread_cond_timedwait(&cl->cond, &cl->mutex, &waitTime);
 }
 

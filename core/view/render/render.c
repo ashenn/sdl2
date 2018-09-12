@@ -57,8 +57,8 @@ void* renderThread(void* arg) {
 		UNLOCK(pro);
         nextTick += (1000 / FPS);
 
-		SDL_RenderClear(rend);
 
+		SDL_RenderClear(rend);
         animate();
 
         if (!layerList->nodeCount) {

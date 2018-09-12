@@ -66,5 +66,7 @@ void animate();
 Animator* getAnimator();
 void animRemoveObject(Object* obj);
 AnimParam* moveTo(Object* obj, int x, int y, float time, float delay);
+void initAnimParam(AnimParam* param, Object* obj, float time, float delay, void* fnc);
+void spriteRemoveObject(Object* obj);
 
 #endif

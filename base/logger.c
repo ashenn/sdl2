@@ -47,13 +47,16 @@ void logg(short lvl, unsigned int  tag, char* msg, va_list* args){
 	char* tagName = NULL;
 	if (logger->tags != NULL && logger->tags->nodeCount > 0) {
         Node* n = getNode(logger->tags, tag);
-
         if (n == NULL && lvl < WARNING) {
             return;
         }
         else if(n != NULL){
         	short val = *((short*) n->value);
-        	if (!*((short*) n->value) && lvl < WARNING) {
+        	//fprintf(stdout, "===TEST===\n");
+        	//fprintf(stdout, "Check: %s\n", n->name);
+            //fprintf(stdout, "TEST: %d\n", val);
+
+        	if (!val && lvl < WARNING) {
         		return;
         	}
 
@@ -62,12 +65,14 @@ void logg(short lvl, unsigned int  tag, char* msg, va_list* args){
 
 	}
 
+    //fprintf(stdout, "LOCK LOGGER\n");
 	pthread_mutex_lock(&logger->mutex);
 
 	char message[10000];
 	char* l = logger->lvls[lvl];
 	vsprintf(message, msg, *args);
 
+    //fprintf(stdout, "MSG: %s\n", msg);
 
     #ifndef _WIN32
         fprintf(stdout, "%s", logger->lvlColors[lvl]);
@@ -83,10 +88,12 @@ void logg(short lvl, unsigned int  tag, char* msg, va_list* args){
 
 
 	if (logger->f > 0)	{
+        //fprintf(stdout, "LOG 2 FILE:\n");
 		log2file(l, message);
 	}
 
 	pthread_mutex_unlock(&logger->mutex);
+	//fprintf(stdout, "UN-LOCK LOGGER\n");
 }
 
 
@@ -313,7 +320,10 @@ short enableLoggerTag(unsigned int  tag) {
         return 0;
     }
 
-    *((short*) n->value) = 1;
+    fprintf(stdout, "ENABLE LOG TAG: %s\n", n->name);
+    short* val = (short*) n->value;
+    *val = 1;
+
     return 1;
 }
 
@@ -325,6 +335,9 @@ short disableLoggerTag(unsigned int  tag) {
         return 0;
     }
 
-    *((short*) n->value) = 0;
+    fprintf(stdout, "Disable LOG TAG: %s\n", n->name);
+    short* val = (short*) n->value;
+    *val = 0;
+
     return 1;
 }

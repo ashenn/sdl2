@@ -1,6 +1,7 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+#include "../../base/basic.h"
 #include "../../common.h"
 
 #include<SDL2\SDL.h>
@@ -26,7 +27,9 @@ typedef struct Controller Controller;
 	Object* parent;             \
 	ListManager* childs;		\
 	\
+	double rotation;			\
 	SDL_Texture* texture;		\
+	SDL_RendererFlip flip;		\
 	SDL_Surface* component;		\
 	\
 	void (*onDelete)(Object* obj);

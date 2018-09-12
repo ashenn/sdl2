@@ -29,10 +29,11 @@ typedef enum bool
 	true
 } bool;
 
-#define SCREEN_W 800
-#define SCREEN_H 600
+#define SCREEN_W 200
+#define SCREEN_H 200
 
 #define FPS 60
+#define FRAME_DURATION 1000 / FPS
 
 #define LOG_MAIN 2
 #define LOG_OBJ 4
@@ -46,14 +47,17 @@ typedef enum bool
 #define LOG_ANIM 1024
 #define LOG_TIMER 2048
 #define LOG_SPRITE 4096
+#define LOG_TEST 8192
+
+
+#define FLIP_N SDL_FLIP_NONE
+#define FLIP_V SDL_FLIP_VERTICAL
+#define FLIP_H SDL_FLIP_HORIZONTAL
 
 
 Class* newClass(size_t s);
 #define new(T) ((T*) newClass(sizeof(T)))
 
-
-char* Str(const char* str);
-char* StrE(const int len);
 
 
 void th_lock(Class* cl);

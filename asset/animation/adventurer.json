@@ -1,0 +1,18 @@
+{
+	"sheet": [7, 16], 
+	"anims": {
+		"Idle": {
+			"fps": 10, 
+			"count": 4, 
+			"index": 0,
+			"row": 0
+		},
+
+		"Run": {
+			"fps": 15,
+			"count": 6,
+			"index": 1,
+			"row": 1
+		}
+	}
+}

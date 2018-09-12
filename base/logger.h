@@ -16,7 +16,6 @@
 #define ERROR 3
 
 #define LOG_NONE 0
-#define LOG_ALL 1
 
 #include "libParse.h"
 #include <pthread.h>

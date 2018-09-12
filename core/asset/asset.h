@@ -30,4 +30,6 @@ typedef struct AssetMgr {
 AssetMgr* getAssets();
 SDL_Surface* scaleImg(SDL_Surface* surf, float scaleX, float scaleY);
 
+void loadJson(char* path);
+
 #endif

@@ -1,5 +1,6 @@
 #include "project.h"
 #include "../../base/logger.h"
+#include "../../base/json.h"
 #include "../object/object.h"
 #include "../asset/asset.h"
 #include "../timer/timer.h"
@@ -23,9 +24,9 @@ void addDebugFlag(char* flag) {
 void initProjectFlags(Project* pro) {
 	pro->flagList = initListMgr();
 
-	static unsigned int flags[15] = {
+	static unsigned int flags[16] = {
 	    LOG_NONE,
-		LOG_ALL,
+		LOG_JSON,
 		LOG_MAIN,
 		LOG_OBJ,
 		LOG_ASSET,
@@ -37,15 +38,16 @@ void initProjectFlags(Project* pro) {
 		LOG_RENDER,
 		LOG_ANIM,
 		LOG_TIMER,
-		LOG_SPRITE
+		LOG_SPRITE,
+		LOG_TEST
 	};
 
 
 	addNodeV(pro->flagList, "none", &flags[0], 0);
 	addLoggerTag(flags[0], "none", 0);
 
-	addNodeV(pro->flagList, "all", &flags[1], 0);
-	addLoggerTag(flags[1], "all", 0);
+	addNodeV(pro->flagList, "json", &flags[1], 0);
+	addLoggerTag(flags[1], "json", 0);
 
 	addNodeV(pro->flagList, "main", &flags[2], 0);
 	addLoggerTag(flags[2], "main", 0);
@@ -82,6 +84,9 @@ void initProjectFlags(Project* pro) {
 
 	addNodeV(pro->flagList, "sprite", &flags[13], 0);
 	addLoggerTag(flags[13], "sprite", 0);
+
+	addNodeV(pro->flagList, "test", &flags[13], 0);
+	addLoggerTag(flags[13], "test", 0);
 }
 
 
