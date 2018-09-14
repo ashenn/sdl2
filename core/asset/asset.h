@@ -3,6 +3,7 @@
 
 #include "../../common.h"
 #include "../../base/libList.h"
+#include "../../base/json.h"
 
 #define ASSET_BODY  \
 	CLASS_BODY			\
@@ -10,6 +11,7 @@
 	ListManager* fonts;	\
 	\
 	void* (*getImg) (char* name);				\
+	Json* (*getJson) (char* path);				\
 	void* (*getFont) (char* name, short size);	\
 	void* (*getTexture) (char* name, short size);	\
 	\
@@ -30,6 +32,6 @@ typedef struct AssetMgr {
 AssetMgr* getAssets();
 SDL_Surface* scaleImg(SDL_Surface* surf, float scaleX, float scaleY);
 
-void loadJson(char* path);
+Json* loadJson(char* path);
 
 #endif

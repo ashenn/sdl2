@@ -2,17 +2,63 @@
 	"sheet": [7, 16], 
 	"anims": {
 		"Idle": {
+			"name": "Idle", 
 			"fps": 10, 
 			"count": 4, 
 			"index": 0,
-			"row": 0
+			"loop": 1,
+			"row": 0,
+			"links": {
+				"Run": "Idle2Run"
+			}
 		},
 
 		"Run": {
+			"name": "Run", 
 			"fps": 15,
 			"count": 6,
 			"index": 1,
-			"row": 1
+			"loop": 1,
+			"row": 1,
+			"links": {
+				"Idle": "Run2Idle"
+			}
+		},
+
+		"Down": {
+			"name": "Down", 
+			"fps": 10,
+			"count": 4,
+			"index": 4,
+			"loop": 1,
+			"row": 0
+		},
+
+		"Jump": {
+			"name": "Jump", 
+			"fps": 15,
+			"count": 4,
+			"index": 0,
+			"loop": 0,
+			"row": 2
+		},
+
+		"Fall": {
+			"name": "Fall", 
+			"fps": 1,
+			"count": 2,
+			"index": 1,
+			"loop": 1,
+			"row": 3
+		},
+
+		"Land": {
+			"name": "Land", 
+			"fps": 25,
+			"count": 4,
+			"index": 3,
+			"loop": 0,
+			"row": 0
 		}
 	}
 }

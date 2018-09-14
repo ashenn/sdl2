@@ -25,15 +25,14 @@ bool leftPress(KeyEvent* evt) {
     logger->err(LOG_SPRITE, "LEFT Pressed !!!");
     testObj->flip = FLIP_H;
 
-    spriteAnim((SpriteObject*) testObj, 2, 0);
+    spriteAnimByName((SpriteObject*) testObj, "Run", 0);
 
     return false;
 }
 
 bool release(KeyEvent* evt) {
     logger->err(LOG_SPRITE, "BTN Realeased !!!");
-    spriteRemoveObject(testObj);
-    spriteAnim((SpriteObject*) testObj, 1, 0);
+    spriteAnimByName((SpriteObject*) testObj, "Idle", 0);
 
     return false;
 }
@@ -42,20 +41,51 @@ bool rightPress(KeyEvent* evt) {
     logger->err(LOG_SPRITE, "Right Pressed !!!");
     testObj->flip = FLIP_N;
 
-    spriteAnim((SpriteObject*) testObj, 2, 0);
+    spriteAnimByName((SpriteObject*) testObj, "Run", 0);
 
     return false;
 }
 
 bool downPress(KeyEvent* evt) {
     logger->err(LOG_SPRITE, "Down Pressed !!!");
-    testObj->flip = FLIP_N;
-
-    spriteAnim((SpriteObject*) testObj, 3, 0);
+    spriteAnimByName((SpriteObject*) testObj, "Down", 0);
 
     return false;
 }
 
+void land(AnimParam* anim) {
+    logger->err(LOG_SPRITE, "-- CALLING LAND");
+    anim = (AnimParam*) spriteAnimByName((SpriteObject*) testObj, "Land", 0);
+    anim->callback = release;
+    anim->deleteOnDone = false;
+    logger->err(LOG_SPRITE, "-- LAND CALLED");
+}
+
+void inAir(AnimParam* anim) {
+    static int i = 50;
+    if (--i == 0) {
+        i = 25;
+        anim->breakAnim = true;
+    }
+    else{
+        logger->err(LOG_SPRITE, "-- In Air: %d", i);
+    }
+}
+
+void jumpEnd(AnimParam* anim) {
+    logger->err(LOG_SPRITE, "==== JUMP ENDED ====");
+    anim = (AnimParam*) spriteAnimByName((SpriteObject*) testObj, "Fall", 0);
+    anim->stepFnc = inAir;
+    anim->callback = land;
+}
+
+bool topPress(KeyEvent* evt) {
+    logger->err(LOG_SPRITE, "Top Pressed !!!");
+    SpriteAnimParam* anim = spriteAnimByName((SpriteObject*) testObj, "Jump", 0);
+    anim->callback = jumpEnd;
+
+    return false;
+}
 
 int main(int arc, char* argv[]) {
     logger = initLogger(arc, argv);
@@ -68,14 +98,14 @@ int main(int arc, char* argv[]) {
     logger->dbg(LOG_MAIN, "-- Init Window");
     getWindow();
 
-    loadJson("animation/adventurer");
-    return 0;
-
 
     SDL_Rect pos = {10, 10, 250, 150};
     //SDL_Surface* img = IMG_Load("asset/lg-button-green.png");
 
     AssetMgr* ast = getAssets();
+
+
+
     //SDL_Surface* img = ast->getImg("lg-button-green");
     SDL_Surface* img = ast->getImg("adventurer/adventurer");
 
@@ -102,6 +132,11 @@ int main(int arc, char* argv[]) {
     evt = bindKeyEvent("DOWN", SDLK_DOWN, NULL);
     evt->pressed = downPress;
     evt->released = release;
+
+    logger->err(LOG_MAIN, "BIND EVENT Top");
+    evt = bindKeyEvent("TOP", SDLK_UP, NULL);
+    evt->pressed = topPress;
+    //evt->released = release;
 
 
 

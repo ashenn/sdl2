@@ -8,11 +8,11 @@
 
 1536748573 c:\work\cpp\sdl2\base\basic.h
 
-1536657820 source:c:\work\cpp\sdl2\base\liblist.c
+1536934154 source:c:\work\cpp\sdl2\base\liblist.c
 	"libList.h"
 	<stdarg.h>
 
-1536052984 c:\work\cpp\sdl2\base\liblist.h
+1536932124 c:\work\cpp\sdl2\base\liblist.h
 	<assert.h>
 	<stdio.h>
 	<stdlib.h>
@@ -37,7 +37,7 @@
 	<string.h>
 	"libList.h"
 
-1536748783 source:c:\work\cpp\sdl2\main.c
+1536941778 source:c:\work\cpp\sdl2\main.c
 	<SDL2\SDL.h>
 	<SDL2\SDL_Image.h>
 	"common.h"
@@ -414,7 +414,7 @@
 	"basic.h"
 	"logger.h"
 
-1536748542 c:\work\cpp\sdl2\common.h
+1536933703 c:\work\cpp\sdl2\common.h
 	<string.h>
 	<stdio.h>
 	<stdlib.h>
@@ -457,12 +457,12 @@
 1535126379 source:c:\work\cpp\sdl2\core\view\layer\layer.c
 	"layer.h"
 
-1536748576 source:c:\work\cpp\sdl2\common.c
+1536933510 source:c:\work\cpp\sdl2\common.c
 	<sys/time.h>
 	<SDL2/SDL.h>
 	"common.h"
 
-1536760227 source:c:\work\cpp\sdl2\core\asset\asset.c
+1536923255 source:c:\work\cpp\sdl2\core\asset\asset.c
 	<SDL2/SDL.h>
 	<SDL2/SDL_image.h>
 	<SDL2/SDL_ttf.h>
@@ -470,11 +470,11 @@
 	"../../base/basic.h"
 	"../../lib/jsmn/jsmn.h"
 	"../../base/file.h"
-	"../../base/json.h"
 
-1536684394 c:\work\cpp\sdl2\core\asset\asset.h
+1536767107 c:\work\cpp\sdl2\core\asset\asset.h
 	"../../common.h"
 	"../../base/libList.h"
+	"../../base/json.h"
 
 1536748823 source:c:\work\cpp\sdl2\core\event\event.c
 	"event.h"
@@ -527,22 +527,25 @@
 1535708397 c:\work\cpp\sdl2\core\object\collisionobj\collisionobj.h
 	"../object.h"
 
-1536682146 source:c:\work\cpp\sdl2\core\object\spriteobj\spriteobj.c
+1536941881 source:c:\work\cpp\sdl2\core\object\spriteobj\spriteobj.c
 	"./spriteObj.h"
+	"../../../base/json.h"
+	"../../asset/asset.h"
 	"../../animation/sprite/spriteAnim.h"
 
-1536681319 c:\work\cpp\sdl2\core\object\spriteobj\spriteobj.h
+1536766647 c:\work\cpp\sdl2\core\object\spriteobj\spriteobj.h
 	"../object.h"
 	"../collisionObj/collisionObj.h"
 
 1535715597 source:c:\work\cpp\sdl2\core\controller\controller.c
 	"controller.h"
 
-1536666593 source:c:\work\cpp\sdl2\core\animation\animation.c
+1536939631 source:c:\work\cpp\sdl2\core\animation\animation.c
 	"animation.h"
+	"./sprite/spriteAnim.h"
 	<stdarg.h>
 
-1536662575 c:\work\cpp\sdl2\core\animation\animation.h
+1536939471 c:\work\cpp\sdl2\core\animation\animation.h
 	<SDL2/SDL.h>
 	"../../common.h"
 	"../../base/math.h"
@@ -559,11 +562,12 @@
 	"../../base/libList.h"
 	"../project/project.h"
 
-1536680497 source:c:\work\cpp\sdl2\core\animation\sprite\spriteanim.c
+1536940760 source:c:\work\cpp\sdl2\core\animation\sprite\spriteanim.c
 	"spriteAnim.h"
 
-1536743349 c:\work\cpp\sdl2\core\animation\sprite\spriteanim.h
+1536942256 c:\work\cpp\sdl2\core\animation\sprite\spriteanim.h
 	"../animation.h"
+	"../../../base/libList.h"
 	"../../object/spriteObj/spriteObj.h"
 
 1518388858 c:\work\cpp\sdl2\lib\jsmn\jsmn.h
@@ -579,13 +583,13 @@
 
 1536748348 c:\work\cpp\sdl2\base\file.h
 
-1536765459 source:c:\work\cpp\sdl2\base\json.c
+1536941997 source:c:\work\cpp\sdl2\base\json.c
 	"json.h"
 	"../lib/jsmn/jsmn.h"
 	<assert.h>
 	<stdarg.h>
 
-1536761181 c:\work\cpp\sdl2\base\json.h
+1536941787 c:\work\cpp\sdl2\base\json.h
 	"basic.h"
 	"file.h"
 	"logger.h"

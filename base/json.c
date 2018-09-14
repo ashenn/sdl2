@@ -8,20 +8,17 @@ void jsonFill(Json* json, char* data) {
 	logger->inf(LOG_JSON, "==== FILLING JSON ====");
 
 	jsmn_parser parser;
-	logger->inf(LOG_JSON, "-- DATA: \n%s", data);
-	logger->inf(LOG_JSON, "-- COUNT TOKENS");
+	logger->dbg(LOG_JSON, "-- DATA: \n%s", data);
+
 	jsmn_init(&parser);
 	int tokenCnt = jsmn_parse(&parser, data, strlen(data), NULL, 1500);
 
-	logger->inf(LOG_JSON, "-- INIT PARSER");
 	jsmn_init(&parser);
 	jsmntok_t tokens[tokenCnt];
 
-	logger->inf(LOG_JSON, "-- Parse DATA");
 	int res = jsmn_parse(&parser, data, strlen(data), tokens, tokenCnt);
 
 	if (res < 0) {
-        logger->err(LOG_ASSET,"-- Error !!!!");
         switch (res) {
             case JSMN_ERROR_INVAL:
                 logger->err(LOG_ASSET, "JSON CORRUPTED");
@@ -43,14 +40,10 @@ void jsonFill(Json* json, char* data) {
         return;
 	}
 
-
-
-	logger->inf(LOG_JSON, "-- Fetch DATA");
+	int index = 0;
 	short isKey = 1;
 	short inArray = 0;
-	short isStart = 1;
 
-	int index = 0;
 	char key[1500];
 	char buffer[1500];
 
@@ -58,41 +51,30 @@ void jsonFill(Json* json, char* data) {
 	json->type = JSON_OBJECT;
 
 	for (int i = 1; i < res; ++i) {
-		logger->inf(LOG_JSON, "##### TOKEN: #%d", i);;
+
 		memset(buffer, 0, 1500);
-
-		if (tokens[i].type == JSMN_OBJECT || tokens[i].type == JSMN_ARRAY) {
-			logger->err(LOG_ASSET, "-- Type: Container");
-
-			/*if (tokens[i].type == JSMN_ARRAY) {
-				logger->err(LOG_ASSET, "-- Type: Array");
-				inArray = 1;
-			}*/
-		}
-
-		//logger->inf(LOG_JSON, "-- Fill Buffer");
 		memcpy(buffer, &data[tokens[i].start], tokens[i].end - tokens[i].start);
 
 		if (isKey && !inArray) {
-			strcpy(key, buffer);
-			logger->inf(LOG_JSON, "-- Key: %s", key);
 			isKey = 0;
+			strcpy(key, buffer);
 		}
 		else{
-			logger->inf(LOG_JSON, "-- Value: %s", buffer);
-			Json* tmpJson = NULL;
 			float val = 0;
-
 			if (inArray) {
 				snprintf(key, 100, "%d", index);
 			}
 
 			switch (tokens[i].type) {
+				case JSMN_UNDEFINED:
+					jsonSetValue(json, key, NULL, JSON_NULL);
+					break;
+
 				case JSMN_ARRAY:
 					inArray = 1;
 					index = 0;
 
-					logger->err(LOG_ASSET, "-- Type: Array: %d", tokens[i].size);
+					//logger->dbg(LOG_ASSET, "-- Type: Array: %d", tokens[i].size);
 					json = jsonSetValue(json, key,  initListMgr(), JSON_ARRAY);
 					json->type = JSON_ARRAY;
 					json->childCount = tokens[i].size;
@@ -105,7 +87,7 @@ void jsonFill(Json* json, char* data) {
 					isKey = 1;
 					index = 0;
 
-					logger->err(LOG_ASSET, "-- Type: Object: %d", tokens[i].size);
+					//logger->dbg(LOG_ASSET, "-- Type: Object: %d", tokens[i].size);
 					json = jsonSetValue(json, key,  initListMgr(), JSON_OBJECT);
 					json->type = JSON_OBJECT;
 					json->childCount = tokens[i].size;
@@ -116,16 +98,29 @@ void jsonFill(Json* json, char* data) {
 
 
 				case JSMN_STRING:
-					logger->err(LOG_ASSET, "-- Type: String");
+					//logger->err(LOG_ASSET, "-- Type: String");
 					jsonSetValue(json, key, buffer, JSON_STRING);
 					break;
 
 				case JSMN_PRIMITIVE:
-					logger->err(LOG_ASSET, "-- Type: Primitive");
+					//logger->err(LOG_ASSET, "-- Type: Primitive");
 
-					val = (float) str2int(buffer);
-					logger->err(LOG_JSON, "TEST: %f", val);
-					jsonSetValue(json, key, &val, JSON_NUM);
+					if (buffer[0] == 'n') {
+						jsonSetValue(json, key, NULL, JSON_NULL);
+					}
+					else if(buffer[0] == 't') {
+						val = 1;
+						jsonSetValue(json, key, &val, JSON_NUM);
+					}
+					else if(buffer[0] == 'f') {
+						val = 0;
+						jsonSetValue(json, key, &val, JSON_NUM);
+					}
+					else {
+						val = (float) str2int(buffer);
+						jsonSetValue(json, key, &val, JSON_NUM);
+					}
+					//logger->err(LOG_JSON, "TEST: %f", val);
 					break;
 			}
 
@@ -133,50 +128,51 @@ void jsonFill(Json* json, char* data) {
 				isKey = 1;
 			}
 
-			int z = 0;
 			while (json->id >= 0 && (inArray || json->type == JSON_OBJECT)) {
-				logger->err(LOG_ASSET, "-- Array CHECK");
-				
-				logger->err(LOG_ASSET, "-- Count: %d / %d", index+1, json->childCount);
+				// logger->err(LOG_ASSET, "-- Array CHECK");
+
+				// logger->err(LOG_ASSET, "-- Count: %d / %d", index+1, json->childCount);
 
 				if (index+1 >= json->childCount) {
-					logger->inf(LOG_JSON, "-- Back To Parent");
+					// logger->inf(LOG_JSON, "-- Back To Parent");
 
 					if (json->parent == NULL) {
-						logger->inf(LOG_JSON, "-- Parent IS NULL");
+						// logger->inf(LOG_JSON, "-- Parent IS NULL");
 					}
 
-					logger->inf(LOG_JSON, "-- Become Parent: %s", json->parent->key);
+					// logger->inf(LOG_JSON, "-- Become Parent: %s", json->parent->key);
 					json = json->parent;
 
-					logger->inf(LOG_JSON, "-- Check Count");
+					// logger->inf(LOG_JSON, "-- Check Count");
 					index = json->childs->nodeCount-1;
 
-					logger->inf(LOG_JSON, "-- Set Is Key");
+					// logger->inf(LOG_JSON, "-- Set Is Key");
 					isKey = 1;
 
-					logger->inf(LOG_JSON, "-- Parent Type");
+					// logger->inf(LOG_JSON, "-- Parent Type");
 					inArray = json->type == JSON_ARRAY;
 
-					logger->inf(LOG_JSON, "-- End Of Container Reached");
+					// logger->inf(LOG_JSON, "-- End Of Container Reached");
 				}
 				else{
 					break;
 				}
 			}
 
-			if (isKey) {
-				logger->inf(LOG_JSON, "-- Next Key");
-			}
-			else{
-				logger->inf(LOG_JSON, "-- Next Value");
-			}
+			/*
+				if (isKey) {
+					logger->inf(LOG_JSON, "-- Next Key");
+				}
+				else{
+					logger->inf(LOG_JSON, "-- Next Value");
+				}
+			*/
 
 			index++;
 		}
 	}
 
-	jsonPrint(json, 0);
+	//jsonPrint(json, 0);
 }
 
 Json* newJson() {
@@ -185,7 +181,7 @@ Json* newJson() {
 	Json* json = malloc(sizeof(Json));
 	json->id = -1;
 	json->num = 0;
-	json->key = Str("TEST");
+	json->key = NULL;
 	json->string = NULL;
 
 	json->parent = NULL;
@@ -262,20 +258,14 @@ Json* jsonSetValue(Json* json, char* key, void* value, JsonDataEnum type) {
 		}
 	}
 
-	logger->dbg(LOG_JSON, "-- New Json");
 	child = newJson(NULL);
-
-	logger->dbg(LOG_JSON, "-- ID: %d", childNode->id);
 	child->id = childNode->id;
 	childNode->value = (void*) child;
 
 
-	child->key = Str(key);
-	logger->dbg(LOG_JSON, "-- Setting Parent");
-	child->parent = json;
-
-	logger->dbg(LOG_JSON, "-- Setting Type");
 	child->type = type;
+	child->parent = json;
+	child->key = Str(key);
 
 	switch (type) {
 		case JSON_NULL:
@@ -346,8 +336,6 @@ void deleteJson(Json* json) {
 	free(json);
 }
 
-Json* jsonGetData(Json* json, char* key);
-
 short jsonPrintData(int i, Node* n, short* delete, void* param, va_list* args) {
 	//logger->inf(LOG_JSON, "=== TEST-0");
 	Json* json = (Json*) n->value;
@@ -372,7 +360,7 @@ short jsonPrintData(int i, Node* n, short* delete, void* param, va_list* args) {
 
 	char format[250];
 	memset(format, 0, 250);
-	snprintf(format, 250, "");
+//	snprintf(format, 250, "");
 
 	if (json->key != NULL && json->parent->type != JSON_ARRAY) {
 		short keyLen = strlen(json->key)+1;
@@ -466,10 +454,10 @@ short jsonPrintData(int i, Node* n, short* delete, void* param, va_list* args) {
 }
 
 void jsonPrint(Json* json, int tab) {
-	//logger->inf(LOG_JSON, "##### PRINTING JSON #####");
-
-	//logger->inf(LOG_JSON, "-- Getting Length");
-	//logger->inf(LOG_JSON, "-- Key: %s", json->key);
+	if (json == NULL) {
+		logger->war(LOG_JSON, "Trying to Print NULL JSON");
+		return;
+	}
 
 	char* key;
 	char tmpFormat[250];
@@ -477,29 +465,20 @@ void jsonPrint(Json* json, int tab) {
 
 	if (json->key != NULL) {
 		short keyLen = strlen(json->key)+1;
-		//logger->inf(LOG_JSON, "-- Len: %d", keyLen);
 
-		//logger->inf(LOG_JSON, "-- Init Key");
 		char keyName[keyLen];
 		memset(keyName, 0, keyLen);
 
-		//logger->inf(LOG_JSON, "-- Init Format");
 		char format[250];
 		memset(format, 0, 250);
-		snprintf(format, 250, "");
 
-
-		//logger->inf(LOG_JSON, "-- Set Key Format: %s", format);
-
-		//logger->inf(LOG_JSON, "-- Tabs: %d", tab);
 		for (int i = 0; i < tab; ++i) {
 			strcpy(tmpFormat, format);
 			snprintf(format, 250, "%s%s", "  ", tmpFormat);
 		}
-		snprintf(format, 250, "%s\"%%s\": ", tmpFormat);
 
+		snprintf(format, 250, "%s\"%%s\": ", tmpFormat);
 		snprintf(keyName, 250, format, json->key);
-		//logger->inf(LOG_JSON, "-- Key: %s", keyName);
 
 		key = keyName;
 	}
@@ -509,8 +488,6 @@ void jsonPrint(Json* json, int tab) {
 
 		key = keyName;
 	}
-	//logger->inf(LOG_JSON, "-- TEST");
-	//logger->inf(LOG_JSON, "-- Key: %s", key);
 
 	char value[5500];
 	memset(value, 0, 5500);
@@ -536,9 +513,7 @@ void jsonPrint(Json* json, int tab) {
 			break;
 	}
 
-	logger->inf(LOG_JSON, " ====== RESULT =====");
 	fprintf(stdout, "%s%s", key, value);
-
 	if (json->type == JSON_ARRAY) {
 		listIterateFnc(json->childs, jsonPrintData, NULL, (void*) &tab);
 		fprintf(stdout, "\n%s]", tmpFormat);
@@ -547,4 +522,84 @@ void jsonPrint(Json* json, int tab) {
 		listIterateFnc(json->childs, jsonPrintData, NULL, (void*) &tab);
 		fprintf(stdout, "\n%s}", tmpFormat);
 	}
+}
+
+Json* jsonGetData(Json* json, char* key) {
+	if (json == NULL) {
+		logger->war(LOG_JSON, "Trying To Get Value of A NULL JSON !!!");
+		return NULL;
+	}
+
+	if (json->childs == NULL) {
+		logger->war(LOG_JSON, "Trying To Get Value of A None Parent JSON !!!");
+		return NULL;
+	}
+
+	Node* n = getNodeByName(json->childs, key);
+	if (n == NULL) {
+		return NULL;
+	}
+
+	return (Json*) n->value;
+}
+
+void* jsonGetValue(Json* json, char* key, float* floatP) {
+	Json* res = jsonGetData(json, key);
+	if (res == NULL) {
+		return NULL;
+	}
+
+	switch (res->type) {
+		case JSON_NULL:
+			return NULL;
+			break;
+
+		case JSON_STRING:
+			return Str(res->string);
+			break;
+
+		case JSON_NUM:
+			*floatP = res->num;
+			return (void*) 1;
+			break;
+
+		case JSON_ARRAY:
+		case JSON_OBJECT:
+			return res->childs;
+			break;
+	}
+
+	return NULL;
+}
+
+short jsonIteraterator(int i, Node* n, short* delete, void* param, va_list* args) {
+	JsonIterator* it = (JsonIterator*) param;
+
+	Json* json = n->value;
+	logger->err(LOG_JSON, "-- Child-%d: %s", i, json->key);
+	logger->err(LOG_JSON, "-- type: %s", GEN_JSON_TYPE_STRING[json->type]);
+
+	if (it->fnc == NULL) {
+		logger->err(LOG_JSON, "JSON ITERATOR FUNCTION IS NULL !!!");
+		return false;
+	}
+
+	return it->fnc((unsigned int) i, (Json*) n->value);
+}
+
+void jsonIterate(Json* json, short (*fnc)(unsigned int i, Json* json), void* param, ...) {
+	if (json == NULL) {
+		logger->war(LOG_JSON, "Trying To Iterate Through NULL JSON !!!");
+		return;
+	}
+
+	if (json->childs == NULL) {
+		logger->war(LOG_JSON, "Trying To Iterate Through JSON BUT CHILDS IS NULL !!!");
+		return;
+	}
+
+	JsonIterator it;
+	it.fnc = fnc;
+
+	listIterateFnc(json->childs, jsonIteraterator, NULL, (void*) &it);
 }

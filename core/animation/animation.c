@@ -1,4 +1,5 @@
 #include "animation.h"
+#include "./sprite/spriteAnim.h"
 #include <stdarg.h>
 
 AnimParam* animAddObject(Object* obj, AnimParam* param) {
@@ -42,8 +43,10 @@ void initAnimParam(AnimParam* param, Object* obj, float time, float delay, void*
 	param->stepFnc = NULL;
 	param->callback = NULL;
 
+	param->done = false;
 	param->loop = false;
 	param->breakAnim = false;
+	param->deleteOnDone = false;
 	param->deleteObject = false;
 
 	param->delay = delay * FPS;
@@ -279,10 +282,29 @@ short animateObject(int index, Node* n, short* delete, void* data, va_list* args
 }
 
 short animateSprite(int index, Node* n, short* delete, void* data, va_list* args) {
-	AnimParam* param = (AnimParam*) n->value;
+	SpriteAnimParam* param = (SpriteAnimParam*) n->value;
 
 	if (param->fnc != NULL) {
-		param->fnc(param);
+		param->fnc((AnimParam*) param);
+	}
+
+	if (param->stepFnc != NULL) {
+		param->stepFnc((AnimParam*) param);
+	}
+	if (param->breakAnim || (!param->loop && param->done)) {
+		logger->inf(LOG_SPRITE, "######## TEST CALL BACK NAME: %s", param->anim->name);
+		if (param->callback != NULL){
+			logger->inf(LOG_SPRITE, "-- CallBack");
+			param->callback((AnimParam*) param);
+		}
+
+		if (param->deleteOnDone) {
+			logger->inf(LOG_SPRITE, "-- NAME: %s", param->anim->name);
+			logger->inf(LOG_SPRITE, "-- BREAK: %d", param->breakAnim);
+			logger->inf(LOG_SPRITE, "-- DONE: %d", param->done);
+			logger->inf(LOG_SPRITE, "-- LOOP: %d", param->loop);
+			*delete = true;
+		}
 	}
 
 	return true;
@@ -344,11 +366,12 @@ void spriteRemoveObject(Object* obj) {
 		return;
 	}
 
-	logger->inf(LOG_ANIM, "==== Removing Sprite Animation For Object: %s ====", obj->name);
+	logger->err(LOG_ANIM, "==== Removing Sprite Animation For Object: %s ====", obj->name);
 	Animator* anim = getAnimator();
 
 	Node* n = getNodeByName(anim->sprites, obj->name);
 	if (n == NULL) {
+		logger->err(LOG_ANIM, "-- Not Found");
 		return;
 	}
 

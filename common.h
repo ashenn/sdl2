@@ -16,7 +16,9 @@
 	char* name;	\
 	\
 	pthread_cond_t cond;	 \
-	pthread_mutex_t mutex;
+	pthread_mutex_t mutex;	\
+	\
+	pid_t pid;
 
 typedef	struct Class
 {

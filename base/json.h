@@ -41,14 +41,22 @@ struct Json {
 	ListManager* childs;
 };
 
+typedef struct JsonIterator
+{
+	short (*fnc)(unsigned int i, Json* json);
+} JsonIterator;
+
 
 Json* newJson();
 void deleteJson(Json* json);
 
 Json* loadJsonFile(char* path);
 Json* jsonGetData(Json* json, char* key);
+void* jsonGetValue(Json* json, char* key, float* floatP);
 
 void jsonPrint(Json* json, int tab);
 Json* jsonSetValue(Json* json, char* key, void* value, JsonDataEnum type);
+
+void jsonIterate(Json* json, short (*fnc)(unsigned int i, Json* json), void* param, ...);
 
 #endif

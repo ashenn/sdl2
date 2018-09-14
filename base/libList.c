@@ -17,10 +17,52 @@ ListManager* initListMgr(){
 	lstMgr->nodeCount = 0;
 	lstMgr->first = NULL;
 	lstMgr->last = NULL;
+
+	lstMgr->pid = -1;
 	lstMgr->cond = (pthread_cond_t) PTHREAD_COND_INITIALIZER;
 	lstMgr->mutex = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
 
 	return lstMgr;
+}
+
+void lockList(ListManager* lst) {
+	pid_t curTH = getpid();
+	// fprintf(stdout, "LOCKING LIST: %d / %d \n", (int) curTH, (int) lst->pid);
+
+	if (curTH == lst->pid) {
+		// fprintf(stdout, "LOCKING LIST IN SAME THREAD: %d \n", (int) lst->pid);
+		//assert(0);
+	}
+	else {
+		pthread_mutex_lock(&lst->mutex);
+	}
+	lst->pid = curTH;
+}
+
+void unlockList(ListManager* lst) {
+	//fprintf(stdout, "UN-LOCKING LIST: %d \n", (int) getpid());
+	pthread_mutex_unlock(&lst->mutex);
+}
+
+void lockNode(Node* n) {
+	pid_t curTH = getpid();
+	//fprintf(stdout, "LOCKING Node: %d \n", (int) curTH);
+	//fprintf(stdout, "CURRENT Node: %d \n", (int) n->pid);
+
+	if (curTH == n->pid) {
+		// fprintf(stdout, "LOCKING NODE IN SAME THREAD: %d \n", (int) n->pid);
+		//assert(0);
+	}
+	else {
+		pthread_mutex_lock(&n->mutex);
+	}
+
+	n->pid = curTH;
+}
+
+void unlockNode(Node* n) {
+	//fprintf(stdout, "UN-LOCKING NODE: %d \n", (int) getpid());
+	pthread_mutex_unlock(&n->mutex);
 }
 
 /**
@@ -39,7 +81,7 @@ void* addNode(ListManager* lstMgr, void* params){
 		return NULL;
 	}
 
-	pthread_mutex_lock(&lstMgr->mutex);
+	lockList(lstMgr);
 
 	newNode->name = malloc(strlen(name)+1);
 	strcpy(newNode->name, name);
@@ -54,6 +96,7 @@ void* addNode(ListManager* lstMgr, void* params){
 	newNode->keyIsAlloc = 0;
 	newNode->valIsAlloc = 0;
 
+	newNode->pid = -1;
 	newNode->cond = (pthread_cond_t) PTHREAD_COND_INITIALIZER;
 	newNode->mutex = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
 
@@ -74,7 +117,7 @@ void* addNode(ListManager* lstMgr, void* params){
 
 	lstMgr->nodeCount++;
 
-	pthread_mutex_unlock(&lstMgr->mutex);
+	unlockList(lstMgr);
 
 	return newNode;
 }
@@ -112,7 +155,7 @@ void printNode(Node* node){
 	printf("id: %d \n", node->id);
 	printf("name: %s \n", node->name);
 
-	pthread_mutex_lock(&node->mutex);
+	lockNode(node);
 
 	if (node->value == NULL)
 	{
@@ -129,7 +172,7 @@ void printNode(Node* node){
 		}
 	}
 
-	pthread_mutex_unlock(&node->mutex);
+	unlockNode(node);
 }
 
 /**
@@ -140,7 +183,7 @@ void printNodes(ListManager* lstMgr){
 	Node* currentNode;
 	currentNode = NULL;
 
-	pthread_mutex_lock(&lstMgr->mutex);
+	lockList(lstMgr);
 
 	int i;
 	for (i = 0; i < lstMgr->nodeCount; ++i)
@@ -157,7 +200,7 @@ void printNodes(ListManager* lstMgr){
 		printf("\n");
 	}
 
-	pthread_mutex_unlock(&lstMgr->mutex);
+	unlockList(lstMgr);
 }
 
 /**
@@ -171,7 +214,7 @@ Node* getNode(ListManager* lstMgr, int id){
 	short found = 0;
 	Node* currentNode = NULL;
 
-	pthread_mutex_lock(&lstMgr->mutex);
+	lockList(lstMgr);
 
 	int i;
 	for (i = 0; i < lstMgr->nodeCount; ++i)
@@ -194,7 +237,7 @@ Node* getNode(ListManager* lstMgr, int id){
 	}
 
 	//fprintf(stdout, "--GET END !!\n");
-	pthread_mutex_unlock(&lstMgr->mutex);
+	unlockList(lstMgr);
 
 	if (found) {
 		return currentNode;
@@ -213,12 +256,17 @@ Node* getNodeByName(ListManager* lstMgr, char* name){
 	short found = 0;
 	Node* currentNode = NULL;
 
+	// fprintf(stdout, "GETTING NODE BY NAME: %d \n", (int) getpid());
+	
+
 	if (strlen(name) == 0) {
 		printf("## Error: name param for getNode is invalid\n");
 		return NULL;
 	}
 
-	pthread_mutex_lock(&lstMgr->mutex);
+	// fprintf(stdout, "CALL LOCK LIST: %d \n", (int) getpid());
+	lockList(lstMgr);
+	// fprintf(stdout, "Lock Done\n");
 
 	int i;
 	for (i = 0; i < lstMgr->nodeCount; ++i)
@@ -237,7 +285,8 @@ Node* getNodeByName(ListManager* lstMgr, char* name){
 		}
 	}
 
-	pthread_mutex_unlock(&lstMgr->mutex);
+	// fprintf(stdout, "UN-LOCK LIST \n");
+	unlockList(lstMgr);
 
 	if (found) {
 		return currentNode;
@@ -346,16 +395,16 @@ Node* deleteNodeNoFree(ListManager* lstMgr, int id){
 
 	//fprintf(stdout, "FOUND !!!\n");
 
-	pthread_mutex_lock(&lstMgr->mutex);
+	lockList(lstMgr);
 	//fprintf(stdout, "Lock Node\n");
-	pthread_mutex_lock(&node->mutex);
+	lockNode(node);
 
 	//fprintf(stdout, "Working\n");
 	removeNode(lstMgr, node);
 
 	//fprintf(stdout, "NO FREE DONE\n");
-	pthread_mutex_unlock(&lstMgr->mutex);
-	pthread_mutex_unlock(&node->mutex);
+	unlockList(lstMgr);
+	unlockNode(node);
 
 	return node;
 }
@@ -369,7 +418,7 @@ void* deleteNode(ListManager* lstMgr, int id){
 	//fprintf(stdout, "DELETING NODE: %u\n", id);
 	//printf("DELETING NODE: %d\n", id);
 	Node* node = deleteNodeNoFree(lstMgr, id);
-	pthread_mutex_lock(&node->mutex);
+	lockNode(node);
 
 	if (node == NULL) {
 		//fprintf(stdout, "NOt FOUND\n");
@@ -383,9 +432,9 @@ void* deleteNode(ListManager* lstMgr, int id){
 
 
 	//fprintf(stdout, "DELETE DONE\n");
-	pthread_mutex_unlock(&node->mutex);
+	unlockNode(node);
 	freeNode(node);
-	
+
 	return NULL;
 }
 
@@ -398,7 +447,7 @@ void* deleteNode(ListManager* lstMgr, int id){
  */
 int setValue(Node* node, void* value, short asAlloc){
 	//fprintf(stdout, "SET VALUE: %d\n", node->id);
-	pthread_mutex_lock(&node->mutex);
+	lockNode(node);
 	if (node->valIsAlloc && node->value != NULL){
 		free(node->value);
 	}
@@ -406,7 +455,7 @@ int setValue(Node* node, void* value, short asAlloc){
 	node->value = value;
 	node->valIsAlloc = asAlloc;
 
-	pthread_mutex_unlock(&node->mutex);
+	unlockNode(node);
 	return 1;
 }
 
@@ -423,23 +472,23 @@ int* getIds(ListManager* lstMgr, int* ids){
 
 	int i=0;
 	Node* currentNode = NULL;
-	pthread_mutex_lock(&lstMgr->mutex);
+	lockList(lstMgr);
 
 	do{
 		if (currentNode == NULL){
 			currentNode = lstMgr->first;
-			pthread_mutex_lock(&currentNode->mutex);
+			lockNode(currentNode);
 		}
 		else{
 			currentNode = currentNode->next;
-			pthread_mutex_lock(&currentNode->mutex);
+			lockNode(currentNode);
 		}
 
 		ids[i++] = currentNode->id;
-		pthread_mutex_unlock(&currentNode->mutex);
+		unlockNode(currentNode);
 	}while(lstMgr->last != currentNode);
 
-	pthread_mutex_unlock(&lstMgr->mutex);
+	unlockList(lstMgr);
 	return ids;
 }
 
@@ -470,42 +519,42 @@ void deleteList(ListManager* lstMgr){
 }
 
 Node* listIterate(ListManager* list, Node* n) {
-	pthread_mutex_lock(&list->mutex);
+	lockList(list);
 
 	if (n != NULL) {
-        pthread_mutex_lock(&n->mutex);
+        lockNode(n);
 	}
 
 	if (list->first == NULL){
         if (n != NULL) {
-            pthread_mutex_unlock(&n->mutex);
+            unlockNode(n);
         }
 
-        pthread_mutex_unlock(&list->mutex);
+        unlockList(list);
 		return  NULL;
 	}
 	else if (n == NULL) {
 		n = list->first;
-		pthread_mutex_unlock(&list->mutex);
+		unlockList(list);
 		return n;
 	}
 	else if (n->next == NULL) {
-        pthread_mutex_unlock(&n->mutex);
-        pthread_mutex_unlock(&list->mutex);
+        unlockNode(n);
+        unlockList(list);
 		return NULL;
 	}
 
     if (n != NULL) {
-        pthread_mutex_unlock(&n->mutex);
+        unlockNode(n);
     }
 
-    pthread_mutex_unlock(&list->mutex);
+    unlockList(list);
 	return n->next;
 }
 
 
 void listIterateFnc(ListManager* list, short (*fnc)(int , Node*, short*, void*, va_list* args), Node* n, void* param, ...) {
-	pthread_mutex_lock(&list->mutex);
+	lockList(list);
 
 	int i = 0;
 	short delete = 0;
@@ -519,13 +568,13 @@ void listIterateFnc(ListManager* list, short (*fnc)(int , Node*, short*, void*, 
 	}
 
 	while (process && n != NULL) {
-		pthread_mutex_lock(&n->mutex);
+		lockNode(n);
 
 		Node* tmp = n;
 		process = fnc(i++, n, &delete, param, &args);
 		n = n->next;
 
-		pthread_mutex_unlock(&tmp->mutex);
+		unlockNode(tmp);
 
 		if (delete) {
 			removeAndFreeNode(list, tmp);
@@ -536,12 +585,12 @@ void listIterateFnc(ListManager* list, short (*fnc)(int , Node*, short*, void*, 
 
 	va_end(args);
 
-	pthread_mutex_unlock(&list->mutex);
+	unlockList(list);
 }
 
 
 void listRevIterateFnc(ListManager* list, short (*fnc)(int , Node*, short*, void*, va_list* args), Node* n, void* param, ...) {
-	pthread_mutex_lock(&list->mutex);
+	lockList(list);
 
 	int i = 0;
 	short delete = 0;
@@ -555,13 +604,13 @@ void listRevIterateFnc(ListManager* list, short (*fnc)(int , Node*, short*, void
 	}
 
 	while (process && n != NULL) {
-		pthread_mutex_lock(&n->mutex);
+		lockNode(n);
 
 		Node* tmp = n;
 		process = fnc(i++, n, &delete, param, &args);
 		n = n->prev;
 
-		pthread_mutex_unlock(&tmp->mutex);
+		unlockNode(tmp);
 
 		if (delete) {
 			removeAndFreeNode(list, tmp);
@@ -571,32 +620,32 @@ void listRevIterateFnc(ListManager* list, short (*fnc)(int , Node*, short*, void
 	}
 
 	va_end(args);
-	pthread_mutex_unlock(&list->mutex);
+	unlockList(list);
 }
 
 Node* listRevIterate(ListManager* list, Node* n) {
-	pthread_mutex_lock(&list->mutex);
+	lockList(list);
 	if (list->last == NULL){
         if (n != NULL) {
-            pthread_mutex_unlock(&n->mutex);
+            unlockNode(n);
         }
-        pthread_mutex_unlock(&list->mutex);
+        unlockList(list);
 		return NULL;
 	}
 	else if (n == NULL) {
 		n = list->last;
-		pthread_mutex_unlock(&list->mutex);
+		unlockList(list);
 		return  n;
 	}
 	else if (n->prev == NULL) {
-        pthread_mutex_unlock(&n->mutex);
-        pthread_mutex_unlock(&list->mutex);
+        unlockNode(n);
+        unlockList(list);
 		return NULL;
 	}
 
-	pthread_mutex_unlock(&list->mutex);
+	unlockList(list);
     if (n != NULL) {
-        pthread_mutex_unlock(&n->mutex);
+        unlockNode(n);
     }
 
 	return n->prev;
@@ -622,9 +671,9 @@ short listInsertAfter(ListManager* lst, Node* n, short id) {
 
 	//printNodes(lst);
 
-	pthread_mutex_lock(&lst->mutex);
+	lockList(lst);
 
-	pthread_mutex_lock(&n->mutex);
+	lockNode(n);
 	Node* tmpP = n->prev;
 	Node* tmpN = n->next;
 
@@ -677,9 +726,9 @@ short listInsertAfter(ListManager* lst, Node* n, short id) {
 	//lst->nodeCount++;
 
 
-	pthread_mutex_unlock(&n->mutex);
+	unlockNode(n);
 
-	pthread_mutex_unlock(&lst->mutex);
+	unlockList(lst);
 	return 1;
 }
 
@@ -690,13 +739,13 @@ void sortList(ListManager * lst, short (*fnc)(void*, void*)) {
 	Node* tmp = NULL;
 	Node* comp = NULL;
 
-	pthread_mutex_lock(&lst->mutex);
+	lockList(lst);
 
 	Node* key = lst->first->next;
 	for (i = 1; i < lst->nodeCount; i++) {
     	comp = lst->first;
-    	pthread_mutex_lock(&key->mutex);
-    	pthread_mutex_lock(&comp->mutex);
+    	lockNode(key);
+    	lockNode(comp);
 
 		//fprintf(stdout, "##### Node %d: %s #####\n", key->id, key->name);
 
@@ -705,8 +754,8 @@ void sortList(ListManager * lst, short (*fnc)(void*, void*)) {
         	if (key == comp) {
 				//fprintf(stdout, "-- Skipping\n");
         		comp = key->next;
-        		pthread_mutex_unlock(&key->mutex);
-        		pthread_mutex_unlock(&comp->mutex);
+        		unlockNode(key);
+        		unlockNode(comp);
         		continue;
         	}
 
@@ -724,7 +773,7 @@ void sortList(ListManager * lst, short (*fnc)(void*, void*)) {
     					continue;
     				}
 
-    				pthread_mutex_lock(&tmp->mutex);
+    				lockNode(tmp);
 					//fprintf(stdout, "-- Compare %d: %s\n", tmp->id, tmp->name);
 					sort = fnc(comp->value, tmp->value);
 
@@ -738,7 +787,7 @@ void sortList(ListManager * lst, short (*fnc)(void*, void*)) {
 						break;
     			    }
 
-    			    pthread_mutex_unlock(&tmp->mutex);
+    				unlockNode(tmp);
 					//fprintf(stdout, "+++++++++++++++++++++++++\n");
     			}
 
@@ -747,16 +796,15 @@ void sortList(ListManager * lst, short (*fnc)(void*, void*)) {
     		}
 
 
-        	pthread_mutex_unlock(&comp->mutex);
+    		unlockNode(comp);
     		comp = comp->next;
 			//fprintf(stdout, "================================================\n");
         } while (comp != NULL);
 
 		//fprintf(stdout, "--------------------------------------------------------------------\n");
 		//
-		pthread_mutex_unlock(&key->mutex);
-
-		pthread_mutex_lock(&lst->mutex);
+		unlockNode(key);
+		unlockList(lst);
 
    		key = key->next;
         if (key == NULL) {

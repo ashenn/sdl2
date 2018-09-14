@@ -29,6 +29,7 @@ struct Node{
 
 	void* (*del)(void*);
 
+	pid_t pid;
 	pthread_cond_t cond;
 	pthread_mutex_t mutex;
 };
@@ -42,6 +43,7 @@ struct ListManager
 	Node* first;
 	Node* last;
 	
+	pid_t pid;
 	pthread_cond_t cond;
 	pthread_mutex_t mutex;
 };

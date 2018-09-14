@@ -8,6 +8,8 @@
 	COLLISION_OBJ_BODY	\
 	SDL_Rect curClip; \
 	short clipIndex; \
+	\
+	char* spritePath;	\
 	ListManager* animList;	\
 	\
 	unsigned short spriteRows;	\

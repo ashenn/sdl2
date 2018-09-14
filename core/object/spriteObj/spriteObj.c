@@ -1,4 +1,6 @@
 #include "./spriteObj.h"
+#include "../../../base/json.h"
+#include "../../asset/asset.h"
 #include "../../animation/sprite/spriteAnim.h"
 
 SpriteAnimData* addAnim(SpriteObject* obj, char* name, int fps, int clipCnt, int clipIndex, unsigned short row) {
@@ -10,15 +12,12 @@ SpriteAnimData* addAnim(SpriteObject* obj, char* name, int fps, int clipCnt, int
 	anim->wait = (FPS / anim->fps);
 
 	anim->duration = (anim->fps * anim->clipCnt);
-
-	logger->dbg(LOG_SPRITE, "-- Init Clip Positions");
 	anim->clipPos = malloc(sizeof(SDL_Rect) * anim->clipCnt);
 
 	int cell_x = 50;
 	int cell_y = 38;
 
     int i = clipIndex;
-	logger->dbg(LOG_SPRITE, "-- LOOOP");
 
 	unsigned short curRow = row;
 
@@ -28,10 +27,6 @@ SpriteAnimData* addAnim(SpriteObject* obj, char* name, int fps, int clipCnt, int
 			curRow++;
 		}
 
-		logger->dbg(LOG_SPRITE, "-- A: %d", a);
-		logger->dbg(LOG_SPRITE, "-- I: %d", i);
-
-		logger->dbg(LOG_SPRITE, "--Get Pos:  %d", i);
 		SDL_Rect* pos = &(anim->clipPos[a]);
 		pos->w = cell_x;
 		pos->h = cell_y;
@@ -48,12 +43,67 @@ SpriteAnimData* addAnim(SpriteObject* obj, char* name, int fps, int clipCnt, int
 		i++;
 	}
 
-
-	logger->dbg(LOG_SPRITE, "-- Add Anim To List");
 	Node* n = addNodeV(obj->animList, name, anim, 1);
 	anim->animID = n->id;
 
 	return anim;
+}
+
+
+short initAnims(int i, Node* n, short* delete, void* param, va_list* args) {
+	logger->err(LOG_SPRITE, "============ #%d==========", i);
+	if (param == NULL) {
+		logger->err(LOG_SPRITE, "-- Trying To Add Anim For NULL Object !!!");
+		return false;
+	}
+
+	SpriteObject* obj = param;
+	if (n == NULL) {
+		logger->war(LOG_SPRITE, "-- Skipping NULL Anim #%d For Object: %s !!!", i, obj->name);
+		return true;
+	}
+
+	Json* json = (Json*) n->value;
+	if (json->type == JSON_NULL) {
+		logger->war(LOG_SPRITE, "-- Skipping NULL AnimData #%d For Object: %s !!!", i, obj->name);
+		return true;
+	}
+
+	float data[6];
+	data[6] = 0;
+	char* name = jsonGetValue(json, "name", NULL);
+
+	jsonGetValue(json, "fps", &(data[0]));
+	jsonGetValue(json, "count", &(data[1]));
+	jsonGetValue(json, "index", &(data[2]));
+	jsonGetValue(json, "row", &(data[3]));
+
+	logger->dbg(LOG_SPRITE, "Adding Anim #%d => %s", i, name);
+	logger->dbg(LOG_SPRITE, "-- fps: %f", data[0]);
+	logger->dbg(LOG_SPRITE, "-- count: %f", data[1]);
+	logger->dbg(LOG_SPRITE, "-- index: %f", data[2]);
+	logger->dbg(LOG_SPRITE, "-- row: %f", data[3]);
+
+	SpriteAnimData* anim = addAnim(obj, name, (int) data[0], (int) data[1], (int) data[2], (unsigned short) data[3]);
+	anim->name = name;
+
+	jsonGetValue(json, "loop", &(data[5]));
+	anim->loop = (bool) data[5];
+	logger->dbg(LOG_SPRITE, "-- Loop: %d", anim->loop);
+
+	Json* links = jsonGetData(json, "links");
+
+	if (links != NULL && links->childCount) {
+		logger->dbg(LOG_SPRITE, "-- Has Links: %d !!!", links->childCount);
+		anim->animLinks = initListMgr();
+		jsonIterate(json, NULL, NULL);
+	}
+	else {
+		anim->animLinks = NULL;
+	}
+
+
+    return true;
 }
 
 SpriteObject* newSpriteObject(char* name, void* comp, SDL_Rect* pos, short z) {
@@ -67,6 +117,15 @@ SpriteObject* newSpriteObject(char* name, void* comp, SDL_Rect* pos, short z) {
 	logger->dbg(LOG_SPRITE, "-- Init List");
 	obj->animList = initListMgr();
 
+	AssetMgr* ast = getAssets();
+	char* spritePath = Str("animation/adventurer");
+	Json* json = ast->getJson(spritePath);
+
+	jsonPrint(json, 0);
+
+	Json* sheet = jsonGetData(json, "sheet");
+	Json* anims = jsonGetData(json, "anims");
+	listIterateFnc(anims->childs, initAnims, NULL, obj);
 
 	logger->dbg(LOG_SPRITE, "-- Init Anim Data");
 	//SpriteAnimData* anim = new(SpriteAnimData);
@@ -75,9 +134,6 @@ SpriteObject* newSpriteObject(char* name, void* comp, SDL_Rect* pos, short z) {
 	addObjectToView((Object*) obj);
 
 
-	addAnim(obj, "Idle", 10, 4, 0, 0);
-	addAnim(obj, "Run", 15, 6, 1, 1);
-	addAnim(obj, "Down", 10, 4, 4, 0);
 
 	spriteAnim(obj, 1, 0);
 

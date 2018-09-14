@@ -3,32 +3,36 @@
 #include "common.h"
 
 Class* newClass(size_t s) {
-	logger->err(LOG_MAIN, "=== NEW CLASS: %u ===", s);
-
 	static int id = 0;
-	logger->err(LOG_MAIN, "-- malloc");
 	Class* cl = (Class*) malloc(s);
 
 	if (cl == NULL) {
-		logger->err(LOG_COMMON, "FAIL TO MALLOC CLASS OF SIZE: %d", (int) s);
 		return NULL;
 	}
 
-	logger->err(LOG_MAIN, "-- init");
 	cl->id = id++;
-	logger->err(LOG_MAIN, "-- init Thread");
+	cl->pid = -1;
 	cl->cond = (pthread_cond_t) PTHREAD_COND_INITIALIZER;
 	cl->mutex = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
 
-	logger->err(LOG_MAIN, "-- DONE");
 	return cl;
 }
 
 void th_lock(Class* cl) {
+	pid_t curTH = getpid();
+	//logger->err(LOG_MAIN, "LOCKING: %d", curTH);
+	//logger->err(LOG_MAIN, "CURRENT: %d", cl->pid);
+	
+	if (curTH == cl->pid) {
+		logger->err(LOG_MAIN, "LOCKING Object IN SAME THREAD");
+		assert(1);
+	}
+
 	pthread_mutex_lock(&cl->mutex);
 }
 
 void th_unlock(Class* cl) {
+	cl->pid = -1;
 	pthread_mutex_unlock(&cl->mutex);
 }
 

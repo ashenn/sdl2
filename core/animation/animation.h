@@ -19,9 +19,11 @@ typedef struct AnimParam AnimParam;
 	bool isInit;	 \
 	Object* obj;	\
 	\
+	bool done;	 \
 	bool loop;	 \
 	float delay;	 \
 	bool breakAnim;	 \
+	bool deleteOnDone;	 \
 	bool deleteObject;	\
 	\
 	int frames; \
