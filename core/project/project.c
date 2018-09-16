@@ -4,6 +4,7 @@
 #include "../object/object.h"
 #include "../asset/asset.h"
 #include "../timer/timer.h"
+#include "../event/control/control.h"
 
 void addDebugFlag(char* flag) {
 	Project* pro = getProject();
@@ -24,7 +25,7 @@ void addDebugFlag(char* flag) {
 void initProjectFlags(Project* pro) {
 	pro->flagList = initListMgr();
 
-	static unsigned int flags[16] = {
+	static unsigned int flags[18] = {
 	    LOG_NONE,
 		LOG_JSON,
 		LOG_MAIN,
@@ -39,7 +40,9 @@ void initProjectFlags(Project* pro) {
 		LOG_ANIM,
 		LOG_TIMER,
 		LOG_SPRITE,
-		LOG_TEST
+		LOG_CHAR,
+		LOG_CONTROL,
+		LOG_CONTROLER,
 	};
 
 
@@ -85,8 +88,14 @@ void initProjectFlags(Project* pro) {
 	addNodeV(pro->flagList, "sprite", &flags[13], 0);
 	addLoggerTag(flags[13], "sprite", 0);
 
-	addNodeV(pro->flagList, "test", &flags[13], 0);
-	addLoggerTag(flags[13], "test", 0);
+	addNodeV(pro->flagList, "char", &flags[14], 0);
+	addLoggerTag(flags[14], "char", 0);
+
+	addNodeV(pro->flagList, "control", &flags[15], 0);
+	addLoggerTag(flags[15], "control", 0);
+
+	addNodeV(pro->flagList, "control", &flags[16], 0);
+	addLoggerTag(flags[16], "controller", 0);
 }
 
 
@@ -123,10 +132,14 @@ void parseProjectArgs(int argc, char* argv[]) {
 }
 
 Project* initProject(int argc, char* argv[]) {
+	logger->inf(LOG_PROJECT, "==== INIT PROJECT ====");
 	Project* pro = getProject();
 
 	pro->status = PRO_INIT;
+	logger->inf(LOG_PROJECT, "==== INIT PROJECT FLAGS ====");
 	initProjectFlags(pro);
+	
+	logger->inf(LOG_PROJECT, "==== INIT PROJECT ARGS ====");
 	parseProjectArgs(argc, argv);
 
 	return pro;

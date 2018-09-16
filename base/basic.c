@@ -1,5 +1,6 @@
 #include "basic.h"
 #include <stdio.h>
+#include <float.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
@@ -23,6 +24,25 @@ int strIsNum(char* str){
 	}
 
 	return 1;
+}
+
+int myPow(int a, int b) {
+	if (b == 1)
+	{
+		return a;
+	}
+	else if(b == 0){
+		return 1;
+	}
+
+	int i;
+	for (i = 0; i < b; ++i)
+	{
+		b--;
+		return a * myPow(a, b);
+	}
+
+	return a;
 }
 
 
@@ -78,23 +98,46 @@ int str2int(char* str){
 	return result * multiplier;
 }
 
-int myPow(int a, int b){
-	if (b == 1)
-	{
-		return a;
-	}
-	else if(b == 0){
-		return 1;
-	}
+float str2float(char* str) {
+	float result = 0;
+	int multiplier = 1;
+	float tmp = 0;
+	short decimal = 0;
 
 	int i;
-	for (i = 0; i < b; ++i)
+	for (i = 0; str[i] != '\0'; ++i)
 	{
-		b--;
-		return a * myPow(a, b);
+		if (str[i] == '-')
+		{
+			multiplier = -1;
+			continue;
+		}
+		else if (str[i] == '.' || str[i] == ',') {
+			if (decimal) {
+				return 0;
+			}
+			else {
+				decimal = 1;
+			}
+			continue;
+		}
+
+		tmp = (float) char2int(str[i]);
+		if (tmp == -1)
+		{
+			return 0;
+		}
+
+		if (!decimal) {
+			result = (result * 10) + tmp;
+		}
+		else {
+			result = (result) + (tmp / ((float) (myPow(10 ,decimal))));
+			decimal++;
+		}
 	}
 
-	return a;
+	return result * ((float) multiplier);
 }
 
 int numAtIndex(int num, int index){
@@ -317,6 +360,10 @@ void validatePath(char* path) {
 
 
 char* Str(const char* str) {
+	if (str == NULL) {
+		return NULL;
+	}
+
     int len = strlen(str)+1;
     char* res =  malloc(len);
 
@@ -331,4 +378,22 @@ char* StrE(const int len) {
     memset(res, 0, len);
 
     return res;
+}
+
+char* join(char* glue, char** arr, unsigned int count, unsigned int size) {
+	size += strlen(glue) * (count-1);
+	char* res = StrE(size+1);
+
+
+	for (int i = 0; i < count; ++i) {
+		char* sep = "";
+		if (i < count-1) {
+			sep = glue;
+		}
+
+		snprintf(res, size, "%s%s%s", res, arr[i], sep);
+
+	}
+
+	return res;
 }

@@ -9,18 +9,20 @@
 	SDL_Rect curClip; \
 	short clipIndex; \
 	\
-	char* spritePath;	\
 	ListManager* animList;	\
 	\
+	unsigned short cell_y; \
+	unsigned short cell_x;	\
+	\
 	unsigned short spriteRows;	\
-	unsigned short spriteColumns;
+	unsigned short spriteColumns;\
 
 
 typedef struct SpriteObject {
 	SPRITE_OBJ_BODY
 } SpriteObject;
 
-
-SpriteObject* newSpriteObject(char* name, void* comp, SDL_Rect* pos, short z);
+SpriteObject* newSpriteObject(char* name, char* jsonPath, SDL_Rect* pos, short z);
+void initSpriteObj(SpriteObject* obj, char* name, char* path, SDL_Rect* pos, short z);
 
 #endif

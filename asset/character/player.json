@@ -1,0 +1,8 @@
+{
+	"adventurer": {
+		"life": 5,
+		"sheet": "adventurer",
+		"onPossess": null,
+		"onUnPossess": null
+	}
+}

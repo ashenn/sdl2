@@ -19,7 +19,7 @@ struct Node{
 
 	void* value;
 	void* key;
-	void* (*fnc)();
+	void* (*fnc)(void*);
 	
 	short valIsAlloc;
 	short keyIsAlloc;
@@ -27,7 +27,7 @@ struct Node{
 	Node* next;
 	Node* prev;
 
-	void* (*del)(void*);
+	void (*del)(void*);
 
 	pid_t pid;
 	pthread_cond_t cond;

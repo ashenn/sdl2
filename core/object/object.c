@@ -25,7 +25,6 @@ void setObjSurface(Object* obj, SDL_Surface* surf) {
 		obj->texture = NULL;
 	}
 
-
 	if (surf != NULL) {
 		SDL_SetColorKey( surf, SDL_TRUE, SDL_MapRGB( surf->format, 0, 255, 255 ) );
 		obj->texture = SDL_CreateTextureFromSurface(getRenderer(), surf);
@@ -206,6 +205,7 @@ void initSimpleObject(Object* obj, char* name, void* comp, SDL_Rect* pos, short 
 	obj->parent = NULL;
 	obj->childs = NULL;
 	obj->onDelete = NULL;
+	obj->delete = NULL;
 	//obj->collision = NULL;
 
 	if (pos != NULL) {

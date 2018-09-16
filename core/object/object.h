@@ -32,6 +32,7 @@ typedef struct Controller Controller;
 	SDL_RendererFlip flip;		\
 	SDL_Surface* component;		\
 	\
+	void (*delete)(Object* obj);  \
 	void (*onDelete)(Object* obj);
     // Collision* Collision;
 
@@ -51,7 +52,9 @@ void initSimpleObject(Object* obj, char* name, void* comp, SDL_Rect* pos, short 
 Object* addObject(char* name, void* comp, SDL_Rect* pos, short z, void* click, void* hover, void* container);
 Object* addSimpleObject(char* name, void* comp, SDL_Rect* pos, short z); // Add Object No Click / Hover / Container
 
+
 void addObjectToView(Object* obj);
+void setObjSurface(Object* obj, SDL_Surface* surf);
 
 
 // DELETING

@@ -78,10 +78,9 @@ void* callDelayedFunction(void* param) {
 
 	LOCK(fncParam);
 	while (!fncParam->doBreak && pro->status != PRO_CLOSE) {
-		if (fncParam->delay > 0) {
+		if (fncParam->delay != 0) {
 
 			logger->inf(LOG_TIMER, "-- Waiting: %f", fncParam->delay);
-
 			WAIT_TIME(launcher, fncParam->delay);
 			UNLOCK(launcher);
 			//pthread_cond_timedwait(&launcher->cond, &launcher->mutex, &waitTime);
@@ -93,6 +92,7 @@ void* callDelayedFunction(void* param) {
 			break;
 		}
 		else if (launcher->paused) {
+			launcher->pauseAt = microTime();
 			WAIT(launcher);
 			UNLOCK(launcher);
 		}
@@ -127,7 +127,7 @@ void* callDelayedFunction(void* param) {
 	fncParam->completed = !fncParam->killed;
 
 	logger->inf(LOG_TIMER, "-- Close Args");
-	va_end(fncParam->args);
+	va_end(*(fncParam->args));
 
 	logger->inf(LOG_TIMER, "-- REMOVE DELAYED NODE");
 	removeNode(delayedFncs, fncParam->node);
@@ -174,6 +174,8 @@ DelayedFncLauncher* delayed(double delay, bool loop, void* (*fnc)(void*), void* 
 	va_list args;
 	va_start(args, callback);
 
+
+	va_start(args, callback);
 	logger->inf(LOG_TIMER, "-- Prepare Structure");
 	DelayedFunction* fncParam = new(DelayedFunction);
 	Node* n = addNodeV(delayedFncs, name, fncParam, 1);
@@ -181,13 +183,14 @@ DelayedFncLauncher* delayed(double delay, bool loop, void* (*fnc)(void*), void* 
 	fncParam->id = n->id;
 	fncParam->fnc = fnc;
 	fncParam->loop = loop;
-	fncParam->args = args;
+	fncParam->args = &args;
 	fncParam->killed = false;
 	fncParam->delay = delay;
 	fncParam->doBreak = false;
 	fncParam->name = Str(name);
 	fncParam->completed = false;
 	fncParam->callback = callback;
+	fncParam->param = va_arg(args, void*);
 
 	//va_end(va);
 
@@ -203,6 +206,10 @@ DelayedFncLauncher* delayed(double delay, bool loop, void* (*fnc)(void*), void* 
 
 	launcher->id = n->id;
 	launcher->fnc_node = n;
+
+	launcher->startAt = 0;
+	launcher->pauseAt = 0;
+
 	launcher->fnc = fncParam;
 	launcher->killed = false;
 	launcher->paused = false;
@@ -217,6 +224,7 @@ DelayedFncLauncher* delayed(double delay, bool loop, void* (*fnc)(void*), void* 
 
 
 	logger->inf(LOG_TIMER, "-- Create Call Thread");
+	launcher->startAt = microTime();
 	pthread_create(tmpThread, NULL, callDelayedFunction, (void*) fncParam);
 
 
@@ -320,10 +328,6 @@ bool resumeDelayedFunction(DelayedFncLauncher* launcher) {
 	if (launcher == NULL) {
 		logger->war(LOG_TIMER, "=== Trying To Resume A Delayed Function But Launcher Pointer Is Null.");
 		return false;
-	}
-
-	if (!launcher->paused) {
-		return true;
 	}
 
 	logger->inf(LOG_TIMER, "=== RESUMING DELAYED: %s ===", launcher->name);

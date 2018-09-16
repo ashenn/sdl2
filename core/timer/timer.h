@@ -15,6 +15,8 @@ struct DelayedFncLauncher {
 	//va_list args;
 	bool killed;
 	bool paused;
+	long startAt;
+	long pauseAt;
 	bool completed;
 	DelayedFunction* fnc;
 
@@ -36,7 +38,8 @@ struct DelayedFunction {
 
 	DelayedFncLauncher* launcher;
 	
-	va_list args;
+	void* param;
+	va_list* args;
 	pthread_t thread;
 	pthread_t* timer_thread;
 	

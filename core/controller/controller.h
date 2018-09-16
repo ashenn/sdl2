@@ -6,9 +6,10 @@
 
 typedef enum ControllerType
 {
-	AI_CTRL,
-	PLAYER_CTRL,
-	VISUAL_CTRL
+	CTRL_NULL,
+	CTRL_AI,
+	CTRL_PLAYER,
+	CTRL_GOST
 } ControllerType;
 
 
@@ -19,19 +20,21 @@ typedef struct Controller Controller;
 	CLASS_BODY \
 	bool enabled; \
 	\
+	Object* obj; \
 	Character* character; \
-	ControllerType* controller; \
+	ControllerType type; \
 	\
 	bool (*move)(Controller* ctrl, SDL_Rect pos); \
 	bool (*moveToObj)(Controller* ctrl, Object* obj); \
 	\
 	void (*setCharacter)(Controller* ctrl, Character* c); \
-	void (*removeCharacter)(Controller* ctrl, Character* c);
+	void (*removeCharacter)(Controller* ctrl);
 
 
 struct Controller {
 	CONTROLLER_BODY
 };
 
+void initController(Controller* ctrl, ControllerType type);
 
 #endif

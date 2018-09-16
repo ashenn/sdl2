@@ -3,11 +3,18 @@
 
 #include "../../common.h"
 #include "../../base/math.h"
+#include "../object/object.h"
 
 typedef struct Character Character;
-
-#include "../object/object.h"
+#include "./charAttr.h"
 #include "../controller/controller.h"
+
+typedef enum CharacterType
+{
+	CHAR_PLAYER,
+	CHAR_MONSTER,
+	CHAR_BOSS
+} CharacterType;
 
 
 #define CHARACTER_BODY \
@@ -15,13 +22,19 @@ typedef struct Character Character;
 	\
 	Object* obj; \
 	Controller* ctrl; \
-	vector* direction; \
+	vector direction; \
+	CharacterType type; \
+	\
+	CharAttr attr; \
 	\
 	void (*onPossess)(Character* c, Controller* ctrl); \
-	void (*onUnPossess)(Character* c, Controller* ctrl); \
+	void (*onUnPossess)(Character* c, Controller* ctrl);
 
 struct Character {
 	CHARACTER_BODY
 };
+
+void characterDelete(Character* ch);
+Character* initCharacter(CharacterType type, char* name, SDL_Rect* pos, int z);
 
 #endif

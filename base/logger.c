@@ -10,7 +10,7 @@
 #include "basic.h"
 #include "logger.h"
 
-void log2file(char* lvl, char* msg){
+void log2file(char* tagName, char* lvl, char* msg){
 	Log* logger = getLogger();
 
 	time_t current_time;
@@ -22,7 +22,11 @@ void log2file(char* lvl, char* msg){
 
 	strftime(timeString, sizeof(timeString), "%Y-%m-%d %H:%M:%S", time_info);
 
-	write(logger->f, "[", 1);
+	if (tagName != NULL) {
+		write(logger->f, tagName, strlen(tagName));
+	}
+	
+	write(logger->f, " [", 2);
 	write(logger->f, timeString, 19);
 	write(logger->f, "] ", 2);
 	write(logger->f, lvl, strlen(lvl));
@@ -89,7 +93,7 @@ void logg(short lvl, unsigned int  tag, char* msg, va_list* args){
 
 	if (logger->f > 0)	{
         //fprintf(stdout, "LOG 2 FILE:\n");
-		log2file(l, message);
+		log2file(tagName, l, message);
 	}
 
 	pthread_mutex_unlock(&logger->mutex);

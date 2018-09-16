@@ -1,7 +1,6 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,8 +48,9 @@ typedef enum bool
 #define LOG_ANIM 1024
 #define LOG_TIMER 2048
 #define LOG_SPRITE 4096
-#define LOG_TEST 8192
-
+#define LOG_CHAR 8192
+#define LOG_CONTROL 16384
+#define LOG_CONTROLER 32768
 
 #define FLIP_N SDL_FLIP_NONE
 #define FLIP_V SDL_FLIP_VERTICAL
@@ -59,8 +59,6 @@ typedef enum bool
 
 Class* newClass(size_t s);
 #define new(T) ((T*) newClass(sizeof(T)))
-
-
 
 void th_lock(Class* cl);
 void th_wait(Class* cl);
@@ -75,6 +73,7 @@ void th_wait_time(Class* cl, float delay);
 #define SIGNAL(T) (th_signal((Class*) T))
 #define WAIT_TIME(T, D) (th_wait_time((Class*) T, D));
 
+float microTime();
 int tickWait(int next);
 
 #endif

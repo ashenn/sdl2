@@ -17,7 +17,7 @@ SDL_Surface* getImg(char* name) {
 		snprintf(imgPath, 100, "asset/%s.png", name);
 		validatePath(imgPath);
 
-		logger->err(LOG_ASSET, "-- Fething File: %s", imgPath);
+		logger->dbg(LOG_ASSET, "-- Fething File: %s", imgPath);
 
 		img = IMG_Load(imgPath);
 		if (img == NULL){
@@ -163,35 +163,6 @@ void destroyAssets() {
 	logger->dbg(LOG_ASSET, "=== DESTROY ASSESTS ===");
 }
 
-AssetMgr* getAssets() {
-	static AssetMgr* ast = NULL;
-
-	if (ast != NULL) {
-		return ast;
-	}
-
-	logger->inf(LOG_ASSET, "=== INIT ASSEST MANAGER ===");
-	ast = malloc(sizeof(AssetMgr));
-	ast->imgs = initListMgr();
-	ast->fonts = initListMgr();
-
-	ast->getImg = (void*) getImg;
-	ast->getFont = (void*) getFont;
-
-	ast->getJson = loadJson;
-	ast->clear = clearAssets;
-	ast->clearImgs = clearImgs;
-	ast->clearFonts = clearFonts;
-
-	ast->isCached = assetIsCached;
-	ast->cache = cacheAsset;
-
-	ast->destroy = destroyAssets;
-	logger->dbg(LOG_ASSET, "=== INIT ASSEST DONE ===");
-
-	return ast;
-}
-
 SDL_Surface* scaleImg(SDL_Surface* surf, float scaleX, float scaleY) {
 	if (scaleX < 0) {
 		logger->war(LOG_ASSET, "Trying to sacle Surface with negative scaleX: %f", scaleX);
@@ -241,10 +212,118 @@ SDL_Surface* scaleImg(SDL_Surface* surf, float scaleX, float scaleY) {
 
 
 Json* loadJson(char* path) {
-	char jsonPath[350];
-	memset(jsonPath, 0, 350);
-	snprintf(jsonPath, 350, "asset/%s.json", path);
-	Json* json = loadJsonFile(jsonPath);
-	
+    AssetMgr* ast = getAssets();
+	Json* json = (Json*) ast->isCached(path, ast->jsons);
+
+	if (json == NULL){
+		char jsonPath[350];
+		memset(jsonPath, 0, 350);
+		snprintf(jsonPath, 350, "asset/%s.json", path);
+
+		logger->dbg(LOG_ASSET, "-- Fething File: %s", jsonPath);
+		json = loadJsonFile(jsonPath);
+
+		if (json == NULL){
+			logger->err(LOG_ASSET, "-- Fail to get JSON: %s", jsonPath);
+			logger->dbg(LOG_ASSET, "==== GETTING JSON FAILD ====");
+			return NULL;
+		}
+
+		ast->cache(path, ast->jsons, json);
+	}
+	else{
+		logger->dbg(LOG_ASSET, "-- isCached");
+	}
+
 	return json;
+}
+
+Json* loadDefaultConf(char* src) {
+	logger->inf(LOG_CONTROL, "=== Loading Default Conf: %s", src);
+
+	char srcPath[150];
+	memset(srcPath, 0, 150);
+	snprintf(srcPath, 150, "%s.default", src);
+
+	AssetMgr* ast = getAssets();
+	Json* json = ast->getConf(srcPath);
+
+	char* txt = json2Str(json, false, false);
+
+	char confPath[150];
+	memset(confPath, 0, 150);
+	snprintf(confPath, 150, "config/%s.json", src);
+	
+	filePutContent(confPath, txt, false);
+
+	free(txt);
+
+	return json;
+}
+
+Json* loadConf(char* path) {
+    AssetMgr* ast = getAssets();
+	Json* json = (Json*) ast->isCached(path, ast->confs);
+
+	if (json == NULL){
+		char jsonPath[350];
+		memset(jsonPath, 0, 350);
+		snprintf(jsonPath, 350, "config/%s.json", path);
+
+		logger->dbg(LOG_ASSET, "-- Fething File: %s", jsonPath);
+		json = loadJsonFile(jsonPath);
+
+		if (json == NULL && strstr(path, ".default.json") == NULL){
+			logger->war(LOG_ASSET, "-- Fail to get Config: %s", jsonPath);
+			logger->war(LOG_ASSET, "-- Getting Default Config: %s", jsonPath);
+
+			json = loadDefaultConf(path);
+		}
+
+		if (json == NULL){
+			logger->err(LOG_ASSET, "-- Fail to get Config: %s", jsonPath);
+			logger->dbg(LOG_ASSET, "==== GETTING JSON FAILD ====");
+			return NULL;
+		}
+
+		ast->cache(path, ast->confs, json);
+	}
+	else{
+		logger->dbg(LOG_ASSET, "-- isCached");
+	}
+
+	return json;
+}
+
+AssetMgr* getAssets() {
+	static AssetMgr* ast = NULL;
+
+	if (ast != NULL) {
+		return ast;
+	}
+
+	logger->inf(LOG_ASSET, "=== INIT ASSEST MANAGER ===");
+	ast = malloc(sizeof(AssetMgr));
+	ast->imgs = initListMgr();
+	ast->fonts = initListMgr();
+	ast->jsons = initListMgr();
+	ast->confs = initListMgr();
+
+	ast->getImg = (void*) getImg;
+	ast->getFont = (void*) getFont;
+	
+	ast->getJson = loadJson;
+	ast->getConf = loadConf;
+
+	ast->clear = clearAssets;
+	ast->clearImgs = clearImgs;
+	ast->clearFonts = clearFonts;
+
+	ast->isCached = assetIsCached;
+	ast->cache = cacheAsset;
+
+	ast->destroy = destroyAssets;
+	logger->dbg(LOG_ASSET, "=== INIT ASSEST DONE ===");
+
+	return ast;
 }

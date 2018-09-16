@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include "../../common.h"
+#include "../timer/timer.h"
 
 #define EVENT_MGR_BODY \
     CLASS_BODY  \
@@ -33,9 +34,21 @@ struct Event {
 typedef struct KeyEvent KeyEvent;
 #define KEY_EVT_BODY \
     EVENT_BODY  \
+    void* target;  \
+    bool breakEvt;  \
+    SDL_Keycode key;  \
     bool allowRepeat;  \
-    bool (*pressed)(KeyEvent* evt);  \
-    bool (*released)(KeyEvent* evt);
+    \
+    void* (*pressed)(void* evt);  \
+    void* (*released)(void* evt); \
+    \
+    float holdMin;  \
+    float holdMax;  \
+    float holdTime;  \
+    float holdStart;  \
+    bool callHoldOnMax;  \
+    void* (*hold)(void* evt); \
+    DelayedFncLauncher* delayFnc;
 
 struct KeyEvent {
     KEY_EVT_BODY

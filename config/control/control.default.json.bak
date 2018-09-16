@@ -1,0 +1,14 @@
+{
+	"player-1": {
+		"SDLK_UP": {
+			"pressed": null,
+			"release": null,
+			"hold": {
+				"fnc": "jump",
+				"minTime": 0.0,
+				"maxTime": 1.0,
+				"callOnMax": true
+			},
+		}
+	}
+}

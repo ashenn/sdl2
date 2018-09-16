@@ -12,6 +12,7 @@ Class* newClass(size_t s) {
 
 	cl->id = id++;
 	cl->pid = -1;
+	cl->name = NULL;
 	cl->cond = (pthread_cond_t) PTHREAD_COND_INITIALIZER;
 	cl->mutex = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
 
@@ -69,4 +70,12 @@ int tickWait(int next) {
 	SDL_Delay(time);
 
 	return time;
+}
+
+float microTime() {
+    struct timeval time;
+    gettimeofday(&time, NULL); 
+	unsigned long res = ((unsigned long) time.tv_sec * 1000000) + (unsigned long) time.tv_usec;
+
+    return (float) res;
 }

@@ -257,7 +257,7 @@ Node* getNodeByName(ListManager* lstMgr, char* name){
 	Node* currentNode = NULL;
 
 	// fprintf(stdout, "GETTING NODE BY NAME: %d \n", (int) getpid());
-	
+
 
 	if (strlen(name) == 0) {
 		printf("## Error: name param for getNode is invalid\n");
@@ -338,6 +338,10 @@ void freeNodeValue(Node* n) {
 }
 
 void freeNode(Node* node) {
+	if (node->del != NULL) {
+		node->del(node->value);
+	}
+
 	freeNodeKey(node);
 	freeNodeValue(node);
 
@@ -426,14 +430,10 @@ void* deleteNode(ListManager* lstMgr, int id){
 	}
 	//fprintf(stdout, "-- FOUND !!!\n");
 
-	if (node->del != NULL) {
-		node->del(node->value);
-	}
-
 
 	//fprintf(stdout, "DELETE DONE\n");
 	unlockNode(node);
-	freeNode(node);
+	removeAndFreeNode(lstMgr, node);
 
 	return NULL;
 }
@@ -561,13 +561,13 @@ void listIterateFnc(ListManager* list, short (*fnc)(int , Node*, short*, void*, 
 	short process = 1;
 
 	va_list args;
-	va_start(args, param);
 
 	if (n == NULL) {
         n = list->first;
 	}
 
 	while (process && n != NULL) {
+		va_start(args, param);
 		lockNode(n);
 
 		Node* tmp = n;

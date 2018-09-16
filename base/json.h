@@ -11,6 +11,8 @@
 
 #define JSON_TYPES(TYPE) \
 	TYPE(JSON_NULL) \
+	TYPE(JSON_BOOL) \
+	TYPE(JSON_INT) \
 	TYPE(JSON_NUM) \
 	TYPE(JSON_STRING) \
 	TYPE(JSON_ARRAY) \
@@ -32,7 +34,9 @@ typedef struct Json Json;
 struct Json {
 	int id;
 	char* key;
+	int integer;
 	float num;
+	bool boolean;
 	char* string;
 
 	Json* parent;
@@ -43,7 +47,7 @@ struct Json {
 
 typedef struct JsonIterator
 {
-	short (*fnc)(unsigned int i, Json* json);
+	bool (*fnc)(unsigned int i, Json* json, void*);
 } JsonIterator;
 
 
@@ -52,11 +56,12 @@ void deleteJson(Json* json);
 
 Json* loadJsonFile(char* path);
 Json* jsonGetData(Json* json, char* key);
-void* jsonGetValue(Json* json, char* key, float* floatP);
+void* jsonGetValue(Json* json, char* key, void* floatP);
 
 void jsonPrint(Json* json, int tab);
+char* json2Str(Json* json, bool breakLine, bool indent);
 Json* jsonSetValue(Json* json, char* key, void* value, JsonDataEnum type);
 
-void jsonIterate(Json* json, short (*fnc)(unsigned int i, Json* json), void* param, ...);
+void jsonIterate(Json* json, bool (*fnc)(unsigned int, Json*, void*), void* param, ...);
 
 #endif

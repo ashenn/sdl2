@@ -5,7 +5,6 @@
 #include "../../../base/libList.h"
 #include "../../object/spriteObj/spriteObj.h"
 
-
 typedef struct SpriteAnimData {
 	CLASS_BODY
 	bool loop;
@@ -41,11 +40,23 @@ typedef struct SpriteAnimParam {
 
 typedef struct AnimLink
 {
-	char* name;
-	bool (*canLink)(SpriteObject*);
+	CLASS_BODY
+	bool waitEnd;
+	char* target;
+	bool (*fnc)(SpriteAnimParam*);
 } AnimLink;
 
+typedef struct AnimLinkFnc {
+	bool (*fnc)(SpriteAnimParam*);
+} AnimLinkFnc;
+
+
+void AnimLinkDelete(void* l);
+void SpriteAnimDataDelete(void* a);
 SpriteAnimParam* spriteAnimByName(SpriteObject* obj, char* name, unsigned int clipIndex);
 SpriteAnimParam* spriteAnim(SpriteObject* obj, unsigned int animID, unsigned int clipIndex);
+
+void addAnimLinkFncs(char* name, bool (*fnc)(SpriteAnimParam*));
+AnimLinkFnc* getAnimLinkFnc(char* name);
 
 #endif

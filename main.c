@@ -1,14 +1,15 @@
 #include<SDL2\SDL.h>
 #include<SDL2\SDL_Image.h>
+
 #include "common.h"
 #include "base/math.h"
 
-#include "core/asset/asset.h"
-
 #include "core/object/object.h"
 #include "core/object/SpriteObj/spriteObj.h"
+#include "core/object/SpriteObj/character/charObj.h"
 
 #include "core/event/event.h"
+#include "core/event/control/control.h"
 #include "core/project/project.h"
 
 #include "core/view/view.h"
@@ -19,147 +20,205 @@
 #include "core/animation/animation.h"
 #include "core/animation/sprite/spriteAnim.h"
 
+#include "core/character/character.h"
+#include "core/character/charAttr.h"
+
 Object* testObj = NULL;
 
-bool leftPress(KeyEvent* evt) {
-    logger->err(LOG_SPRITE, "LEFT Pressed !!!");
-    testObj->flip = FLIP_H;
+void* leftPress(void* e) {
+	logger->err(LOG_SPRITE, "LEFT Pressed !!!");
+	testObj->flip = FLIP_H;
 
-    spriteAnimByName((SpriteObject*) testObj, "Run", 0);
+	KeyEvent* evt = e;
 
-    return false;
+	CharObj* obj = (CharObj*) evt->target;
+	if (obj == NULL) {
+		logger->war(LOG_MAIN, "EVENT OBJ IS NULL");
+		return NULL;
+	}
+
+	if (obj->ch == NULL) {
+		logger->err(LOG_SPRITE, "Char Object Character Is Null!!!", &obj->ch->attr);
+		return NULL;
+	}
+
+	Character* ch = obj->ch;
+	obj->ch->attr.crouch = false;
+	obj->ch->attr.moving = true;
+
+	return false;
 }
 
-bool release(KeyEvent* evt) {
-    logger->err(LOG_SPRITE, "BTN Realeased !!!");
-    spriteAnimByName((SpriteObject*) testObj, "Idle", 0);
+void* release(void* e) {
+	logger->err(LOG_SPRITE, "BTN Realeased !!!");
 
-    return false;
+	KeyEvent* evt = e;
+	CharObj* obj = (CharObj*) evt->target;
+	if (obj == NULL) {
+		logger->war(LOG_MAIN, "EVENT OBJ IS NULL");
+		return NULL;
+	}
+
+	if (obj->ch == NULL) {
+		logger->err(LOG_SPRITE, "Char Object Character Is Null!!!", &obj->ch->attr);
+		return NULL;
+	}
+
+	Character* ch = obj->ch;
+	obj->ch->attr.crouch = false;
+	obj->ch->attr.moving = false;
+	
+	return false;
 }
 
-bool rightPress(KeyEvent* evt) {
-    logger->err(LOG_SPRITE, "Right Pressed !!!");
-    testObj->flip = FLIP_N;
+void* rightPress(void* e) {
+	logger->err(LOG_SPRITE, "Right Pressed !!!");
 
-    spriteAnimByName((SpriteObject*) testObj, "Run", 0);
+	KeyEvent* evt = (KeyEvent*) e;
+	if (evt->key == SDLK_RIGHT) {
+		testObj->flip = FLIP_N;
+	}
+	else {
+		testObj->flip = FLIP_H;
+	}
 
-    return false;
+	CharObj* obj = (CharObj*) evt->target;
+	obj->ch->attr.crouch = false;
+	obj->ch->attr.moving = true;
+
+	return false;
 }
 
-bool downPress(KeyEvent* evt) {
-    logger->err(LOG_SPRITE, "Down Pressed !!!");
-    spriteAnimByName((SpriteObject*) testObj, "Down", 0);
+void* downPress(void* e) {
+	logger->err(LOG_SPRITE, "Down Pressed !!!");
+	KeyEvent* evt = e;
 
-    return false;
+	CharObj* obj = (CharObj*) evt->target;
+	if (obj == NULL) {
+		logger->war(LOG_MAIN, "EVENT OBJ IS NULL");
+		return NULL;
+	}
+
+	if (obj->ch == NULL) {
+		logger->err(LOG_SPRITE, "Char Object Character Is Null!!!", &obj->ch->attr);
+		return NULL;
+	}
+
+	Character* ch = obj->ch;
+	if (!obj->ch->attr.inAir) {
+		logger->war(LOG_MAIN, "-- NOT IN AIR !!!!");
+		obj->ch->attr.crouch = true;
+	}
+
+	return NULL;
 }
 
 void land(AnimParam* anim) {
-    logger->err(LOG_SPRITE, "-- CALLING LAND");
-    anim = (AnimParam*) spriteAnimByName((SpriteObject*) testObj, "Land", 0);
-    anim->callback = release;
-    anim->deleteOnDone = false;
-    logger->err(LOG_SPRITE, "-- LAND CALLED");
+	logger->err(LOG_SPRITE, "-- CALLING LAND");
+	anim = (AnimParam*) spriteAnimByName((SpriteObject*) testObj, "Land", 0);
+	anim->callback = release;
+	anim->deleteOnDone = false;
+	logger->err(LOG_SPRITE, "-- LAND CALLED");
 }
 
 void inAir(AnimParam* anim) {
-    static int i = 50;
-    if (--i == 0) {
-        i = 25;
-        anim->breakAnim = true;
-    }
-    else{
-        logger->err(LOG_SPRITE, "-- In Air: %d", i);
-    }
+	static int i = 50;
+	if (--i == 0) {
+		i = 25;
+		anim->breakAnim = true;
+	}
+	else{
+		logger->err(LOG_SPRITE, "-- In Air: %d", i);
+	}
 }
 
 void jumpEnd(AnimParam* anim) {
-    logger->err(LOG_SPRITE, "==== JUMP ENDED ====");
-    anim = (AnimParam*) spriteAnimByName((SpriteObject*) testObj, "Fall", 0);
-    anim->stepFnc = inAir;
-    anim->callback = land;
+	logger->err(LOG_SPRITE, "==== JUMP ENDED ====");
+	anim = (AnimParam*) spriteAnimByName((SpriteObject*) testObj, "Fall", 0);
+	anim->stepFnc = inAir;
+	anim->callback = land;
 }
 
-bool topPress(KeyEvent* evt) {
-    logger->err(LOG_SPRITE, "Top Pressed !!!");
-    SpriteAnimParam* anim = spriteAnimByName((SpriteObject*) testObj, "Jump", 0);
-    anim->callback = jumpEnd;
+void* topPress(void* e) {
+	logger->err(LOG_SPRITE, "Top Pressed !!!");
+	KeyEvent* evt = e;
 
-    return false;
+	CharObj* obj = (CharObj*) evt->target;
+	if (obj == NULL) {
+		logger->war(LOG_MAIN, "EVENT OBJ IS NULL");
+		return NULL;
+	}
+
+	if (obj->ch == NULL) {
+		logger->err(LOG_SPRITE, "Char Object Character Is Null!!!", &obj->ch->attr);
+		return NULL;
+	}
+
+	Character* ch = obj->ch;
+	if (obj->ch->attr.inAir) {
+		logger->war(LOG_MAIN, "-- IN AIR");
+		SpriteAnimParam* anim = spriteAnimByName((SpriteObject*) obj, "DoubleJump", 0);
+	}
+	else {
+		logger->war(LOG_MAIN, "-- NOT IN AIR !!!!");
+		obj->ch->attr.inAir = true;
+		obj->ch->attr.crouch = false;
+	}
+
+	return NULL;
 }
 
 int main(int arc, char* argv[]) {
-    logger = initLogger(arc, argv);
+	logger = initLogger(arc, argv);
 
-    Project* pro = initProject(arc, argv);
+	logger->dbg(LOG_MAIN, "-- Init Project");
+	Project* pro = initProject(arc, argv);
 
-    logger->dbg(LOG_MAIN, "-- Init SDL");
-    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
+	logger->dbg(LOG_MAIN, "-- Init SDL");
+	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
-    logger->dbg(LOG_MAIN, "-- Init Window");
-    getWindow();
+	logger->dbg(LOG_MAIN, "-- Init Window");
+	getWindow();
 
+	SDL_Rect pos = {10, 10, 250, 150};
+	Character* ch = initCharacter(CHAR_PLAYER, "adventurer", &pos, 2);
+	testObj = ch->obj;
 
-    SDL_Rect pos = {10, 10, 250, 150};
-    //SDL_Surface* img = IMG_Load("asset/lg-button-green.png");
+	addControl("stop", release);
+	addControl("jump", topPress);
+	addControl("run", rightPress);
+	addControl("down", downPress);
 
-    AssetMgr* ast = getAssets();
+	loadControl("SideScroll", "player-1", testObj);
 
-
-
-    //SDL_Surface* img = ast->getImg("lg-button-green");
-    SDL_Surface* img = ast->getImg("adventurer/adventurer");
-
-    if (img == NULL) {
-        logger->err(LOG_MAIN, "Fail To Load Image");
-        logger->err(LOG_MAIN, "%s", SDL_GetError());
-        return 1;
-    }
-
-    testObj = (Object*) newSpriteObject("testSprite", img, &pos, 2);
-
-
-    logger->err(LOG_MAIN, "BIND EVENT RIGHT");
-    KeyEvent* evt = bindKeyEvent("RIGHT", SDLK_RIGHT, NULL);
-    evt->pressed = rightPress;
-    evt->released = release;
-
-    logger->err(LOG_MAIN, "BIND EVENT LEFT");
-    evt = bindKeyEvent("LEFT", SDLK_LEFT, NULL);
-    evt->pressed = leftPress;
-    evt->released = release;
-
-    logger->err(LOG_MAIN, "BIND EVENT Down");
-    evt = bindKeyEvent("DOWN", SDLK_DOWN, NULL);
-    evt->pressed = downPress;
-    evt->released = release;
-
-    logger->err(LOG_MAIN, "BIND EVENT Top");
-    evt = bindKeyEvent("TOP", SDLK_UP, NULL);
-    evt->pressed = topPress;
-    //evt->released = release;
+	/*logger->err(LOG_MAIN, "BIND EVENT Top");
+	KeyEvent* evt = bindKeyEvent("TOP", SDLK_UP, NULL);
+	evt->holdMin = 0.0f;
+	evt->holdMax = 0.75f;
+	evt->callHoldOnMax = true;
+	evt->hold = topPress;*/
 
 
+	logger->inf(LOG_MAIN, "#### CREATE RENDER TRHEAD");
+	pthread_create(&pro->renderThread, NULL, renderThread, (void*)NULL);
 
-    logger->inf(LOG_MAIN, "#### CREATE RENDER TRHEAD");
-    pthread_create(&pro->renderThread, NULL, renderThread, (void*)NULL);
+	logger->err(LOG_MAIN, "EVENT LOOP");
+	while (pro->status != PRO_CLOSE) {
+		handleEvents();
+	}
 
-    logger->err(LOG_MAIN, "EVENT LOOP");
-    while (pro->status != PRO_CLOSE) {
-        handleEvents();
-    }
-
-    logger->inf(LOG_MAIN, "#### JOIN RENDER TRHEAD");
-    pthread_join(pro->renderThread, NULL);
-    logger->inf(LOG_MAIN, "#### TRHEAD CLOSED");
+	logger->inf(LOG_MAIN, "#### JOIN RENDER TRHEAD");
+	pthread_join(pro->renderThread, NULL);
+	logger->inf(LOG_MAIN, "#### TRHEAD CLOSED");
 
 
-    closeProject();
-    logger->inf(LOG_MAIN, "#### PROJECT CLOSED");
+	closeProject();
+	logger->inf(LOG_MAIN, "#### PROJECT CLOSED");
 
-    logger->inf(LOG_MAIN, "#### CLEAN SDL");
-    SDL_DestroyWindow(getWindow());
-    SDL_Quit();
+	logger->inf(LOG_MAIN, "#### CLEAN SDL");
+	SDL_DestroyWindow(getWindow());
+	SDL_Quit();
 
-    logger->close();
-    return 0;
+	logger->close();
+	return 0;
 }

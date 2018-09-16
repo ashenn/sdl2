@@ -1,7 +1,7 @@
 #include "event.h"
 #include "../project/project.h"
 #include "../../base/basic.h"
-
+#include <sys/time.h>
 
 KeyEvent* bindKeyEvent(char* label, SDL_Keycode key, bool (*fnc)(Event* evt)) {
     logger->inf(LOG_EVENT, "BINDING EVENT: %s", label);
@@ -23,13 +23,24 @@ KeyEvent* bindKeyEvent(char* label, SDL_Keycode key, bool (*fnc)(Event* evt)) {
 
     logger->inf(LOG_EVENT, "-- Init Event");
     ListManager* keyEvents = (ListManager*) n->value;
+
     KeyEvent* evt = new(KeyEvent);
     evt->fnc = fnc;
+    evt->key = key;
     evt->enabled = true;
-    evt->pressed = NULL;
-    evt->released = NULL;
+    evt->breakEvt = false;
+
     evt->name = Str(label);
     evt->allowRepeat = false;
+
+    evt->pressed = NULL;
+    evt->released = NULL;
+
+    evt->holdMin = 0;
+    evt->delayFnc = NULL;
+    evt->callHoldOnMax = 0;
+
+    evt->hold = NULL;
 
     logger->inf(LOG_EVENT, "ADD EVENT TO LIST");
 
@@ -40,11 +51,11 @@ KeyEvent* bindKeyEvent(char* label, SDL_Keycode key, bool (*fnc)(Event* evt)) {
 }
 
 EventMgr* getEventMgr() {
-    logger->inf(LOG_EVENT, "==== GETTTING EVNT MANAGER ====");
+    //logger->inf(LOG_EVENT, "==== GETTTING EVNT MANAGER ====");
     static EventMgr* mgr = NULL;
 
     if (mgr != NULL) {
-        logger->inf(LOG_EVENT, "Already Init");
+        //logger->inf(LOG_EVENT, "Already Init");
         return mgr;
     }
 
@@ -69,14 +80,55 @@ ListManager* getEventsByKey(int key) {
     return (ListManager*) n->value;
 }
 
+void* callHoldEvent(void* delay) {
+    DelayedFunction* delayFnc = (DelayedFunction*) delay;
+    KeyEvent* evt = (KeyEvent*) delayFnc->param;
+
+    evt->hold(evt);
+}
+
+void keyHold(KeyEvent* evt, bool up) {
+    if (!up) {
+        logger->inf(LOG_EVENT, "==== START HOLD: %s ===", evt->name);
+        logger->inf(LOG_EVENT, "-- MinTime: %d", evt->holdMin);
+        logger->inf(LOG_EVENT, "-- MaxTime: %d", evt->holdMax);
+
+        int delay = evt->callHoldOnMax ? evt->holdMax : -1;
+        logger->inf(LOG_EVENT, "-- Delay: %d ===", delay);
+
+        evt->holdStart = microTime();
+        DelayedFncLauncher* delayFnc = delayed(delay, false, callHoldEvent, NULL, (void*) evt);
+
+        evt->delayFnc = delayFnc;
+        logger->inf(LOG_EVENT, "-- HOLD SET: #%d ===", evt->delayFnc->id);
+    }
+    else if(evt->delayFnc) {
+        logger->inf(LOG_EVENT, "=== RELEASE HOLD: %s ===", evt->name);
+        float curTime = microTime();
+
+        float holdTime = (curTime - evt->holdStart) / 1000000;
+        logger->inf(LOG_EVENT, "-- time: %lf / %lf ===", holdTime, evt->holdMin);
+
+        if (holdTime >= evt->holdMin) {
+            logger->inf(LOG_EVENT, "-- Calling Fundtion ===");
+            resumeDelayedFunction(evt->delayFnc);
+        }
+        else {
+            logger->inf(LOG_EVENT, "-- Kill Fundtion ===");
+            killDelayedFunction(evt->delayFnc, true, false);
+            evt->delayFnc = NULL;
+        }
+    }
+}
+
 short callEventQue(int i, Node* n, short* delete, void* param, va_list* args) {
-    logger->inf(LOG_EVENT, "==== CALL EVENT QUEU ====");
+    //logger->inf(LOG_EVENT, "==== CALL EVENT QUEU ====");
     if (n->value == NULL) {
         logger->war(LOG_EVENT, "EVENT IS NULL !!!!");
         return true;
     }
 
-    logger->inf(LOG_EVENT, "-- GET EVENT");
+    //logger->inf(LOG_EVENT, "-- GET EVENT");
     KeyEvent* evt = (KeyEvent*) n->value;
     if (!evt->enabled) {
         logger->dbg(LOG_EVENT, "-- Event Disabled");
@@ -84,12 +136,11 @@ short callEventQue(int i, Node* n, short* delete, void* param, va_list* args) {
     }
 
 
-    bool doBreak = false;
     bool up = *((bool*) param);
 
     SDL_Event* sdl_evt = (SDL_Event*) va_arg(*args, SDL_Event*);
     if (sdl_evt->key.repeat && !evt->allowRepeat) {
-        logger->dbg(LOG_EVENT, "-- Skipping Reapeat");
+        //logger->dbg(LOG_EVENT, "-- Skipping Reapeat");
         return true;
     }
 
@@ -99,23 +150,31 @@ short callEventQue(int i, Node* n, short* delete, void* param, va_list* args) {
 
     if (!up && evt->pressed != NULL) {
         logger->dbg(LOG_EVENT, "-- Call Pressed");
-        doBreak = !evt->pressed(evt);
+        !evt->pressed(evt);
     }
     else if(up && evt->released != NULL) {
         logger->dbg(LOG_EVENT, "-- Call Released");
-        doBreak = !evt->released(evt);
+        !evt->released(evt);
     }
 
     if (evt->fnc != NULL) {
         logger->dbg(LOG_EVENT, "-- Call FNC");
-        doBreak = !evt->fnc((Event*) evt) || !doBreak;
+        !evt->fnc((Event*) evt);
     }
 
-    return !doBreak;
+    logger->dbg(LOG_EVENT, "-- Check Hold: %p", evt->hold);
+    if (evt->hold != NULL) {
+        keyHold(evt, up);
+    }
+
+    bool doBreak = evt->breakEvt;
+    evt->breakEvt = false;
+
+    return doBreak;
 }
 
 void eventKey(int key, bool up, SDL_Event* evt) {
-    logger->inf(LOG_EVENT, "==== Key EVENT ====");
+    //logger->inf(LOG_EVENT, "==== Key EVENT ====");
 
     if (key == SDLK_ESCAPE) {
         logger->dbg(LOG_EVENT, "-- Event: Quit");
@@ -131,49 +190,49 @@ void eventKey(int key, bool up, SDL_Event* evt) {
         return;
     }
 
-    logger->inf(LOG_EVENT, "==== CALL ITERATE ====");
+    //logger->inf(LOG_EVENT, "==== CALL ITERATE ====");
     listIterateFnc(events, callEventQue, NULL, &up, evt);
-    logger->inf(LOG_EVENT, "==== ITERATE DONE ====");
+    //logger->inf(LOG_EVENT, "==== ITERATE DONE ====");
 
-    logger->inf(LOG_EVENT, "==== EVENT DONE ====");
+    //logger->inf(LOG_EVENT, "==== EVENT DONE ====");
 }
 
 void handleEvents() {
-    logger->inf(LOG_EVENT, "==== HANDLE EVENTS ====");
+    //logger->inf(LOG_EVENT, "==== HANDLE EVENTS ====");
     int key = -1;
     SDL_Event event;
 
     if (SDL_PollEvent(&event)) {
-        logger->inf(LOG_EVENT, "-- LOOP");
-        logger->inf(LOG_EVENT, "-- Type: %d", event.type);
+        //logger->inf(LOG_EVENT, "-- LOOP");
+        //logger->inf(LOG_EVENT, "-- Type: %d", event.type);
         switch (event.type) {
             case SDL_QUIT:
-                logger->inf(LOG_EVENT, "Evt Quit");
+                //logger->inf(LOG_EVENT, "Evt Quit");
                 changeStatus(PRO_CLOSE);
                 break;
 
             case SDL_KEYUP:
-                logger->inf(LOG_EVENT, "Evt Key Up");
+                //logger->inf(LOG_EVENT, "Evt Key Up");
                 key = event.key.keysym.sym;
                 eventKey(key, true, &event);
                 break;
 
             case SDL_KEYDOWN:
-                logger->inf(LOG_EVENT, "Evt Key Down");
+                //logger->inf(LOG_EVENT, "Evt Key Down");
                 key = event.key.keysym.sym;
                 eventKey(key, false, &event);
                 break;
 
             default:
-                logger->inf(LOG_EVENT, "Unknown Event Type");
+                //logger->inf(LOG_EVENT, "Unknown Event Type");
                 break;
 
         }
 
-        logger->inf(LOG_EVENT, "-- End Loop");
+        //logger->inf(LOG_EVENT, "-- End Loop");
     }
 
-    logger->inf(LOG_EVENT, "-- Loop Done");
+    //logger->inf(LOG_EVENT, "-- Loop Done");
 }
 
 void removeKeyEvent(Event* evt) {

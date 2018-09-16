@@ -53,6 +53,9 @@ void* renderThread(void* arg) {
 	ListManager* layerList = getLayers();
 
 	int nextTick = SDL_GetTicks();
+
+	pthread_t animThread;
+	//pthread_create(&animThread, NULL, renderThread, (void*)NULL);
 	while (pro->status != PRO_CLOSE) {
 		UNLOCK(pro);
         nextTick += (1000 / FPS);

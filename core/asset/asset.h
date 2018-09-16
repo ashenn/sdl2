@@ -1,6 +1,8 @@
 #ifndef _ASSET_H__
 #define _ASSET_H__
 
+#include <SDL2/SDL.h>
+
 #include "../../common.h"
 #include "../../base/libList.h"
 #include "../../base/json.h"
@@ -9,9 +11,12 @@
 	CLASS_BODY			\
 	ListManager* imgs;	\
 	ListManager* fonts;	\
+	ListManager* jsons;	\
+	ListManager* confs;	\
 	\
 	void* (*getImg) (char* name);				\
 	Json* (*getJson) (char* path);				\
+	Json* (*getConf) (char* path);				\
 	void* (*getFont) (char* name, short size);	\
 	void* (*getTexture) (char* name, short size);	\
 	\
