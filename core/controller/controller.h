@@ -2,7 +2,8 @@
 #define CONTROLLER_H
 
 #include <SDL2/SDL.h>
-#include "../object/object.h"
+#include "../movement/movement.h"
+#include "../character/character.h"
 
 typedef enum ControllerType
 {
@@ -35,6 +36,8 @@ struct Controller {
 	CONTROLLER_BODY
 };
 
+void stopMovement(Controller* ctrl);
+void moveDir(Controller* ctrl, DirectionEnum dir);
 void initController(Controller* ctrl, ControllerType type);
 
 #endif

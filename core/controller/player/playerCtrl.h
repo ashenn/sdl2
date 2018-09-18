@@ -8,10 +8,10 @@ typedef struct PlayerCtrl
 {
 	CONTROLLER_BODY
 	unsigned int playerID;
-} player;
+} PlayerCtrl;
 
 ListManager* getPlayerList();
 PlayerCtrl* getPlayer(unsigned int id);
-Controller* spawnPlayer(int id, char* name, char* jsonKey);
+PlayerCtrl* spawnPlayer(int id, char* name, char* jsonKey, SDL_Rect* pos, int z);
 
 #endif

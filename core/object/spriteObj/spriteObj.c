@@ -5,22 +5,29 @@
 #include "./character/charObj.h"
 
 bool Idl2Run(SpriteAnimParam* o) {
-	logger->inf(LOG_SPRITE, "===== !!!! Idl2Run !!!! ====");
-
 	CharObj* obj = (CharObj*) o->obj;
-	logger->inf(LOG_SPRITE, "===== !!!! Fall2Land !!!! ====");
 
-	return obj->ch->attr.moving;
+	if (obj->ch->attr.moving) {
+		logger->inf(LOG_SPRITE, "===== !!!! Idl2Run !!!! ====");
+		return true;
+	}
+
+	return false;
 }
 
 bool Idle2Down(SpriteAnimParam* o) {
-	logger->inf(LOG_SPRITE, "===== !!!! Idl2Down !!!! ====");
 	CharObj* obj = (CharObj*) o->obj;
-	return obj->ch->attr.crouch;
+
+	if (obj->ch->attr.crouch) {
+		logger->inf(LOG_SPRITE, "===== !!!! Idl2Down !!!! ====");
+		return true;
+	}
+
+	return false;
 }
 
 bool Idl2Jump(SpriteAnimParam* obj) {
-	logger->inf(LOG_SPRITE, "===== !!!! Idl2Jump !!!! ====");
+	//logger->inf(LOG_SPRITE, "===== !!!! Idl2Jump !!!! ====");
 	return false;
 }
 
@@ -29,37 +36,79 @@ bool Fall2Land(SpriteAnimParam* o) {
 	logger->inf(LOG_SPRITE, "===== !!!! Fall2Land !!!! ====");
 
 	obj->ch->attr.inAir = false;
+	obj->ch->attr.doubleJump = false;
+	obj->ch->attr.hasDoubleJump = false;
 
 	return true;
 }
 
 bool Idle2Fall(SpriteAnimParam* o) {
 	CharObj* obj = (CharObj*) o->obj;
-	logger->inf(LOG_SPRITE, "===== !!!! Idle2Fall !!!! ====");
 
-	return obj->ch->attr.inAir;
+	if (obj->ch->attr.inAir) {
+		logger->inf(LOG_SPRITE, "===== !!!! Idle2Fall !!!! ====");
+		return true;
+	}
+
+	return false;
 }
 
 bool Down2Jump(SpriteAnimParam* o) {
 	CharObj* obj = (CharObj*) o->obj;
-	logger->inf(LOG_SPRITE, "===== !!!! Down2Jump !!!! ====");
 
-	return obj->ch->attr.inAir;
+	if (obj->ch->attr.inAir) {
+		logger->inf(LOG_SPRITE, "===== !!!! Down2Jump !!!! ====");
+		return true;
+	}
+
+	return false;
 }
 
 bool Down2Idle(SpriteAnimParam* o) {
 	CharObj* obj = (CharObj*) o->obj;
-	logger->inf(LOG_SPRITE, "===== !!!! Down2Jump !!!! ====");
 
-	return !obj->ch->attr.crouch;
+	if (!obj->ch->attr.crouch) {
+		logger->inf(LOG_SPRITE, "===== !!!! Down2Jump !!!! ====");
+		return true;
+	}
+
+	return false;
 }
 
 bool Run2Idle(SpriteAnimParam* o) {
 	CharObj* obj = (CharObj*) o->obj;
-	logger->err(LOG_SPRITE, "===== !!!! Run2Idle !!!! ====");
 
-	logger->err(LOG_SPRITE, "-- MOVING: %d", !obj->ch->attr.moving);
-	return !obj->ch->attr.moving;
+	if (!obj->ch->attr.moving) {
+		logger->err(LOG_SPRITE, "===== !!!! Run2Idle !!!! ====");
+
+		return true;
+	}
+
+	return false;
+}
+
+bool Run2Jump(SpriteAnimParam* o) {
+	CharObj* obj = (CharObj*) o->obj;
+
+	if (obj->ch->attr.inAir) {
+		logger->err(LOG_SPRITE, "===== !!!! Run2Jump !!!! ====");
+
+		return true;
+	}
+
+	return false;
+}
+
+bool Jump2DoubleJump(SpriteAnimParam* o) {
+	CharObj* obj = (CharObj*) o->obj;
+
+	if (!obj->ch->attr.hasDoubleJump && obj->ch->attr.doubleJump) {
+		obj->ch->attr.hasDoubleJump = true;
+		logger->err(LOG_SPRITE, "===== !!!!  Jump2DoubleJump !!!! ====");
+		return true;
+	}
+
+	return false;
 }
 
 void initAnimsLinks() {
@@ -71,12 +120,14 @@ void initAnimsLinks() {
 
 	addAnimLinkFncs("Idl2Run", Idl2Run);
 	addAnimLinkFncs("Idl2Jump", Idl2Jump);
+	addAnimLinkFncs("Run2Idle", Run2Idle);
+	addAnimLinkFncs("Run2Jump", Run2Jump);
 	addAnimLinkFncs("Fall2Land", Fall2Land);
 	addAnimLinkFncs("Idle2Fall", Idle2Fall);
 	addAnimLinkFncs("Down2Jump", Down2Jump);
 	addAnimLinkFncs("Idle2Down", Idle2Down);
-	addAnimLinkFncs("Run2Idle", Run2Idle);
 	addAnimLinkFncs("Down2Idle", Down2Idle);
+	addAnimLinkFncs("Jump2DoubleJump", Jump2DoubleJump);
 
 	isInit = true;
 }
@@ -105,7 +156,6 @@ SpriteAnimData* addAnim(SpriteObject* obj, char* name, int fps, int clipCnt, int
 	int cell_y = obj->cell_y;
 
     int i = clipIndex;
-
 	unsigned short curRow = row;
 
 	for (int a = 0; a < anim->clipCnt; ++a) {
@@ -303,7 +353,14 @@ void initSpriteObj(SpriteObject* obj, char* name, char* path, SDL_Rect* pos, sho
 
 
 
+	logger->inf(LOG_SPRITE, "-- Getting Anims:");
 	Json* anims = jsonGetData(json, "anims");
+	logger->inf(LOG_SPRITE, "-- Childs: %p", anims);
+
+	if (anims == NULL) {
+		jsonPrint(json, 0);
+	}
+
 	listIterateFnc(anims->childs, initAnims, NULL, obj);
 
 	logger->dbg(LOG_SPRITE, "-- Init Anim Data");
@@ -312,7 +369,7 @@ void initSpriteObj(SpriteObject* obj, char* name, char* path, SDL_Rect* pos, sho
 	logger->dbg(LOG_SPRITE, "-- Adding To View");
 	addObjectToView((Object*) obj);
 
-	spriteAnim(obj, 1, 0);
+	spriteAnimByName(obj, "Idle", 0);
 
 	//logger->dbg(LOG_SPRITE, "-- Anim ID: #%d", anim->id);
 

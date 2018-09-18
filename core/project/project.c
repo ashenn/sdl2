@@ -25,7 +25,7 @@ void addDebugFlag(char* flag) {
 void initProjectFlags(Project* pro) {
 	pro->flagList = initListMgr();
 
-	static unsigned int flags[18] = {
+	static unsigned int flags[19] = {
 	    LOG_NONE,
 		LOG_JSON,
 		LOG_MAIN,
@@ -42,7 +42,8 @@ void initProjectFlags(Project* pro) {
 		LOG_SPRITE,
 		LOG_CHAR,
 		LOG_CONTROL,
-		LOG_CONTROLER,
+		LOG_CONTROLLER,
+		LOG_MOVE
 	};
 
 
@@ -94,8 +95,11 @@ void initProjectFlags(Project* pro) {
 	addNodeV(pro->flagList, "control", &flags[15], 0);
 	addLoggerTag(flags[15], "control", 0);
 
-	addNodeV(pro->flagList, "control", &flags[16], 0);
+	addNodeV(pro->flagList, "controller", &flags[16], 0);
 	addLoggerTag(flags[16], "controller", 0);
+
+	addNodeV(pro->flagList, "move", &flags[17], 0);
+	addLoggerTag(flags[17], "move", 0);
 }
 
 
@@ -138,7 +142,7 @@ Project* initProject(int argc, char* argv[]) {
 	pro->status = PRO_INIT;
 	logger->inf(LOG_PROJECT, "==== INIT PROJECT FLAGS ====");
 	initProjectFlags(pro);
-	
+
 	logger->inf(LOG_PROJECT, "==== INIT PROJECT ARGS ====");
 	parseProjectArgs(argc, argv);
 

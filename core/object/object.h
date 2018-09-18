@@ -1,13 +1,15 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include "../../base/basic.h"
 #include "../../common.h"
+#include "../../base/basic.h"
 
 #include<SDL2\SDL.h>
 
 typedef struct Object Object;
 typedef struct Controller Controller;
+
+#include "..//movement/movement.h"
 
 #define OBJECT_BODY \
 	CLASS_BODY 		\
@@ -22,12 +24,13 @@ typedef struct Controller Controller;
 	SDL_Rect pos;		\
 	SDL_Rect* clip; \
 	\
+	double rotation;			\
+	Movement movement;			\
 	Controller* controller;		\
 	\
 	Object* parent;             \
 	ListManager* childs;		\
 	\
-	double rotation;			\
 	SDL_Texture* texture;		\
 	SDL_RendererFlip flip;		\
 	SDL_Surface* component;		\
@@ -41,6 +44,7 @@ struct Object
 {
 	OBJECT_BODY
 };
+
 
 // CREATING
 ListManager* getObjectList();	// List Of all visual Objects

@@ -18,7 +18,6 @@ ListManager* getKeyList() {
 }
 
 bool bindControl(unsigned int i, Json* conf, void* target) {
-	ControlMgr* controls = getControls();
 	logger->inf(LOG_CONTROL, "=== APPLY CONTROL CONF #%d: %s", i, conf->key);
 
 	jsonPrint(conf, 0);
@@ -237,6 +236,10 @@ void initKeys() {
 	logger->inf(LOG_CONTROL, "-- Adding SDLK_DOWN");
 	static SDL_Keycode k_down = SDLK_DOWN;
 	addNodeV(keys, "SDLK_DOWN", &k_down, 0);
+
+	logger->inf(LOG_CONTROL, "-- Adding SDLK_SPACE");
+	static SDL_Keycode k_space = SDLK_SPACE;
+	addNodeV(keys, "SDLK_SPACE", &k_space, 0);
 }
 
 ControlMgr* getControls() {

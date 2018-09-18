@@ -8,7 +8,9 @@ AnimParam* animAddObject(Object* obj, AnimParam* param) {
 	Animator* anim = getAnimator();
 
 	//logger->dbg(LOG_ANIM, "FINDING NODE");
+	animRemoveObject(obj);
 	Node* objNode = getNodeByName(anim->moves, obj->name);
+	//Node* objNode = getNodeByName(anim->moves, obj->name);
 
 	if (objNode == NULL) {
 		//logger->dbg(LOG_ANIM, "-- Animation: Adding New Object: %s", obj->name);
@@ -200,7 +202,7 @@ AnimMoveParam* newMoveParam(Object* obj, float time, float delay, void* fnc) {
 }
 
 AnimParam* moveTo(Object* obj, int x, int y, float time, float delay) {
-	//logger->inf(LOG_ANIM, "==== Animation: Moving: %s to %d | %d (%fs) ====", obj->name, x, y, time);
+	logger->err(LOG_ANIM, "==== Animation: Moving: %s to %d | %d (%fs) ====", obj->name, x, y, time);
 
 	SDL_Rect targetPos;
 	targetPos.x = x;
@@ -226,55 +228,71 @@ AnimParam* moveTo(Object* obj, int x, int y, float time, float delay) {
     logger->dbg(LOG_ANIM, "==== ADDING OBJ TO ANIMATOR !!!!");
 
     animAddObject(obj, (AnimParam*) param);
-    logger->dbg(LOG_ANIM, "==== Animation Added ====");
+    logger->err(LOG_ANIM, "==== Animation Added ====");
     return (AnimParam*) param;
 }
 
 short animateObject(int index, Node* n, short* delete, void* data, va_list* args) {
 	ListManager* moves = (ListManager*) n->value;
 	if (!moves->nodeCount) {
+		*delete = 1;
 		return true;
 	}
 
-	AnimParam* param = (AnimParam*) moves->first->value;
+	n = NULL;
+	logger->err(LOG_ANIM, "####### START #######");
+	while ((n = listIterate(moves, n)) != NULL) {
+		AnimParam* param = (AnimParam*) n->value;
 
-	//logger->inf(LOG_ANIM, "ANIMATING: %s", param->obj->name);
+		//logger->err(LOG_ANIM, "ANIMATING: %s", param->obj->name);
 
-	if (param->delay > 0) {
-		//logger->dbg(LOG_ANIM, "-- delayed: %d", param->delay);
-		param->delay--;
-		return true;
+		if (param->delay > 0) {
+			//logger->dbg(LOG_ANIM, "-- delayed: %d", param->delay);
+			param->delay--;
+			break;
+		}
+
+		if (param->fnc != NULL) {
+			//logger->dbg(LOG_ANIM, "-- Calling Anim Function: %s", param->obj->name);
+			param->fnc(param);
+		}
+
+		if (param->stepFnc != NULL) {
+			//logger->dbg(LOG_ANIM, "-- Calling Custom Step Function");
+			param->stepFnc(param);
+		}
+
+		param->frames--;
+		//logger->dbg(LOG_ANIM, "-- Frames Left: %d", param->frames);
+
+		if (param->frames > 0 && !param->breakAnim) {
+			break;
+		}
+
+		//logger->dbg(LOG_ANIM, "-- Animation Ended");
+
+		if (param->callback != NULL) {
+			logger->err(LOG_ANIM, "-- Calling CallBack");
+			param->callback(param);
+		}
+
+		if (param->loop) {
+			//logger->inf(LOG_ANIM, "-- Looping Animation");
+			param->frames = param->initialFrames;
+			break;
+		}
+		else{
+			Node* tmp = n->prev;
+			logger->err(LOG_ANIM, "-- Removing Anim");
+			removeAndFreeNode(moves, n);
+			
+			n = tmp;
+		}
 	}
+	logger->err(LOG_ANIM, "####### End #######");
 
-	if (param->fnc != NULL) {
-		//logger->dbg(LOG_ANIM, "-- Calling Anim Function: %s", param->obj->name);
-		param->fnc(param);
-	}
-
-	if (param->stepFnc != NULL) {
-		//logger->dbg(LOG_ANIM, "-- Calling Custom Step Function");
-		param->stepFnc(param);
-	}
-
-	param->frames--;
-	//logger->dbg(LOG_ANIM, "-- Frames Left: %d", param->frames);
-
-	if (param->frames > 0 && !param->breakAnim) {
-		return true;
-	}
-
-	//logger->dbg(LOG_ANIM, "-- Animation Ended");
-
-	if (param->callback != NULL) {
-		//logger->inf(LOG_ANIM, "-- Calling CallBack");
-		param->callback(param);
-	}
-
-	if (param->loop) {
-		//logger->inf(LOG_ANIM, "-- Looping Animation");
-		param->frames = param->initialFrames;
-	}
-	else{
+	if (!moves->nodeCount) {
+		logger->err(LOG_ANIM, "-- Deleting Move List Anim");
 		*delete = 1;
 	}
 
@@ -291,18 +309,14 @@ short checkAnimLink(int i, Node* n, short* delete, void* param, va_list* arg) {
 		return true;
 	}
 	else if (link->fnc != NULL) {
-		//logger->inf(LOG_SPRITE, "-- Calling Anim Link Func !!!");
-		
 		if (link->fnc(animParam)) {
-			//logger->inf(LOG_SPRITE, "-- Swithcing Anim !!!");
-			//*delete = true;
+			logger->inf(LOG_SPRITE, "-- Swithcing Anim: %s !!!", n->name);
 			spriteAnimByName((SpriteObject*) animParam->obj, link->target, 0);
 			return false;
 		}
 	}
 	else {
-		//logger->dbg(LOG_SPRITE, "-- No Check Function Assumed True");
-		//*delete = true;
+		logger->dbg(LOG_SPRITE, "-- ANIM: %s No Check Function Assumed True", n->name);
 		spriteAnimByName((SpriteObject*) animParam->obj, link->target, 0);
 		return false;
 	}
@@ -325,7 +339,9 @@ short animateSprite(int index, Node* n, short* delete, void* data, va_list* args
 	SpriteAnimParam* param = (SpriteAnimParam*) n->value;
 
 	if (param->fnc != NULL) {
+		//logger->inf(LOG_SPRITE, "== PRE WAITING #%d: %d ==", param->id, param->wait);
 		param->fnc((AnimParam*) param);
+		//logger->inf(LOG_SPRITE, "== AFTER WAITING #%d: %d ==", param->id, param->wait);
 	}
 
 	if (param->stepFnc != NULL) {
@@ -360,7 +376,6 @@ void animate() {
 	if (anim->moves->nodeCount) {
 		//logger->inf(LOG_ANIM, "Objects To Animate: #%d", anim->moves->nodeCount);
 		listIterateFnc(anim->moves, animateObject, NULL, NULL);
-		return;
 	}
 
 
@@ -409,15 +424,9 @@ void spriteRemoveObject(Object* obj) {
 		return;
 	}
 
-	//logger->inf(LOG_ANIM, "==== Removing Sprite Animation For Object: %s ====", obj->name);
+	//logger->inf(LOG_SPRITE, "==== Removing Sprite Animation For Object: %s ====", obj->name);
 	Animator* anim = getAnimator();
 
-	Node* n = getNodeByName(anim->sprites, obj->name);
-	if (n == NULL) {
-		//logger->inf(LOG_ANIM, "-- Not Found");
-		return;
-	}
-
-	SpriteAnimParam* param = (SpriteAnimParam*) n->value;
-	removeAndFreeNode(anim->sprites, n);
+	//logger->inf(LOG_SPRITE, "==== Call DELETE NODE: %s ====", obj->name);
+	deleteNodeByName(anim->sprites, obj->name);
 }

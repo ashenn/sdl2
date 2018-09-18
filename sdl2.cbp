@@ -4,21 +4,13 @@
 	<Project>
 		<Option title="sdl2" />
 		<Option pch_mode="2" />
-		<Option compiler="sd2_migwin" />
-		<MakeCommands>
-			<Build command="" />
-			<CompileFile command="" />
-			<Clean command="" />
-			<DistClean command="" />
-			<AskRebuildNeeded command="" />
-			<SilentBuild command=" &gt; $(CMD_NULL)" />
-		</MakeCommands>
+		<Option compiler="sdl2_mingw73" />
 		<Build>
 			<Target title="Debug">
 				<Option output="bin/Debug/sdl2" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
-				<Option compiler="sd2_migwin" />
+				<Option compiler="sdl2_mingw73" />
 				<Option parameters="--logLvl 0" />
 				<Compiler>
 					<Add option="-g" />
@@ -28,7 +20,7 @@
 				<Option output="bin/Release/sdl2" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
-				<Option compiler="sd2_migwin" />
+				<Option compiler="sdl2_mingw73" />
 				<Compiler>
 					<Add option="-O2" />
 				</Compiler>
@@ -37,6 +29,13 @@
 				</Linker>
 			</Target>
 		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-pg" />
+		</Compiler>
+		<Linker>
+			<Add option="-pg -lgmon" />
+		</Linker>
 		<Unit filename="base/basic.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -81,6 +80,7 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="core/asset/asset.h" />
+		<Unit filename="core/character/charAttr.h" />
 		<Unit filename="core/character/character.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -89,6 +89,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="core/controller/controller.h" />
+		<Unit filename="core/controller/player/playerCtrl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/controller/player/playerCtrl.h" />
 		<Unit filename="core/event/control/control.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -97,6 +101,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="core/event/event.h" />
+		<Unit filename="core/movement/movement.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/movement/movement.h" />
 		<Unit filename="core/object/collisionObj/collisionObj.c">
 			<Option compilerVar="CC" />
 		</Unit>

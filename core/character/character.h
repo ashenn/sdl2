@@ -3,11 +3,6 @@
 
 #include "../../common.h"
 #include "../../base/math.h"
-#include "../object/object.h"
-
-typedef struct Character Character;
-#include "./charAttr.h"
-#include "../controller/controller.h"
 
 typedef enum CharacterType
 {
@@ -16,6 +11,11 @@ typedef enum CharacterType
 	CHAR_BOSS
 } CharacterType;
 
+typedef struct Character Character;
+#include "./charAttr.h"
+#include "../controller/controller.h"
+
+#include "../object/spriteObj/character/charObj.h"
 
 #define CHARACTER_BODY \
 	CLASS_BODY \

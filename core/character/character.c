@@ -13,9 +13,16 @@ Character* newCharacter() {
 	ch->onPossess = NULL;
 	ch->onUnPossess = NULL;
 
-	ch->attr.inAir = true;
+	ch->attr.inAir = false;
 	ch->attr.crouch = false;
 	ch->attr.moving = false;
+	ch->attr.doubleJump = false;
+	ch->attr.canDoubleJump = true;
+	ch->attr.hasDoubleJump = false;
+
+
+	ch->attr.moveSpeed = 0;
+	ch->attr.maxMoveSpeed = 25;
 
 	return ch;
 }

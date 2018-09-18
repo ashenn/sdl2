@@ -1,18 +1,19 @@
 # depslib dependency file v1.0
-1536748567 source:c:\work\cpp\sdl2\base\basic.c
+1537273007 source:c:\work\cpp\sdl2\base\basic.c
 	"basic.h"
 	<stdio.h>
+	<float.h>
 	<stdlib.h>
 	<unistd.h>
 	<string.h>
 
-1536748573 c:\work\cpp\sdl2\base\basic.h
+1537171064 c:\work\cpp\sdl2\base\basic.h
 
-1536934154 source:c:\work\cpp\sdl2\base\liblist.c
+1537177083 source:c:\work\cpp\sdl2\base\liblist.c
 	"libList.h"
 	<stdarg.h>
 
-1536932124 c:\work\cpp\sdl2\base\liblist.h
+1537171064 c:\work\cpp\sdl2\base\liblist.h
 	<assert.h>
 	<stdio.h>
 	<stdlib.h>
@@ -37,15 +38,16 @@
 	<string.h>
 	"libList.h"
 
-1536941778 source:c:\work\cpp\sdl2\main.c
+1537273474 source:c:\work\cpp\sdl2\main.c
 	<SDL2\SDL.h>
 	<SDL2\SDL_Image.h>
 	"common.h"
 	"base/math.h"
-	"core/asset/asset.h"
 	"core/object/object.h"
 	"core/object/SpriteObj/spriteObj.h"
+	"core/object/SpriteObj/character/charObj.h"
 	"core/event/event.h"
+	"core/event/control/control.h"
 	"core/project/project.h"
 	"core/view/view.h"
 	"core/asset/asset.h"
@@ -53,6 +55,9 @@
 	"core/timer/timer.h"
 	"core/animation/animation.h"
 	"core/animation/sprite/spriteAnim.h"
+	"core/character/character.h"
+	"core/character/charAttr.h"
+	"core/controller/player/playerCtrl.h"
 
 1519922305 c:\work\cpp\libs\sdl-2.0.8\include\sdl2\sdl.h
 	"SDL_main.h"
@@ -402,7 +407,7 @@
 	<stdlib.h>
 	<SDL2\SDL.h>
 
-1536678877 source:c:\work\cpp\sdl2\base\logger.c
+1537171064 source:c:\work\cpp\sdl2\base\logger.c
 	<stdio.h>
 	<stdlib.h>
 	<unistd.h>
@@ -414,7 +419,7 @@
 	"basic.h"
 	"logger.h"
 
-1536933703 c:\work\cpp\sdl2\common.h
+1537191189 c:\work\cpp\sdl2\common.h
 	<string.h>
 	<stdio.h>
 	<stdlib.h>
@@ -423,13 +428,13 @@
 	<pthread.h>
 	"base/logger.h"
 
-1536665031 source:c:\work\cpp\sdl2\core\object\object.c
+1537171064 source:c:\work\cpp\sdl2\core\object\object.c
 	"object.h"
 	"../view/view.h"
 	"../view/layer/layer.h"
 	"../animation/animation.h"
 
-1536748612 c:\work\cpp\sdl2\core\object\object.h
+1537171064 c:\work\cpp\sdl2\core\object\object.h
 	"../../base/basic.h"
 	"../../common.h"
 	<SDL2\SDL.h>
@@ -457,12 +462,12 @@
 1535126379 source:c:\work\cpp\sdl2\core\view\layer\layer.c
 	"layer.h"
 
-1536933510 source:c:\work\cpp\sdl2\common.c
+1537171064 source:c:\work\cpp\sdl2\common.c
 	<sys/time.h>
 	<SDL2/SDL.h>
 	"common.h"
 
-1536923255 source:c:\work\cpp\sdl2\core\asset\asset.c
+1537273462 source:c:\work\cpp\sdl2\core\asset\asset.c
 	<SDL2/SDL.h>
 	<SDL2/SDL_image.h>
 	<SDL2/SDL_ttf.h>
@@ -471,27 +476,31 @@
 	"../../lib/jsmn/jsmn.h"
 	"../../base/file.h"
 
-1536767107 c:\work\cpp\sdl2\core\asset\asset.h
+1537172231 c:\work\cpp\sdl2\core\asset\asset.h
+	<SDL2/SDL.h>
 	"../../common.h"
 	"../../base/libList.h"
 	"../../base/json.h"
 
-1536748823 source:c:\work\cpp\sdl2\core\event\event.c
+1537178351 source:c:\work\cpp\sdl2\core\event\event.c
 	"event.h"
 	"../project/project.h"
 	"../../base/basic.h"
+	<sys/time.h>
 
-1536162029 c:\work\cpp\sdl2\core\event\event.h
+1537171064 c:\work\cpp\sdl2\core\event\event.h
 	<SDL2/SDL.h>
 	"../../common.h"
+	"../timer/timer.h"
 
-1536746233 source:c:\work\cpp\sdl2\core\project\project.c
+1537172132 source:c:\work\cpp\sdl2\core\project\project.c
 	"project.h"
 	"../../base/logger.h"
 	"../../base/json.h"
 	"../object/object.h"
 	"../asset/asset.h"
 	"../timer/timer.h"
+	"../event/control/control.h"
 
 1535461406 c:\work\cpp\sdl2\core\project\project.h
 	"../../common.h"
@@ -501,24 +510,29 @@
 1535357998 c:\work\cpp\sdl2\core\view\render\render.h
 	"../view.h"
 
-1536661804 source:c:\work\cpp\sdl2\core\view\render\render.c
+1537171932 source:c:\work\cpp\sdl2\core\view\render\render.c
 	"render.h"
 	"../../project/project.h"
 	"../../animation/animation.h"
 	<stdarg.h>
 
-1535463712 source:c:\work\cpp\sdl2\core\character\character.c
+1537191370 source:c:\work\cpp\sdl2\core\character\character.c
 	"character.h"
+	"../asset/asset.h"
+	"../../base/json.h"
+	"../object/spriteObj/character/charObj.h"
 
-1535538461 c:\work\cpp\sdl2\core\character\character.h
+1537171064 c:\work\cpp\sdl2\core\character\character.h
 	"../../common.h"
 	"../../base/math.h"
 	"../object/object.h"
+	"./charAttr.h"
 	"../controller/controller.h"
 
-1535708838 c:\work\cpp\sdl2\core\controller\controller.h
+1537184829 c:\work\cpp\sdl2\core\controller\controller.h
 	<SDL2/SDL.h>
 	"../object/object.h"
+	"../movement/movement.h"
 	"../character/character.h"
 
 1535543535 source:c:\work\cpp\sdl2\core\object\collisionobj\collisionobj.c
@@ -527,20 +541,22 @@
 1535708397 c:\work\cpp\sdl2\core\object\collisionobj\collisionobj.h
 	"../object.h"
 
-1536941881 source:c:\work\cpp\sdl2\core\object\spriteobj\spriteobj.c
+1537270138 source:c:\work\cpp\sdl2\core\object\spriteobj\spriteobj.c
 	"./spriteObj.h"
 	"../../../base/json.h"
 	"../../asset/asset.h"
 	"../../animation/sprite/spriteAnim.h"
+	"./character/charObj.h"
 
-1536766647 c:\work\cpp\sdl2\core\object\spriteobj\spriteobj.h
+1537171064 c:\work\cpp\sdl2\core\object\spriteobj\spriteobj.h
 	"../object.h"
 	"../collisionObj/collisionObj.h"
 
-1535715597 source:c:\work\cpp\sdl2\core\controller\controller.c
+1537193648 source:c:\work\cpp\sdl2\core\controller\controller.c
 	"controller.h"
+	"../animation/animation.h"
 
-1536939631 source:c:\work\cpp\sdl2\core\animation\animation.c
+1537272187 source:c:\work\cpp\sdl2\core\animation\animation.c
 	"animation.h"
 	"./sprite/spriteAnim.h"
 	<stdarg.h>
@@ -551,21 +567,21 @@
 	"../../base/math.h"
 	"../object/object.h"
 
-1536162026 c:\work\cpp\sdl2\core\timer\timer.h
+1537171064 c:\work\cpp\sdl2\core\timer\timer.h
 	<stdarg.h>
 	"../../common.h"
 
-1536748887 source:c:\work\cpp\sdl2\core\timer\timer.c
+1537171064 source:c:\work\cpp\sdl2\core\timer\timer.c
 	"timer.h"
 	<SDL2/SDL.h>
 	"../../base/basic.h"
 	"../../base/libList.h"
 	"../project/project.h"
 
-1536940760 source:c:\work\cpp\sdl2\core\animation\sprite\spriteanim.c
+1537177590 source:c:\work\cpp\sdl2\core\animation\sprite\spriteanim.c
 	"spriteAnim.h"
 
-1536942256 c:\work\cpp\sdl2\core\animation\sprite\spriteanim.h
+1537171064 c:\work\cpp\sdl2\core\animation\sprite\spriteanim.h
 	"../animation.h"
 	"../../../base/libList.h"
 	"../../object/spriteObj/spriteObj.h"
@@ -576,20 +592,20 @@
 1518388858 source:c:\work\cpp\sdl2\lib\jsmn\jsmn.c
 	"jsmn.h"
 
-1536748340 source:c:\work\cpp\sdl2\base\file.c
+1537171064 source:c:\work\cpp\sdl2\base\file.c
 	"../common.h"
 	"./basic.h"
 	"./file.h"
 
-1536748348 c:\work\cpp\sdl2\base\file.h
+1537171064 c:\work\cpp\sdl2\base\file.h
 
-1536941997 source:c:\work\cpp\sdl2\base\json.c
+1537273445 source:c:\work\cpp\sdl2\base\json.c
 	"json.h"
 	"../lib/jsmn/jsmn.h"
 	<assert.h>
 	<stdarg.h>
 
-1536941787 c:\work\cpp\sdl2\base\json.h
+1537172227 c:\work\cpp\sdl2\base\json.h
 	"basic.h"
 	"file.h"
 	"logger.h"
@@ -881,4 +897,43 @@
 1537117884 source:e:\project\cpp\sdlframework\core\object\spriteobj\character\charobj.c
 	"charObj.h"
 	"../../../../common.h"
+
+1537171064 c:\work\cpp\sdl2\core\object\spriteobj\character\charobj.h
+	"../spriteObj.h"
+	"../../../character/character.h"
+
+1537184594 c:\work\cpp\sdl2\core\character\charattr.h
+
+1537172190 c:\work\cpp\sdl2\core\event\control\control.h
+	<SDL2/SDL.h>
+	"../../../common.h"
+	"../../../base/libList.h"
+
+1537193242 source:c:\work\cpp\sdl2\core\event\control\control.c
+	"control.h"
+	"../event.h"
+	"../../../base/logger.h"
+	"../../../base/json.h"
+	"../../asset/asset.h"
+
+1537171064 source:c:\work\cpp\sdl2\core\object\spriteobj\character\charobj.c
+	"charObj.h"
+	"../../../../common.h"
+
+1537190537 source:c:\work\cpp\sdl2\core\controller\player\playerctrl.c
+	"playerCtrl.h"
+	"../../../base/json.h"
+	"../../../base/logger.h"
+
+1537171876 c:\work\cpp\sdl2\core\controller\player\playerctrl.h
+	"../controller.h"
+	"../../../base/libList.h"
+
+1537192571 source:c:\work\cpp\sdl2\core\movement\movement.c
+	"movement.h"
+	"../../base/logger.h"
+
+1537191139 c:\work\cpp\sdl2\core\movement\movement.h
+	<SDL2/SDL.h>
+	"../../base/math.h"
 

@@ -191,8 +191,10 @@ void initSimpleObject(Object* obj, char* name, void* comp, SDL_Rect* pos, short 
 	obj->visible = 1;
 	obj->enabled = 1;
 	obj->lifetime = -1;
-
 	obj->name = Str(name);
+
+	vector vel = {0, 0};
+	setVelocity(obj, vel);
 
 	obj->component = NULL;
 	obj->texture = NULL;

@@ -112,6 +112,7 @@ SpriteAnimParam* spriteCallAnim(SpriteObject* obj, SpriteAnimData* anim, unsigne
 	logger->inf(LOG_SPRITE, "-- Calling Sprite Animation: #%d => %s", anim->animID, anim->name);
 	logger->inf(LOG_SPRITE, "-- Removing Old Sprite Anim");
 	spriteRemoveObject((Object*) obj);
+	
 
 
 	unsigned int animID = anim->animID;
@@ -144,8 +145,8 @@ SpriteAnimParam* spriteCallAnim(SpriteObject* obj, SpriteAnimData* anim, unsigne
 	logger->dbg(LOG_SPRITE, "-- Adding Anim To Animator: %s", anim->name);
 	logger->dbg(LOG_SPRITE, "-- Loop: %d", animParam->loop);
 
-	Node* n = addNodeV(animator->sprites, obj->name, animParam, 1);
-	logger->dbg(LOG_SPRITE, "-- Anim Added");
+	addNodeV(animator->sprites, obj->name, animParam, 1);
+
 
 	return animParam;
 }
@@ -194,6 +195,6 @@ SpriteAnimParam* spriteAnim(SpriteObject* obj, unsigned int animID, unsigned int
 		return NULL;
 	}
 
-
+	assert(0);
 	return spriteCallAnim(obj, anim, clipIndex);
 }

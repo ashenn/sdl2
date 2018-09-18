@@ -3,7 +3,7 @@
 
 #include <math.h>
 #include <stdlib.h>
-#include<SDL2\SDL.h>
+#include <SDL2\SDL.h>
 
 typedef struct vector vector;
 struct vector {

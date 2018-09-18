@@ -23,6 +23,8 @@
 #include "core/character/character.h"
 #include "core/character/charAttr.h"
 
+#include "core/controller/player/playerCtrl.h"
+
 Object* testObj = NULL;
 
 void* leftPress(void* e) {
@@ -38,11 +40,10 @@ void* leftPress(void* e) {
 	}
 
 	if (obj->ch == NULL) {
-		logger->err(LOG_SPRITE, "Char Object Character Is Null!!!", &obj->ch->attr);
+		logger->err(LOG_SPRITE, "Char Object Character Is Null !!!", &obj->ch->attr);
 		return NULL;
 	}
 
-	Character* ch = obj->ch;
 	obj->ch->attr.crouch = false;
 	obj->ch->attr.moving = true;
 
@@ -54,38 +55,31 @@ void* release(void* e) {
 
 	KeyEvent* evt = e;
 	CharObj* obj = (CharObj*) evt->target;
-	if (obj == NULL) {
-		logger->war(LOG_MAIN, "EVENT OBJ IS NULL");
-		return NULL;
-	}
+	stopMovement(obj->ctrl);
 
-	if (obj->ch == NULL) {
-		logger->err(LOG_SPRITE, "Char Object Character Is Null!!!", &obj->ch->attr);
-		return NULL;
-	}
-
-	Character* ch = obj->ch;
-	obj->ch->attr.crouch = false;
-	obj->ch->attr.moving = false;
-	
 	return false;
 }
 
-void* rightPress(void* e) {
+
+
+void* movePress(void* e) {
 	logger->err(LOG_SPRITE, "Right Pressed !!!");
 
 	KeyEvent* evt = (KeyEvent*) e;
+
+	DirectionEnum dir;
 	if (evt->key == SDLK_RIGHT) {
+		dir = DIR_RIGHT;
 		testObj->flip = FLIP_N;
 	}
 	else {
+		dir = DIR_LEFT;
 		testObj->flip = FLIP_H;
 	}
 
 	CharObj* obj = (CharObj*) evt->target;
-	obj->ch->attr.crouch = false;
-	obj->ch->attr.moving = true;
-
+	logger->err(LOG_SPRITE, "CALL MOVE DIR Pressed !!!");
+	moveDir(obj->ctrl, dir);
 	return false;
 }
 
@@ -104,7 +98,6 @@ void* downPress(void* e) {
 		return NULL;
 	}
 
-	Character* ch = obj->ch;
 	if (!obj->ch->attr.inAir) {
 		logger->war(LOG_MAIN, "-- NOT IN AIR !!!!");
 		obj->ch->attr.crouch = true;
@@ -115,9 +108,10 @@ void* downPress(void* e) {
 
 void land(AnimParam* anim) {
 	logger->err(LOG_SPRITE, "-- CALLING LAND");
-	anim = (AnimParam*) spriteAnimByName((SpriteObject*) testObj, "Land", 0);
-	anim->callback = release;
-	anim->deleteOnDone = false;
+	//anim = (AnimParam*) spriteAnimByName((SpriteObject*) testObj, "Land", 0);
+	//anim->callback = release;
+	//anim->deleteOnDone = false;
+
 	logger->err(LOG_SPRITE, "-- LAND CALLED");
 }
 
@@ -134,9 +128,9 @@ void inAir(AnimParam* anim) {
 
 void jumpEnd(AnimParam* anim) {
 	logger->err(LOG_SPRITE, "==== JUMP ENDED ====");
-	anim = (AnimParam*) spriteAnimByName((SpriteObject*) testObj, "Fall", 0);
-	anim->stepFnc = inAir;
-	anim->callback = land;
+	//	anim = (AnimParam*) spriteAnimByName((SpriteObject*) testObj, "Fall", 0);
+	//	anim->stepFnc = inAir;
+	//	anim->callback = land;
 }
 
 void* topPress(void* e) {
@@ -154,10 +148,12 @@ void* topPress(void* e) {
 		return NULL;
 	}
 
-	Character* ch = obj->ch;
 	if (obj->ch->attr.inAir) {
 		logger->war(LOG_MAIN, "-- IN AIR");
-		SpriteAnimParam* anim = spriteAnimByName((SpriteObject*) obj, "DoubleJump", 0);
+		if (obj->ch->attr.canDoubleJump && !obj->ch->attr.doubleJump) {
+			logger->war(LOG_MAIN, "-- Set Double Jump");
+			obj->ch->attr.doubleJump = true;
+		}
 	}
 	else {
 		logger->war(LOG_MAIN, "-- NOT IN AIR !!!!");
@@ -166,6 +162,12 @@ void* topPress(void* e) {
 	}
 
 	return NULL;
+}
+
+
+void* spacePressed(void* evt) {
+
+	return false;
 }
 
 int main(int arc, char* argv[]) {
@@ -181,22 +183,28 @@ int main(int arc, char* argv[]) {
 	getWindow();
 
 	SDL_Rect pos = {10, 10, 250, 150};
-	Character* ch = initCharacter(CHAR_PLAYER, "adventurer", &pos, 2);
+
+	//Character* ch = initCharacter(CHAR_PLAYER, "adventurer", &pos, 2);
+
+	PlayerCtrl* player = spawnPlayer(1, "Test Ctrl", "adventurer", &pos, 2);
+	Character* ch = player->character;
+
 	testObj = ch->obj;
 
 	addControl("stop", release);
 	addControl("jump", topPress);
-	addControl("run", rightPress);
+	addControl("run", movePress);
 	addControl("down", downPress);
 
 	loadControl("SideScroll", "player-1", testObj);
 
-	/*logger->err(LOG_MAIN, "BIND EVENT Top");
-	KeyEvent* evt = bindKeyEvent("TOP", SDLK_UP, NULL);
-	evt->holdMin = 0.0f;
-	evt->holdMax = 0.75f;
-	evt->callHoldOnMax = true;
-	evt->hold = topPress;*/
+	logger->err(LOG_MAIN, "BIND EVENT Space");
+	KeyEvent* evt = bindKeyEvent("Space", SDLK_SPACE, NULL);
+	evt->pressed = spacePressed;
+
+	pos.x = 350;
+	pos.y = 350;
+	//player->move((Controller*) player, pos);
 
 
 	logger->inf(LOG_MAIN, "#### CREATE RENDER TRHEAD");

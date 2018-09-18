@@ -88,9 +88,13 @@ void* addNode(ListManager* lstMgr, void* params){
 
 	id = ++lstMgr->lastId;
 	newNode->id = id;
+
 	newNode->del = NULL;
+
 	newNode->key = NULL;
+
 	newNode->value = NULL;
+
 	newNode->lstMgr = lstMgr;
 
 	newNode->keyIsAlloc = 0;
@@ -109,13 +113,19 @@ void* addNode(ListManager* lstMgr, void* params){
 	}
 	else{
 		newNode->next = NULL;
+
 		newNode->prev = lstMgr->last;
 
-		lstMgr->last->next = newNode;
+		if (lstMgr->last != NULL) {
+			lstMgr->last->next = newNode;
+		}
+
 		lstMgr->last = newNode;
+
 	}
 
 	lstMgr->nodeCount++;
+
 
 	unlockList(lstMgr);
 
@@ -307,7 +317,7 @@ void deleteNodeByName(ListManager* lstMgr, char* name) {
 		return;
 	}
 
-	deleteNode(lstMgr, n->id);
+	removeAndFreeNode(lstMgr, n);
 }
 
 /**
@@ -421,7 +431,7 @@ Node* deleteNodeNoFree(ListManager* lstMgr, int id){
 void* deleteNode(ListManager* lstMgr, int id){
 	//fprintf(stdout, "DELETING NODE: %u\n", id);
 	//printf("DELETING NODE: %d\n", id);
-	Node* node = deleteNodeNoFree(lstMgr, id);
+	Node* node = getNode(lstMgr, id);
 	lockNode(node);
 
 	if (node == NULL) {

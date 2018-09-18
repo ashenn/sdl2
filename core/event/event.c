@@ -85,6 +85,8 @@ void* callHoldEvent(void* delay) {
     KeyEvent* evt = (KeyEvent*) delayFnc->param;
 
     evt->hold(evt);
+
+    return NULL;
 }
 
 void keyHold(KeyEvent* evt, bool up) {
@@ -150,16 +152,16 @@ short callEventQue(int i, Node* n, short* delete, void* param, va_list* args) {
 
     if (!up && evt->pressed != NULL) {
         logger->dbg(LOG_EVENT, "-- Call Pressed");
-        !evt->pressed(evt);
+        evt->pressed(evt);
     }
     else if(up && evt->released != NULL) {
         logger->dbg(LOG_EVENT, "-- Call Released");
-        !evt->released(evt);
+        evt->released(evt);
     }
 
     if (evt->fnc != NULL) {
         logger->dbg(LOG_EVENT, "-- Call FNC");
-        !evt->fnc((Event*) evt);
+        evt->fnc((Event*) evt);
     }
 
     logger->dbg(LOG_EVENT, "-- Check Hold: %p", evt->hold);

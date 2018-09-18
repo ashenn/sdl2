@@ -30,8 +30,8 @@ typedef enum bool
 	true
 } bool;
 
-#define SCREEN_W 200
-#define SCREEN_H 200
+#define SCREEN_W 400
+#define SCREEN_H 400
 
 #define FPS 60
 #define FRAME_DURATION 1000 / FPS
@@ -50,7 +50,8 @@ typedef enum bool
 #define LOG_SPRITE 4096
 #define LOG_CHAR 8192
 #define LOG_CONTROL 16384
-#define LOG_CONTROLER 32768
+#define LOG_CONTROLLER 32768
+#define LOG_MOVE 65536
 
 #define FLIP_N SDL_FLIP_NONE
 #define FLIP_V SDL_FLIP_VERTICAL
