@@ -37,7 +37,10 @@ typedef struct Movement
 } Movement;
 
 #include "../object/object.h"
+void setVelocityY(Object* obj, double y);
+void setVelocityX(Object* obj, double y);
 void setVelocity(Object* obj, vector vel);
+
 void addVelocity(Object* obj, vector vel);
 vector getLookVector(Object* obj, Object* target);
 

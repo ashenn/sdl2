@@ -161,6 +161,9 @@ void* topPress(void* e) {
 		obj->ch->attr.crouch = false;
 	}
 
+	vector v = {0, -30};
+	addVelocity((Object*) obj, v);
+
 	return NULL;
 }
 
@@ -182,7 +185,7 @@ int main(int arc, char* argv[]) {
 	logger->dbg(LOG_MAIN, "-- Init Window");
 	getWindow();
 
-	SDL_Rect pos = {10, 10, 250, 150};
+	SDL_Rect pos = {0, 350, 250, 150};
 
 	//Character* ch = initCharacter(CHAR_PLAYER, "adventurer", &pos, 2);
 
@@ -201,10 +204,6 @@ int main(int arc, char* argv[]) {
 	logger->err(LOG_MAIN, "BIND EVENT Space");
 	KeyEvent* evt = bindKeyEvent("Space", SDLK_SPACE, NULL);
 	evt->pressed = spacePressed;
-
-	pos.x = 350;
-	pos.y = 350;
-	//player->move((Controller*) player, pos);
 
 
 	logger->inf(LOG_MAIN, "#### CREATE RENDER TRHEAD");

@@ -20,21 +20,34 @@ Class* newClass(size_t s) {
 }
 
 void th_lock(Class* cl) {
+	//logger->err(LOG_MAIN, "TEST: %s", cl->name);
 	pid_t curTH = getpid();
 	//logger->err(LOG_MAIN, "LOCKING: %d", curTH);
 	//logger->err(LOG_MAIN, "CURRENT: %d", cl->pid);
-	
+
 	if (curTH == cl->pid) {
-		logger->err(LOG_MAIN, "LOCKING Object IN SAME THREAD");
-		assert(1);
+		//logger->err(LOG_MAIN, "LOCKING Object IN SAME THREAD");
+		//assert(1);
+		return;
 	}
 
+	cl->pid = curTH;
+	//logger->err(LOG_MAIN, "Locked By: %d", cl->pid);
 	pthread_mutex_lock(&cl->mutex);
 }
 
 void th_unlock(Class* cl) {
-	cl->pid = -1;
-	pthread_mutex_unlock(&cl->mutex);
+	if (cl->pid == getpid())
+	{
+		cl->pid = -1;
+		pthread_mutex_unlock(&cl->mutex);
+	}
+	else if(cl->pid >= 0){
+		logger->err(LOG_MAIN, "Trying To Unlock Thread But Mutex Was Locked By An Other: %s", cl->name);
+	}
+	else {
+		logger->err(LOG_MAIN, "Trying To Unlock Thread None Locked Mutex: %s", cl->name);
+	}
 }
 
 void th_wait(Class* cl) {
@@ -74,7 +87,7 @@ int tickWait(int next) {
 
 float microTime() {
     struct timeval time;
-    gettimeofday(&time, NULL); 
+    gettimeofday(&time, NULL);
 	unsigned long res = ((unsigned long) time.tv_sec * 1000000) + (unsigned long) time.tv_usec;
 
     return (float) res;

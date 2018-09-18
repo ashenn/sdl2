@@ -8,7 +8,7 @@ AnimParam* animAddObject(Object* obj, AnimParam* param) {
 	Animator* anim = getAnimator();
 
 	//logger->dbg(LOG_ANIM, "FINDING NODE");
-	animRemoveObject(obj);
+	//animRemoveObject(obj);
 	Node* objNode = getNodeByName(anim->moves, obj->name);
 	//Node* objNode = getNodeByName(anim->moves, obj->name);
 
@@ -83,8 +83,8 @@ Animator* getAnimator() {
 }
 
 AnimDistance animDistanceByFrame(int dist, float time) {
-	//logger->inf(LOG_ANIM, "==== Calculation Animation Distance Per Frame ====");
-	//logger->dbg(LOG_ANIM, "-- dist: %dpx\n--time: %fs", dist, time);
+	logger->inf(LOG_ANIM, "==== Calculation Animation Distance Per Frame ====");
+	logger->dbg(LOG_ANIM, "-- dist: %dpx\n--time: %fs", dist, time);
 
 	int rest;
 	int frames;
@@ -96,16 +96,29 @@ AnimDistance animDistanceByFrame(int dist, float time) {
 		frames = 1;
 	}
 
-	//logger->dbg(LOG_ANIM, "-- Total Frames: %d", frames);
+	logger->dbg(LOG_ANIM, "-- Total Frames: %d", frames);
 
 	rest = dist % frames;
 	perFrames = dist / frames;
 
-	animDist.perFrame = perFrames + (rest / frames);
 	animDist.rest = rest % frames;
+	animDist.perFrame = perFrames + (rest / frames);
 
-	//logger->dbg(LOG_ANIM, "-- dist per frame: %d\n--rest: %d", animDist.perFrame, animDist.rest);
-	//logger->dbg(LOG_ANIM, "==== Calculation DONE ====");
+	logger->dbg(LOG_ANIM, "-- dist per frame: %d\n--rest: %d", animDist.perFrame, animDist.rest);
+
+
+	animDist.curDispatch = 0;
+	if (rest) {
+		logger->dbg(LOG_ANIM, "-- Calc Dispatch: %d / %d", frames, rest);
+		animDist.dispatch = frames / rest;
+	}
+	else {
+		animDist.dispatch = 0;
+	}
+
+
+	logger->dbg(LOG_ANIM, "-- Dispatch: %d", animDist.dispatch);
+	logger->dbg(LOG_ANIM, "==== Calculation DONE ====");
 
 	return animDist;
 }
@@ -123,27 +136,46 @@ void animMoveTo(AnimMoveParam* param) {
 		obj->pos.y
 	);*/
 
-	int xMove = param->move[0].perFrame;
-	int yMove = param->move[1].perFrame;
-
 	int xRest = param->move[0].rest;
+	int xMove = param->move[0].perFrame;
+	int xDispatch = param->move[0].dispatch;
+	int xCurDispatch = param->move[0].curDispatch;
+
+
 	int yRest = param->move[1].rest;
+	int yMove = param->move[1].perFrame;
+	int yDispatch = param->move[1].dispatch;
+	int yCurDispatch = param->move[1].curDispatch;
 
-	if (xRest != 0) {
-		//logger->dbg(LOG_ANIM, "-- Moving X Rest = %d", xRest);
-		if (xRest > 0) {
-			xMove++;
-			xRest--;
-		}
-		else{
-			xMove--;
-			xRest--;
-		}
+	if (xDispatch && xCurDispatch < xDispatch) {
+		param->move[0].curDispatch++;
+		logger->dbg(LOG_ANIM, "-- Dispatching X: %d / %d", param->move[0].curDispatch, param->move[0].dispatch);
+	}
+	else{
+		logger->dbg(LOG_ANIM, "-- Apply X Move");
+		param->move[0].curDispatch = 0;
+		if (xRest != 0) {
+			//logger->dbg(LOG_ANIM, "-- Moving X Rest = %d", xRest);
+			if (xRest > 0) {
+				xMove++;
+				xRest--;
+			}
+			else{
+				xMove--;
+				xRest--;
+			}
 
-		param->move[0].rest = xRest;
+			param->move[0].rest = xRest;
+		}
 	}
 
+	if (yDispatch && yCurDispatch < yDispatch) {
+		param->move[1].curDispatch++;
+		logger->dbg(LOG_ANIM, "-- Dispatching Y: %d / %d", param->move[1].curDispatch, param->move[1].dispatch);
+	}
 	if (yRest != 0) {
+		logger->dbg(LOG_ANIM, "-- Apply Y Move");
+		param->move[1].curDispatch = 0;
 		//logger->dbg(LOG_ANIM, "-- Moving Y Rest = %d", yRest);
 		if (yRest > 0) {
 			yMove++;
@@ -190,6 +222,17 @@ void animMoveTo(AnimMoveParam* param) {
 		}
 		UNLOCK(obj->childs);
 	}
+
+	if (param->breakOnReach) {
+		bool xDone = !param->move[0].rest && !param->move[0].perFrame;
+		bool yDone = !param->move[1].rest && !param->move[1].perFrame;
+
+		if (xDone && yDone) {
+			logger->err(LOG_ANIM, "ANIMATION DONE");
+			param->breakAnim = true;
+			logger->err(LOG_ANIM, "Frames Left: %d", param->frames);
+		}
+	}
 }
 
 AnimMoveParam* newMoveParam(Object* obj, float time, float delay, void* fnc) {
@@ -197,6 +240,7 @@ AnimMoveParam* newMoveParam(Object* obj, float time, float delay, void* fnc) {
 	initAnimParam((AnimParam*) param, obj, time, delay, fnc);
 
 	param->duration = time;
+	param->breakOnReach = false;
 
 	return param;
 }
@@ -208,20 +252,20 @@ AnimParam* moveTo(Object* obj, int x, int y, float time, float delay) {
 	targetPos.x = x;
 	targetPos.y = y;
 
-	//logger->dbg(LOG_ANIM, "-- Move To: %d | %d", x, y);
+	logger->dbg(LOG_ANIM, "-- Move To: %d | %d", x, y);
 	vector vec = getVector(obj->pos, targetPos);
-	//logger->dbg(LOG_ANIM, "-- Move Vector: %lf | %lf", vec.x, vec.y);
+	logger->dbg(LOG_ANIM, "-- Move Vector: %lf | %lf", vec.x, vec.y);
 
 	AnimMoveParam* param = newMoveParam(obj, time, delay, animMoveTo);
 
-	//logger->dbg(LOG_ANIM, "-- Time: %f", time);
-	//logger->dbg(LOG_ANIM, "-- Frames: %d", param->frames);
+	logger->dbg(LOG_ANIM, "-- Time: %f", time);
+	logger->dbg(LOG_ANIM, "-- Frames: %d", param->frames);
 
 	param->move[0] = animDistanceByFrame(vec.x, time);
-	//logger->dbg(LOG_ANIM, "-- xTotDist: %d", param->move[0]);
+	logger->dbg(LOG_ANIM, "-- xTotDist: %d", param->move[0].perFrame + param->move[0].rest);
 
 	param->move[1] = animDistanceByFrame(vec.y, time);
-	//logger->dbg(LOG_ANIM, "-- yTotDist: %d", param->move[1]);
+	logger->dbg(LOG_ANIM, "-- yTotDist: %d", param->move[1].perFrame + param->move[1].rest);
 
 	param->fnc = animMoveTo;
 
@@ -240,9 +284,18 @@ short animateObject(int index, Node* n, short* delete, void* data, va_list* args
 	}
 
 	n = NULL;
-	logger->err(LOG_ANIM, "####### START #######");
 	while ((n = listIterate(moves, n)) != NULL) {
 		AnimParam* param = (AnimParam*) n->value;
+		if (param == NULL) {
+			Node* tmp = n->prev;
+
+			//logger->err(LOG_ANIM, "-- Removing NULL Anim");
+			removeAndFreeNode(moves, n);
+			//logger->err(LOG_ANIM, "-- Anim NULL Removed");
+
+			n = tmp;
+			continue;
+		}
 
 		//logger->err(LOG_ANIM, "ANIMATING: %s", param->obj->name);
 
@@ -272,7 +325,7 @@ short animateObject(int index, Node* n, short* delete, void* data, va_list* args
 		//logger->dbg(LOG_ANIM, "-- Animation Ended");
 
 		if (param->callback != NULL) {
-			logger->err(LOG_ANIM, "-- Calling CallBack");
+			//logger->err(LOG_ANIM, "-- Calling CallBack: %p", param);
 			param->callback(param);
 		}
 
@@ -283,13 +336,13 @@ short animateObject(int index, Node* n, short* delete, void* data, va_list* args
 		}
 		else{
 			Node* tmp = n->prev;
-			logger->err(LOG_ANIM, "-- Removing Anim");
+			//logger->err(LOG_ANIM, "-- Removing Anim");
 			removeAndFreeNode(moves, n);
-			
+			//logger->err(LOG_ANIM, "-- Anim Removed");
+
 			n = tmp;
 		}
 	}
-	logger->err(LOG_ANIM, "####### End #######");
 
 	if (!moves->nodeCount) {
 		logger->err(LOG_ANIM, "-- Deleting Move List Anim");

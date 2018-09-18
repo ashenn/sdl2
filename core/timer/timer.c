@@ -64,8 +64,6 @@ static void cleanLauncher(void* arg) {
 void* callDelayedFunction(void* param) {
 	logger->inf(LOG_TIMER, "=== CALLING DELAYED FUNCTION ===");
 
-
-	// ListManager* launchers = getLaunchers();
 	ListManager* delayedFncs = getDelayedFunctions();
     DelayedFunction* fncParam = (DelayedFunction*) param;
     DelayedFncLauncher* launcher = fncParam->launcher;
@@ -78,23 +76,21 @@ void* callDelayedFunction(void* param) {
 
 	LOCK(fncParam);
 	while (!fncParam->doBreak && pro->status != PRO_CLOSE) {
+		UNLOCK(launcher);
 		if (fncParam->delay != 0) {
 
 			logger->inf(LOG_TIMER, "-- Waiting: %f", fncParam->delay);
 			WAIT_TIME(launcher, fncParam->delay);
-			UNLOCK(launcher);
 			//pthread_cond_timedwait(&launcher->cond, &launcher->mutex, &waitTime);
 		}
 
 		if (fncParam->doBreak) {
 			logger->inf(LOG_TIMER, "-- Break Timer");
-			UNLOCK(fncParam);
 			break;
 		}
 		else if (launcher->paused) {
 			launcher->pauseAt = microTime();
 			WAIT(launcher);
-			UNLOCK(launcher);
 		}
 
 		logger->inf(LOG_TIMER, "-- Calling Thread");
@@ -102,7 +98,6 @@ void* callDelayedFunction(void* param) {
 
 		logger->inf(LOG_TIMER, "-- Waiting Thread End");
 
-		UNLOCK(fncParam);
 		pthread_join(*th, NULL);
 		LOCK(fncParam);
 
@@ -154,6 +149,8 @@ void* callDelayedFunction(void* param) {
 
 	logger->inf(LOG_TIMER, "-- Delayed Done !!!!");
 	pthread_cleanup_pop(1);
+
+	ListManager* launchers = getLaunchers();
 
 	return NULL;
 }
@@ -232,30 +229,30 @@ DelayedFncLauncher* delayed(double delay, bool loop, void* (*fnc)(void*), void* 
 }
 
 short clearDelayed(int i, Node* n, short* delete, void* param, va_list* args) {
-	logger->inf(LOG_TIMER, "=== Clearing DELAYED: %s ===", n->name);
+	logger->war(LOG_TIMER, "=== Clearing DELAYED: %s ===", n->name);
 	DelayedFncLauncher* launcher = n->value;
 
 	if (!launcher->killed && !launcher->completed) {
 		logger->war(LOG_TIMER, "=== Clearing Un Completed DELAYED Function: %s ===", n->name);
-		killDelayedFunction(launcher, true, true);
+		killDelayedFunction(launcher, true, false);
 	}
+	
+	logger->war(LOG_TIMER, "=== Clearing Un Completed DELAYED Function: %s ===", n->name);
 
 	free(launcher->name);
-	pthread_t* th = &launcher->thread;
-	pthread_join(*th, NULL);
 
 	return true;
 }
 
 void clearDelayedFunctions() {
-	logger->inf(LOG_TIMER, "##### CLEARING DELAYED FUNCTIONS #####");
+	logger->war(LOG_TIMER, "##### CLEARING DELAYED FUNCTIONS #####");
 	ListManager* launchers = getLaunchers();
 
 	if (launchers->nodeCount) {
 		listIterateFnc(launchers, clearDelayed, NULL, NULL);
 	}
 
-	logger->inf(LOG_TIMER, "##### DELETING TIMER #####");
+	logger->war(LOG_TIMER, "##### DELETING TIMER #####");
 
 	deleteList(launchers);
 	deleteList(getDelayedFunctions());
@@ -269,9 +266,9 @@ bool killDelayedFunction(DelayedFncLauncher* launcher, bool force, bool join) {
 		return false;
 	}
 
-	logger->inf(LOG_TIMER, "KILL: Ask-LOCK");
+	logger->war(LOG_TIMER, "KILL: Ask-LOCK");
 	LOCK(launcher);
-	logger->inf(LOG_TIMER, "KILL: LOCK");
+	logger->war(LOG_TIMER, "KILL: LOCK");
 
 	launcher->killed = true;
 
@@ -287,26 +284,26 @@ bool killDelayedFunction(DelayedFncLauncher* launcher, bool force, bool join) {
 
 	pthread_t th = launcher->thread;
 	UNLOCK(launcher);
-	logger->inf(LOG_TIMER, "KILL: UN-LOCK");
+	logger->war(LOG_TIMER, "KILL: UN-LOCK");
 
 	if (force) {
-		logger->inf(LOG_TIMER, "-- FORCE CONDITION KILL FUNCTION THREAD");
+		logger->war(LOG_TIMER, "-- FORCE CONDITION KILL FUNCTION THREAD");
 		SIGNAL(launcher);
 
-		logger->inf(LOG_TIMER, "-- FORCE KILL FUNCTION THREAD");
+		logger->war(LOG_TIMER, "-- FORCE KILL FUNCTION THREAD");
 		pthread_kill(th, 1);
 
-		logger->inf(LOG_TIMER, "-- FORCE KILL FUNCTION THREAD CALLED");
+		logger->war(LOG_TIMER, "-- FORCE KILL FUNCTION THREAD CALLED");
 	}
 
 
 	if (join) {
-		logger->inf(LOG_TIMER, "-- KILL JOINING LAUNCHER THREAD");
+		logger->war(LOG_TIMER, "-- KILL JOINING LAUNCHER THREAD");
 		pthread_join(th, NULL);
-		logger->inf(LOG_TIMER, "-- KILL LAUNCHER THREAD JOINED !!!");
+		logger->war(LOG_TIMER, "-- KILL LAUNCHER THREAD JOINED !!!");
 	}
 
-	logger->inf(LOG_TIMER, "-- KILL LAUNCHER THREAD SUCCESS !!!");
+	logger->war(LOG_TIMER, "-- KILL LAUNCHER THREAD SUCCESS !!!");
 	return true;
 }
 

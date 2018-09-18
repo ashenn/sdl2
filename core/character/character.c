@@ -22,7 +22,7 @@ Character* newCharacter() {
 
 
 	ch->attr.moveSpeed = 0;
-	ch->attr.maxMoveSpeed = 25;
+	ch->attr.maxMoveSpeed = 60;
 
 	return ch;
 }

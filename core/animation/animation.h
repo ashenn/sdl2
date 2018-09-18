@@ -9,6 +9,8 @@
 typedef struct AnimDistance {
 	int rest;
 	int perFrame;
+	int dispatch;
+	int curDispatch;
 } AnimDistance;
 
 
@@ -36,6 +38,7 @@ typedef struct AnimParam AnimParam;
 
 #define ANIM_MOVE_PARAM_BODY \
 	ANIM_PARAM_BODY	\
+	bool breakOnReach;	 \
 	float duration;	 \
 	\
 	SDL_Rect originPos;	\

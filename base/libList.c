@@ -41,6 +41,7 @@ void lockList(ListManager* lst) {
 
 void unlockList(ListManager* lst) {
 	//fprintf(stdout, "UN-LOCKING LIST: %d \n", (int) getpid());
+	lst->pid = -1;
 	pthread_mutex_unlock(&lst->mutex);
 }
 
@@ -62,6 +63,7 @@ void lockNode(Node* n) {
 
 void unlockNode(Node* n) {
 	//fprintf(stdout, "UN-LOCKING NODE: %d \n", (int) getpid());
+	n->pid = -1;
 	pthread_mutex_unlock(&n->mutex);
 }
 
@@ -336,13 +338,13 @@ Node* deleteNodeByNameNoFree(ListManager* lstMgr, char* name) {
 }
 
 void freeNodeKey(Node* n) {
-	if (n->keyIsAlloc) {
+	if (n->keyIsAlloc && n->value != NULL) {
 		free(n->key);
 	}
 }
 
 void freeNodeValue(Node* n) {
-	if (n->valIsAlloc) {
+	if (n->valIsAlloc && n->value != NULL) {
 		free(n->value);
 	}
 }

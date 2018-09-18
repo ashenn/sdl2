@@ -10,6 +10,7 @@ vector getLookVector(Object* obj, Object* target) {
 }
 
 void _setVelocityX(Object* obj, double x) {
+	LOCK(obj);
 	logger->inf(LOG_MOVE, "==== Setting Velocity X: %d ====", (int) x);
 	Movement* move = &obj->movement;
 	vector* oVel = &move->velocity;
@@ -21,9 +22,12 @@ void _setVelocityX(Object* obj, double x) {
 	else if (oVel->x > 0) {
 		move->dir.x = DIR_RIGHT;
 	}
+
+	UNLOCK(obj);
 }
 
 void _setVelocityY(Object* obj, double y) {
+	LOCK(obj);
 	logger->inf(LOG_MOVE, "==== Setting Velocity Y: %d ====", (int) y);
 	Movement* move = &obj->movement;
 	vector* oVel = &move->velocity;
@@ -35,6 +39,8 @@ void _setVelocityY(Object* obj, double y) {
 	else if (oVel->y > 0) {
 		move->dir.y = DIR_DOWN;
 	}
+
+	UNLOCK(obj);
 }
 
 void refreshVelocity(AnimParam* anim) {
@@ -50,7 +56,8 @@ void applyVelocity(Object* obj) {
 	logger->inf(LOG_MOVE, "Move To: X: %d + %d | Y: %d  + %d", (int) obj->pos.x, (int) vel->x, (int) obj->pos.y, (int) vel->y);
 	logger->inf(LOG_MOVE, "Move To: X: %d | Y: %d", (int) (obj->pos.x + vel->x), (int) (obj->pos.y + vel->y));
 
-	AnimParam* anim = moveTo(obj, (int) (obj->pos.x + vel->x), (int) (obj->pos.y + vel->y), 0.5f, 0);
+	AnimMoveParam* anim = (AnimMoveParam*) moveTo(obj, (obj->pos.x + vel->x), (obj->pos.y + vel->y), 0.5f, 0);
+	anim->breakOnReach = true;
 
 	if (vel->x || vel->y) {
 		anim->callback = refreshVelocity;
@@ -73,6 +80,7 @@ void setVelocityY(Object* obj, double y) {
 }
 
 void setVelocity(Object* obj, vector vel) {
+	LOCK(obj);
 	logger->inf(LOG_MOVE, "==== Setting Velocity ====");
 	logger->dbg(LOG_MOVE, "-- Obj: %s", obj->name);
 	logger->dbg(LOG_MOVE, "-- vel: X: %d | Y: %d", (int) vel.x, (int) vel.y);
@@ -84,6 +92,7 @@ void setVelocity(Object* obj, vector vel) {
 	logger->dbg(LOG_MOVE, "-- Direction: X: %s | Y: %s", GEN_DIRECTION_TYPE_STRING[move->dir.x], GEN_DIRECTION_TYPE_STRING[move->dir.y]);
 
 	velocityUpdated(obj);
+	UNLOCK(obj);
 }
 
 void addVelocity(Object* obj, vector vel) {

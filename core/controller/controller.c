@@ -65,11 +65,14 @@ void moveDir(Controller* ctrl, DirectionEnum dir) {
 	vector vel = {0, 0};
 
 	if (DIR_NULL) {
+        logger->err(LOG_CONTROLLER, "-- Dir Is NULL");
 		setVelocity(ctrl->obj, vel);
 		return;
 	}
 
 	Character* ch = ctrl->character;
+	LOCK(ctrl);
+	LOCK(ch);
 
 	short fact = dir == DIR_RIGHT || dir == DIR_DOWN ? 1 : -1;
 	logger->err(LOG_CONTROLLER, "-- Factor: %d", fact);
@@ -88,6 +91,9 @@ void moveDir(Controller* ctrl, DirectionEnum dir) {
 
 	ch->attr.moving = true;
 	setVelocity(ctrl->obj, vel);
+	
+	UNLOCK(ch);
+	UNLOCK(ctrl);
 }
 
 void stopMovement(Controller* ctrl) {
@@ -103,7 +109,7 @@ void ctrlSetCharacter(Controller* ctrl, Character* c) {
 
 	CharObj* obj = (CharObj*) c->obj;
 	ctrl->character = c;
-	ctrl->obj = obj;
+	ctrl->obj = (Object*) obj;
     c->ctrl = ctrl;
     obj->ctrl = ctrl;
 }

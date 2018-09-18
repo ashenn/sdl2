@@ -3,6 +3,7 @@
 #include "../../asset/asset.h"
 #include "../../animation/sprite/spriteAnim.h"
 #include "./character/charObj.h"
+#include "../../movement/movement.h"
 
 bool Idl2Run(SpriteAnimParam* o) {
 	CharObj* obj = (CharObj*) o->obj;
@@ -39,6 +40,7 @@ bool Fall2Land(SpriteAnimParam* o) {
 	obj->ch->attr.doubleJump = false;
 	obj->ch->attr.hasDoubleJump = false;
 
+	setVelocityY((Object*) obj, 0);
 	return true;
 }
 
@@ -47,6 +49,8 @@ bool Idle2Fall(SpriteAnimParam* o) {
 
 	if (obj->ch->attr.inAir) {
 		logger->inf(LOG_SPRITE, "===== !!!! Idle2Fall !!!! ====");
+
+		setVelocityY((Object*) obj, 30);
 		return true;
 	}
 
@@ -92,7 +96,6 @@ bool Run2Jump(SpriteAnimParam* o) {
 
 	if (obj->ch->attr.inAir) {
 		logger->err(LOG_SPRITE, "===== !!!! Run2Jump !!!! ====");
-
 		return true;
 	}
 
@@ -105,6 +108,7 @@ bool Jump2DoubleJump(SpriteAnimParam* o) {
 	if (!obj->ch->attr.hasDoubleJump && obj->ch->attr.doubleJump) {
 		obj->ch->attr.hasDoubleJump = true;
 		logger->err(LOG_SPRITE, "===== !!!!  Jump2DoubleJump !!!! ====");
+		setVelocityY((Object*) obj, -45);
 		return true;
 	}
 
