@@ -5,6 +5,7 @@
 #include "base/math.h"
 
 #include "core/object/object.h"
+#include "core/collision/collision.h"
 #include "core/object/SpriteObj/spriteObj.h"
 #include "core/object/SpriteObj/character/charObj.h"
 
@@ -169,7 +170,6 @@ void* topPress(void* e) {
 
 
 void* spacePressed(void* evt) {
-
 	return false;
 }
 
@@ -179,20 +179,36 @@ int main(int arc, char* argv[]) {
 	logger->dbg(LOG_MAIN, "-- Init Project");
 	Project* pro = initProject(arc, argv);
 
+	collision_init();
 	logger->dbg(LOG_MAIN, "-- Init SDL");
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
 	logger->dbg(LOG_MAIN, "-- Init Window");
 	getWindow();
 
+
 	SDL_Rect pos = {0, 350, 250, 150};
-
-	//Character* ch = initCharacter(CHAR_PLAYER, "adventurer", &pos, 2);
-
-	PlayerCtrl* player = spawnPlayer(1, "Test Ctrl", "adventurer", &pos, 2);
+	PlayerCtrl* player = spawnPlayer(1, "Player-1", "adventurer", &pos, 2);
 	Character* ch = player->character;
 
+
+	pos.x = 350;
+	PlayerCtrl* player2 = spawnPlayer(2, "Player-2", "adventurer", &pos, 2);
+
 	testObj = ch->obj;
+	pos.x = 15;
+	pos.y = 30;
+	pos.w = 20;
+	pos.h = 8;
+
+	Collision* col = collision_add(testObj, "TestCol", COL_OVERLAP, COL_PLAYER, pos, true);
+	collision_add(player2->obj, "XD_COL", COL_OVERLAP, COL_PLAYER, pos, true);
+
+	logger->war(LOG_MAIN, "==== COLLISION READY: %s =====", col->name);
+
+	collision_handle();
+
+	return 0;
 
 	addControl("stop", release);
 	addControl("jump", topPress);

@@ -308,6 +308,7 @@ short initAnims(int i, Node* n, short* delete, void* param, va_list* args) {
 }
 
 void initSpriteObj(SpriteObject* obj, char* name, char* path, SDL_Rect* pos, short z) {
+	logger->dbg(LOG_SPRITE, "-- Init Simple Object");
 	initSimpleObject((Object*)obj, name, NULL, pos, z);
 
 
@@ -323,7 +324,7 @@ void initSpriteObj(SpriteObject* obj, char* name, char* path, SDL_Rect* pos, sho
 	logger->dbg(LOG_SPRITE, "-- Fetching Anim Json: %p", jsonPath);
 	AssetMgr* ast = getAssets();
 	Json* json = ast->getJson(jsonPath);
-	jsonPrint(json, 0);
+	//jsonPrint(json, 0);
 
 
 	logger->dbg(LOG_SPRITE, "-- Get Sheet Data");

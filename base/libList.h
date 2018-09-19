@@ -27,7 +27,7 @@ struct Node{
 	Node* next;
 	Node* prev;
 
-	void (*del)(void*);
+	void (*del)(Node*);
 
 	pid_t pid;
 	pthread_cond_t cond;
@@ -49,12 +49,12 @@ struct ListManager
 };
 
 ListManager* initListMgr();
-void* addNode(ListManager* lstMgr, void* params);
-void* addNodeV(ListManager* lstMgr, void* params, void* value, short valueAlloc);
+void* addNode(ListManager* lstMgr, const char* params);
+void* addNodeV(ListManager* lstMgr, const char* params, void* value, short valueAlloc);
 void printNode(Node* node);
 void printNodes(ListManager* lstMgr);
-Node* getNode(ListManager* lstMgr, int id);
-Node* getNodeByName(ListManager* lstMgr, char* name);
+Node* getNode(ListManager* lstMgr, const int id);
+Node* getNodeByName(ListManager* lstMgr, const char* name);
 
 void removeNode(ListManager* lstMgr, Node* node);
 void* deleteNode(ListManager* lstMgr, int id);

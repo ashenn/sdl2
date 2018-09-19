@@ -4,7 +4,7 @@
 
 Class* newClass(size_t s) {
 	static int id = 0;
-	Class* cl = (Class*) malloc(s);
+	Class* cl = (Class*) calloc(1, s);
 
 	if (cl == NULL) {
 		return NULL;

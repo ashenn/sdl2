@@ -25,7 +25,7 @@ void addDebugFlag(char* flag) {
 void initProjectFlags(Project* pro) {
 	pro->flagList = initListMgr();
 
-	static unsigned int flags[19] = {
+	static unsigned int flags[20] = {
 	    LOG_NONE,
 		LOG_JSON,
 		LOG_MAIN,
@@ -43,7 +43,8 @@ void initProjectFlags(Project* pro) {
 		LOG_CHAR,
 		LOG_CONTROL,
 		LOG_CONTROLLER,
-		LOG_MOVE
+		LOG_MOVE,
+		LOG_COLLISION
 	};
 
 
@@ -100,6 +101,9 @@ void initProjectFlags(Project* pro) {
 
 	addNodeV(pro->flagList, "move", &flags[17], 0);
 	addLoggerTag(flags[17], "move", 0);
+
+	addNodeV(pro->flagList, "collision", &flags[18], 0);
+	addLoggerTag(flags[18], "collision", 0);
 }
 
 

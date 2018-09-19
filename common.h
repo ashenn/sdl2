@@ -36,22 +36,23 @@ typedef enum bool
 #define FPS 60
 #define FRAME_DURATION 1000 / FPS
 
-#define LOG_MAIN 2
-#define LOG_OBJ 4
-#define LOG_ASSET 8
-#define LOG_VIEW 16
-#define LOG_LAYER 21
-#define LOG_EVENT 64
-#define LOG_COMMON 128
-#define LOG_PROJECT 256
-#define LOG_RENDER 512
-#define LOG_ANIM 1024
-#define LOG_TIMER 2048
-#define LOG_SPRITE 4096
-#define LOG_CHAR 8192
-#define LOG_CONTROL 16384
-#define LOG_CONTROLLER 32768
-#define LOG_MOVE 65536
+#define LOG_MAIN 		1 << 1
+#define LOG_OBJ 		1 << 2
+#define LOG_ASSET 		1 << 3
+#define LOG_VIEW 		1 << 4
+#define LOG_LAYER 		1 << 5
+#define LOG_EVENT 		1 << 6
+#define LOG_COMMON 		1 << 7
+#define LOG_PROJECT 	1 << 8
+#define LOG_RENDER 		1 << 9
+#define LOG_ANIM 		1 << 10
+#define LOG_TIMER 		1 << 11
+#define LOG_SPRITE 		1 << 12
+#define LOG_CHAR 		1 << 13
+#define LOG_CONTROL		1 << 14
+#define LOG_CONTROLLER 	1 << 15
+#define LOG_MOVE 		1 << 16
+#define LOG_COLLISION	1 << 17
 
 #define FLIP_N SDL_FLIP_NONE
 #define FLIP_V SDL_FLIP_VERTICAL

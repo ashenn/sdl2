@@ -7,6 +7,7 @@ void renderObject(Object* obj) {
 	logger->inf(LOG_RENDER, "PRINT OBJECT: #%s", obj->name);
     printObject(obj);
 
+	logger->inf(LOG_RENDER, "Has Childs: %d", obj->childs != NULL && obj->childs->nodeCount > 0);
 	if (obj->childs != NULL && obj->childs->nodeCount > 0) {
 		Node* childNode = NULL;
 
@@ -58,14 +59,20 @@ void* renderThread(void* arg) {
         nextTick += (1000 / FPS);
 
 
+		logger->inf(LOG_RENDER, "-- Clear View");
 		SDL_RenderClear(rend);
+		
+		logger->inf(LOG_RENDER, "-- Animating");
         animate();
 
-        if (!layerList->nodeCount) {
+        if (layerList->nodeCount) {
+			listIterateFnc(layerList, iterateLayers, NULL, NULL);
+        }
+        else{
         	logger->war(LOG_RENDER, "NO LAYERS TO RENDER !!!");
         }
 
-		listIterateFnc(layerList, iterateLayers, NULL, NULL);
+		logger->inf(LOG_RENDER, "-- Print View");
 		SDL_RenderPresent(rend);
 
 		int waited = tickWait(nextTick);

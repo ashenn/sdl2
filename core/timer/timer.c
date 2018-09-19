@@ -150,8 +150,6 @@ void* callDelayedFunction(void* param) {
 	logger->inf(LOG_TIMER, "-- Delayed Done !!!!");
 	pthread_cleanup_pop(1);
 
-	ListManager* launchers = getLaunchers();
-
 	return NULL;
 }
 
@@ -236,7 +234,7 @@ short clearDelayed(int i, Node* n, short* delete, void* param, va_list* args) {
 		logger->war(LOG_TIMER, "=== Clearing Un Completed DELAYED Function: %s ===", n->name);
 		killDelayedFunction(launcher, true, false);
 	}
-	
+
 	logger->war(LOG_TIMER, "=== Clearing Un Completed DELAYED Function: %s ===", n->name);
 
 	free(launcher->name);

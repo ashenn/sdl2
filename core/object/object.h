@@ -9,7 +9,7 @@
 typedef struct Object Object;
 typedef struct Controller Controller;
 
-#include "..//movement/movement.h"
+#include "../movement/movement.h"
 
 #define OBJECT_BODY \
 	CLASS_BODY 		\
@@ -36,8 +36,9 @@ typedef struct Controller Controller;
 	SDL_Surface* component;		\
 	\
 	void (*delete)(Object* obj);  \
-	void (*onDelete)(Object* obj);
-    // Collision* Collision;
+	void (*onDelete)(Object* obj); \
+	\
+	ListManager* collisions;
 
 
 struct Object
@@ -48,10 +49,10 @@ struct Object
 
 // CREATING
 ListManager* getObjectList();	// List Of all visual Objects
-Object* genSimpleObject(char* name, void* comp, SDL_Rect* pos, short z);
+Object* genSimpleObject(const char* name, void* comp, SDL_Rect* pos, short z);
 Object* genObject(char* name, void* comp, SDL_Rect* pos, short z, void* click, void* hover);
 
-void initSimpleObject(Object* obj, char* name, void* comp, SDL_Rect* pos, short z);
+void initSimpleObject(Object* obj, const char* name, void* comp, SDL_Rect* pos, short z);
 
 Object* addObject(char* name, void* comp, SDL_Rect* pos, short z, void* click, void* hover, void* container);
 Object* addSimpleObject(char* name, void* comp, SDL_Rect* pos, short z); // Add Object No Click / Hover / Container
@@ -59,6 +60,9 @@ Object* addSimpleObject(char* name, void* comp, SDL_Rect* pos, short z); // Add 
 
 void addObjectToView(Object* obj);
 void setObjSurface(Object* obj, SDL_Surface* surf);
+
+// CHILDS
+bool addChild(Object* obj, Object* child);
 
 
 // DELETING

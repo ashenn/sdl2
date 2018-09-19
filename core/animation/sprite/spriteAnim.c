@@ -92,16 +92,16 @@ bool checkObjAnim(SpriteObject* obj) {
 	return true;
 }
 
-void SpriteAnimDataDelete(void* a) {
-	SpriteAnimData* anim = (SpriteAnimData*) a;
+void SpriteAnimDataDelete(Node* n) {
+	SpriteAnimData* anim = (SpriteAnimData*) n->value;
 	logger->inf(LOG_SPRITE, "===== DELETING SPRITE ANIM DATA: %s =====", anim->name);
 
 	free(anim->name);
 	free(anim->clipPos);
 }
 
-void AnimLinkDelete(void* l) {
-	AnimLink* link = (AnimLink*) l;
+void AnimLinkDelete(Node* n) {
+	AnimLink* link = (AnimLink*) n->value;
 	logger->inf(LOG_SPRITE, "===== DELETING SPRITE ANIM LINK: %s =====", link->name);
 
 	free(link->name);

@@ -51,8 +51,8 @@ typedef struct AnimLinkFnc {
 } AnimLinkFnc;
 
 
-void AnimLinkDelete(void* l);
-void SpriteAnimDataDelete(void* a);
+void AnimLinkDelete(Node* n);
+void SpriteAnimDataDelete(Node* n);
 SpriteAnimParam* spriteAnimByName(SpriteObject* obj, char* name, unsigned int clipIndex);
 SpriteAnimParam* spriteAnim(SpriteObject* obj, unsigned int animID, unsigned int clipIndex);
 

@@ -35,6 +35,6 @@ struct Character {
 };
 
 void characterDelete(Character* ch);
-Character* initCharacter(CharacterType type, char* name, SDL_Rect* pos, int z);
+Character* initCharacter(CharacterType type, char* name, char* jsonKey, SDL_Rect* pos, int z);
 
 #endif

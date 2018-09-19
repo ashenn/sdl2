@@ -23,6 +23,7 @@ void _setVelocityX(Object* obj, double x) {
 		move->dir.x = DIR_RIGHT;
 	}
 
+	logger->inf(LOG_MOVE, "-- Done X: %d ====", (int) x);
 	UNLOCK(obj);
 }
 
@@ -40,6 +41,7 @@ void _setVelocityY(Object* obj, double y) {
 		move->dir.y = DIR_DOWN;
 	}
 
+	logger->inf(LOG_MOVE, "-- Done Y: %d ====", (int) y);
 	UNLOCK(obj);
 }
 
@@ -88,10 +90,15 @@ void setVelocity(Object* obj, vector vel) {
 	_setVelocityX(obj, vel.x);
 	_setVelocityY(obj, vel.y);
 
+	logger->inf(LOG_MOVE, "-- Getting Obj Movement: %p", obj->movement);
+
 	Movement* move = &obj->movement;
-	logger->dbg(LOG_MOVE, "-- Direction: X: %s | Y: %s", GEN_DIRECTION_TYPE_STRING[move->dir.x], GEN_DIRECTION_TYPE_STRING[move->dir.y]);
+
+	logger->inf(LOG_MOVE, "-- Direction: X: %lf | %lf", move->dir.x, move->dir.y);
+	//logger->dbg(LOG_MOVE, "-- Direction: X: %s | Y: %s", GEN_DIRECTION_TYPE_STRING[move->dir.x], GEN_DIRECTION_TYPE_STRING[move->dir.y]);
 
 	velocityUpdated(obj);
+	logger->inf(LOG_MOVE, "-- UpdatingVelocity");
 	UNLOCK(obj);
 }
 

@@ -73,7 +73,7 @@ void unlockNode(Node* n) {
  * @param params Node Key
  * @return Node*
  */
-void* addNode(ListManager* lstMgr, void* params){
+void* addNode(ListManager* lstMgr, const char* params){
 	int id;
 	char* name = (char*) params;
 	//printf("New Node Name %s\n", name);
@@ -142,7 +142,7 @@ void* addNode(ListManager* lstMgr, void* params){
  * @param valueAlloc Value is malloc
  * @return	Node*
  */
-void* addNodeV(ListManager* lstMgr, void* params, void* value, short valueAlloc){
+void* addNodeV(ListManager* lstMgr, const char* params, void* value, short valueAlloc){
 	Node* n = addNode(lstMgr, params);
 	if (n == NULL) {
 		return NULL;
@@ -221,7 +221,7 @@ void printNodes(ListManager* lstMgr){
  * @param  id     Id
  * @return        Node*
  */
-Node* getNode(ListManager* lstMgr, int id){
+Node* getNode(ListManager* lstMgr, const int id){
 	//fprintf(stdout, "GETTING NODE: %d\n", id);
 	short found = 0;
 	Node* currentNode = NULL;
@@ -264,7 +264,7 @@ Node* getNode(ListManager* lstMgr, int id){
  * @param  name   Key
  * @return        Node*
  */
-Node* getNodeByName(ListManager* lstMgr, char* name){
+Node* getNodeByName(ListManager* lstMgr, const char* name){
 	short found = 0;
 	Node* currentNode = NULL;
 
@@ -351,7 +351,7 @@ void freeNodeValue(Node* n) {
 
 void freeNode(Node* node) {
 	if (node->del != NULL) {
-		node->del(node->value);
+		node->del(node);
 	}
 
 	freeNodeKey(node);
@@ -593,9 +593,9 @@ void listIterateFnc(ListManager* list, short (*fnc)(int , Node*, short*, void*, 
 		}
 
 		delete = 0;
+		va_end(args);
 	}
 
-	va_end(args);
 
 	unlockList(list);
 }

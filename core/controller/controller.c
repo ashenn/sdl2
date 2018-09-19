@@ -103,14 +103,27 @@ void stopMovement(Controller* ctrl) {
 }
 
 void ctrlSetCharacter(Controller* ctrl, Character* c) {
+	logger->inf(LOG_CONTROLLER, "===== Setting Controller Character =====");
 	if (ctrl->character != NULL) {
+		logger->inf(LOG_CONTROLLER, "-- Removing Old Character: %s", ctrl->name);
+		logger->inf(LOG_CONTROLLER, "-- Removing Old Character: %s | %p", ctrl->character);
+
 		ctrl->removeCharacter(ctrl);
 	}
 
+	logger->inf(LOG_CONTROLLER, "-- Get Char Obj");
 	CharObj* obj = (CharObj*) c->obj;
+	
+	logger->inf(LOG_CONTROLLER, "-- Setting Character");
 	ctrl->character = c;
+
+	logger->inf(LOG_CONTROLLER, "-- Setting Object");
 	ctrl->obj = (Object*) obj;
+	
+	logger->inf(LOG_CONTROLLER, "-- Setting Controller-0");
     c->ctrl = ctrl;
+
+	logger->inf(LOG_CONTROLLER, "-- Setting Controller-1");
     obj->ctrl = ctrl;
 }
 
@@ -125,6 +138,7 @@ void initController(Controller* ctrl, ControllerType type) {
 
 	ctrl->move = move;
 	ctrl->moveToObj = NULL;
+	ctrl->character = NULL;
 	ctrl->setCharacter = ctrlSetCharacter;
 	ctrl->removeCharacter = ctrlRemoveCharacter;
 }

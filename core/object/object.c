@@ -18,9 +18,11 @@ ListManager* getObjectList() {
 }
 
 void setObjSurface(Object* obj, SDL_Surface* surf) {
+	logger->inf(LOG_OBJ, "-- Setting Obj Surface");
 	obj->component = surf;
 	
 	if (obj->texture != NULL) {
+		logger->inf(LOG_OBJ, "-- Destroyibg Old Texture");
 		SDL_DestroyTexture(obj->texture);
 		obj->texture = NULL;
 	}
@@ -37,7 +39,7 @@ void setObjSurface(Object* obj, SDL_Surface* surf) {
 	}
 }
 
-Object* genSimpleObject(char* name, void* comp, SDL_Rect* pos, short z) {
+Object* genSimpleObject(const char* name, void* comp, SDL_Rect* pos, short z) {
 	Object* obj = new(Object);
 
 	initSimpleObject(obj, name, comp, pos, z);
@@ -186,19 +188,24 @@ void deleteObject(Object* obj) {
 	logger->dbg(LOG_OBJ, "===== DELETE OBJECT DONE ====");
 }
 
-void initSimpleObject(Object* obj, char* name, void* comp, SDL_Rect* pos, short z) {
+void initSimpleObject(Object* obj, const char* name, void* comp, SDL_Rect* pos, short z) {
+	logger->inf(LOG_OBJ, "-- INIT SIMPLE OBJECT %s", name);
 	obj->z = z;
 	obj->visible = 1;
 	obj->enabled = 1;
 	obj->lifetime = -1;
+
+	logger->inf(LOG_OBJ, "-- Set Name");
 	obj->name = Str(name);
 
+	logger->inf(LOG_OBJ, "-- Set Velocity");
 	vector vel = {0, 0};
 	setVelocity(obj, vel);
 
 	obj->component = NULL;
 	obj->texture = NULL;
 
+	logger->inf(LOG_OBJ, "-- Set Surface");
 	setObjSurface(obj, comp);
 	obj->rotation = 0;
 	obj->flip = FLIP_N;
@@ -208,7 +215,8 @@ void initSimpleObject(Object* obj, char* name, void* comp, SDL_Rect* pos, short 
 	obj->childs = NULL;
 	obj->onDelete = NULL;
 	obj->delete = NULL;
-	//obj->collision = NULL;
+
+	obj->collisions = NULL;
 
 	if (pos != NULL) {
 		obj->pos.x = pos->x;
@@ -222,4 +230,50 @@ void initSimpleObject(Object* obj, char* name, void* comp, SDL_Rect* pos, short 
 		obj->pos.w = SCREEN_W;
 		obj->pos.h = SCREEN_H;
 	}
+
+	logger->inf(LOG_OBJ, "-- Simple Object Ready");
+}
+
+bool addChild(Object* obj, Object* child) {
+	LOCK(obj);
+	LOCK(child);
+
+	logger->inf(LOG_OBJ, "==== Adding Child %s ====", child->name);
+
+	logger->dbg(LOG_OBJ, "-- parent: %s\n-- child: %s", obj->name, child->name);
+
+	if (obj->childs == NULL) {
+		logger->dbg(LOG_OBJ, "-- Init child list");
+		obj->childs = initListMgr();
+	}
+
+
+	logger->dbg(LOG_OBJ, "-- Child Pos: x: %d + %d, y: %d + %d", child->pos.x, obj->pos.x, child->pos.y, obj->pos.y);
+	child->pos.x += obj->pos.x;
+	child->pos.y += obj->pos.y;
+	logger->dbg(LOG_OBJ, "-- Child Pos: x: %d, y: %d", child->pos.x, child->pos.y);
+
+	Node* n = addNodeV(obj->childs, child->name, child, 1);
+	if (n == NULL) {
+		logger->err(LOG_OBJ, "==== FAIL TO ADD CHILD NODE =====");
+		UNLOCK(obj);
+		UNLOCK(child);
+
+		return false;
+	}
+
+	if (obj->parent == NULL) {
+		child->parent = obj;
+	}
+	else{
+		child->parent = obj->parent;
+	}
+
+	logger->dbg(LOG_OBJ, "-- nodeID: %d", n->id);
+	logger->dbg(LOG_OBJ, "==== Child %s Added to %s ====", child->name, obj->name);
+
+	UNLOCK(obj);
+	UNLOCK(child);
+	
+	return true;
 }

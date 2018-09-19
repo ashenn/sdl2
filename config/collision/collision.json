@@ -1,0 +1,29 @@
+{
+	"flags": [
+		"COL_NONE",
+		"COL_ALL",
+		"COL_WALL",
+		"COL_ITEM",
+		"COL_PLAYER"
+	],
+
+	"channels": {
+		"COL_WALL": {
+			"COL_WALL": "COL_BLOCK",
+			"COL_ITEM": "COL_BLOCK",
+			"COL_PLAYER": "COL_BLOCK"
+		},
+
+		"COL_PLAYER": {
+			"COL_WALL": "COL_BLOCK",
+			"COL_ITEM": "COL_OVERLAP",
+			"COL_PLAYER": "COL_BLOCK"
+		},
+
+		"COL_ITEM": {
+			"COL_WALL": "COL_BLOCK",
+			"COL_ITEM": "COL_OVERLAP",
+			"COL_PLAYER": "COL_OVERLAP"
+		}
+	}
+}

@@ -27,7 +27,7 @@ Character* newCharacter() {
 	return ch;
 }
 
-Character* initCharacter(CharacterType type, char* name, SDL_Rect* pos, int z) {
+Character* initCharacter(CharacterType type, char* name, char* jsonKey, SDL_Rect* pos, int z) {
 	logger->inf(LOG_CHAR, "=== INIT CHARACTER ===");
 	char jsonPath[150];
 	memset(jsonPath, 0, 150);
@@ -56,11 +56,11 @@ Character* initCharacter(CharacterType type, char* name, SDL_Rect* pos, int z) {
 		return NULL;
 	}
 
-	logger->inf(LOG_CHAR, "-- Search: %s", name);
-	Json* data = jsonGetData(json, name);
+	logger->inf(LOG_CHAR, "-- Search: %s", jsonKey);
+	Json* data = jsonGetData(json, jsonKey);
 
 	if (data == NULL) {
-		logger->err(LOG_CHAR, "-- Fail To Find %s Data In %s", name, jsonPath);
+		logger->err(LOG_CHAR, "-- Fail To Find %s Data In %s", jsonKey, jsonPath);
 		return NULL;
 	}
 
@@ -74,8 +74,11 @@ Character* initCharacter(CharacterType type, char* name, SDL_Rect* pos, int z) {
 }
 
 void characterDelete(Character* ch) {
-	logger->inf(LOG_CHAR, "===== DELETING CHARACTER: %s =====", ch->name);
+	if (ch == NULL) {
+		return;
+	}
 
+	logger->inf(LOG_CHAR, "===== DELETING CHARACTER: %s =====", ch->name);
 	if (ch->obj != NULL) {
 		if (ch->obj->delete != NULL) {
 			ch->obj->delete(ch->obj);

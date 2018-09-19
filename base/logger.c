@@ -311,7 +311,7 @@ void addLoggerTag(unsigned int  tag, char* name, short active) {
     }
 
     short* p = malloc(sizeof(short));
-    *p = 0;
+    *p = active;
     n = addNodeV(logger->tags, name, p, 1);
     n->id = tag;
 }
