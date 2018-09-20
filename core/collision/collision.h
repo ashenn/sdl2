@@ -33,11 +33,14 @@ typedef struct Collision
 	unsigned int blocks;
 	unsigned int overlaps;
 
-
+	Object* obj;
 	CollisionType type;
+	ListManager* collisions;
 
-	bool (*onHit)(Object*, Object*);
+	void (*onHit)(Object*, Object*);
+	void (*onHitEnd)(Object*, Object*);
 	void (*onOverlap)(Object*, Object*);
+	void (*onOverlapEnd)(Object*, Object*);
 } Collision;
 
 

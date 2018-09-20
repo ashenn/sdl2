@@ -312,7 +312,7 @@ Node* getNodeByName(ListManager* lstMgr, const char* name){
  * @param lstMgr List
  * @param id     Id
  */
-void deleteNodeByName(ListManager* lstMgr, char* name) {
+void deleteNodeByName(ListManager* lstMgr, const char* name) {
 	//fprintf(stdout, "DELETING NODE: %s\n", name);
 	Node* n = getNodeByName(lstMgr, name);
 	if (n == NULL) {

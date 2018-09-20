@@ -20,7 +20,7 @@ ListManager* getKeyList() {
 bool bindControl(unsigned int i, Json* conf, void* target) {
 	logger->inf(LOG_CONTROL, "=== APPLY CONTROL CONF #%d: %s", i, conf->key);
 
-	jsonPrint(conf, 0);
+	// jsonPrint(conf, 0);
 
 	logger->inf(LOG_CONTROL, "-- Getting  Key: %s", conf->key);
 	SDL_Keycode key = getKey(conf->key);
@@ -91,7 +91,7 @@ bool bindControl(unsigned int i, Json* conf, void* target) {
 	evt->hold = n->fnc;
 
 	logger->inf(LOG_CONTROL, "-- Getting  Hold Params");
-	jsonPrint(hold, 0);
+	// jsonPrint(hold, 0);
 
 	float minHold = 0;
 	float maxHold = 0;
@@ -141,7 +141,7 @@ void loadControl(char* name, char* key, void* target) {
 		}
 
 		logger->inf(LOG_CONTROL, "-- Controls Found !!!");
-		jsonPrint(json, 0);
+		// jsonPrint(json, 0);
 
 		logger->inf(LOG_CONTROL, "-- Getting: %s", name);
 		conf = jsonGetData(json, name);
@@ -150,7 +150,7 @@ void loadControl(char* name, char* key, void* target) {
 			return;
 		}
 
-		jsonPrint(conf, 0);
+		// jsonPrint(conf, 0);
 		confN = addNodeV(controls->confs, name, conf, 1);
 	}
 	else {

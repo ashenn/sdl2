@@ -1,5 +1,6 @@
 #include "animation.h"
 #include "./sprite/spriteAnim.h"
+#include "../collision/collision.h"
 #include <stdarg.h>
 
 AnimParam* animAddObject(Object* obj, AnimParam* param) {
@@ -59,13 +60,13 @@ void initAnimParam(AnimParam* param, Object* obj, float time, float delay, void*
 
 
 void animSetPosition(Object* obj, int x, int y) {
-	LOCK(obj);
+	//logger->err(LOG_ANIM, "Lock Anim Set Pos");
 	logger->inf(LOG_ANIM, "=== Set Object Position %s => Y: %d | Y: %d", obj->name, x, y);
 
 	obj->pos.x = x;
 	obj->pos.y = y;
 
-	UNLOCK(obj);
+	//logger->err(LOG_ANIM, "UnLock Anim Set Pos");
 }
 
 Animator* getAnimator() {
@@ -202,9 +203,10 @@ void animMoveTo(AnimMoveParam* param) {
 		logger->dbg(LOG_ANIM, "-- Moving Childs: %d", obj->childs->nodeCount);
 
 		while((childNode = listIterate(obj->childs, childNode)) != NULL) {
-			LOCK(childNode);
+			lockNode(childNode);
 
 			Object* child = (Object*) childNode->value;
+			LOCK(child, "Anim MOVE-0");
 
 			logger->dbg(LOG_ANIM, "-- Child: %s\nvisible: %d", child->name, child->visible);
 
@@ -217,7 +219,8 @@ void animMoveTo(AnimMoveParam* param) {
 			}
 
 
-			UNLOCK(childNode);
+			UNLOCK(child, "Anim MOVE-1");
+			unlockNode(childNode);
 		}
 
 		logger->dbg(LOG_ANIM, "-- Moving Childs DONE");
@@ -234,7 +237,7 @@ void animMoveTo(AnimMoveParam* param) {
 			logger->inf(LOG_ANIM, "Frames Left: %d", param->frames);
 		}
 	}
-	
+
 	logger->inf(LOG_ANIM, "==== ANIM Move DONE ====");
 }
 
@@ -249,6 +252,7 @@ AnimMoveParam* newMoveParam(Object* obj, float time, float delay, void* fnc) {
 }
 
 AnimParam* moveTo(Object* obj, int x, int y, float time, float delay) {
+	//LOCK(obj);
 	logger->inf(LOG_ANIM, "==== Animation: Moving: %s to %d | %d (%fs) ====", obj->name, x, y, time);
 
 	SDL_Rect targetPos;
@@ -258,6 +262,7 @@ AnimParam* moveTo(Object* obj, int x, int y, float time, float delay) {
 	logger->dbg(LOG_ANIM, "-- Move To: %d | %d", x, y);
 	vector vec = getVector(obj->pos, targetPos);
 	logger->dbg(LOG_ANIM, "-- Move Vector: %lf | %lf", vec.x, vec.y);
+
 
 	AnimMoveParam* param = newMoveParam(obj, time, delay, animMoveTo);
 
@@ -275,7 +280,10 @@ AnimParam* moveTo(Object* obj, int x, int y, float time, float delay) {
     logger->dbg(LOG_ANIM, "==== ADDING OBJ TO ANIMATOR !!!!");
 
     animAddObject(obj, (AnimParam*) param);
+
     logger->inf(LOG_ANIM, "==== Animation Added ====");
+
+	//UNLOCK(obj);
     return (AnimParam*) param;
 }
 
@@ -308,14 +316,19 @@ short animateObject(int index, Node* n, short* delete, void* data, va_list* args
 			break;
 		}
 
+		Object* obj = param->obj;
 		if (param->fnc != NULL) {
 			//logger->dbg(LOG_ANIM, "-- Calling Anim Function: %s", param->obj->name);
+			LOCK(obj, "ANIMMATE-0");
 			param->fnc(param);
+			UNLOCK(obj, "ANIMMATE-1");
 		}
 
 		if (param->stepFnc != NULL) {
 			//logger->dbg(LOG_ANIM, "-- Calling Custom Step Function");
+			LOCK(obj, "ANIMMATE-2");
 			param->stepFnc(param);
+			UNLOCK(obj, "ANIMMATE-3");
 		}
 
 		param->frames--;
@@ -329,7 +342,9 @@ short animateObject(int index, Node* n, short* delete, void* data, va_list* args
 
 		if (param->callback != NULL) {
 			//logger->err(LOG_ANIM, "-- Calling CallBack: %p", param);
+			LOCK(obj, "ANIMMATE-4");
 			param->callback(param);
+			UNLOCK(obj, "ANIMMATE-5");
 		}
 
 		if (param->loop) {
@@ -394,6 +409,9 @@ void updateSpriteAnim(SpriteAnimParam* param) {
 short animateSprite(int index, Node* n, short* delete, void* data, va_list* args) {
 	SpriteAnimParam* param = (SpriteAnimParam*) n->value;
 
+	Object* obj = (Object*) param->obj;
+	LOCK(obj, "ANIMMATE-SPRITE-0");
+
 	if (param->fnc != NULL) {
 		//logger->inf(LOG_SPRITE, "== PRE WAITING #%d: %d ==", param->id, param->wait);
 		param->fnc((AnimParam*) param);
@@ -422,6 +440,7 @@ short animateSprite(int index, Node* n, short* delete, void* data, va_list* args
 	updateSpriteAnim(param);
 	//logger->inf(LOG_SPRITE, "##### Anim SPRITE DONE #####");
 
+	UNLOCK(obj, "ANIMMATE-SPRITE-1");
 	return true;
 }
 
@@ -446,33 +465,23 @@ void animRemoveObject(Object* obj) {
 		return;
 	}
 
-	//logger->inf(LOG_ANIM, "==== Removing Animation For Object: %s ====", obj->name);
+	logger->inf(LOG_ANIM, "==== Removing Animation For Object: %s ====", obj->name);
 	Animator* anim = getAnimator();
 
 	Node* n = getNodeByName(anim->moves, obj->name);
 
 	if (n == NULL) {
+		logger->dbg(LOG_ANIM, "-- No Anim Found");
 		return;
 	}
 
-	//logger->dbg(LOG_ANIM, "-- Clearing Anim Que");
-
-	//pthread_mutex_lock(anim->moves->mutex);
-	//logger->dbg(LOG_ANIM, "-- Node Ask-Locked");
-	//pthread_mutex_lock(n->mutex);
-	//logger->dbg(LOG_ANIM, "-- Node Locked");
-
-	//logger->dbg(LOG_ANIM, "-- Deleting List");
+	logger->dbg(LOG_ANIM, "-- Deleting List");
 	deleteList(n->value);
 
-	//logger->dbg(LOG_ANIM, "-- Remove Node");
+	logger->dbg(LOG_ANIM, "-- Remove Node");
 	removeAndFreeNode(anim->moves, n);
 
-	//logger->dbg(LOG_ANIM, "-- Unlock Node");
-	//pthread_mutex_unlock(n->mutex);
-	//pthread_mutex_unlock(anim->moves->mutex);
-
-	//logger->dbg(LOG_ANIM, "==== Removing Anim %s DONE ====", obj->name);
+	logger->dbg(LOG_ANIM, "==== Removing Anim %s DONE ====", obj->name);
 }
 
 void spriteRemoveObject(Object* obj) {

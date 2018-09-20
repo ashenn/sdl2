@@ -17,7 +17,9 @@
 	pthread_cond_t cond;	 \
 	pthread_mutex_t mutex;	\
 	\
-	pid_t pid;
+	pid_t pid; \
+	char* lockTag; \
+	char* unlockTag;
 
 typedef	struct Class
 {
@@ -62,14 +64,14 @@ typedef enum bool
 Class* newClass(size_t s);
 #define new(T) ((T*) newClass(sizeof(T)))
 
-void th_lock(Class* cl);
+void th_lock(Class* cl, const char* tag);
 void th_wait(Class* cl);
-void th_unlock(Class* cl);
+void th_unlock(Class* cl, const char* tag);
 void th_signal(Class* cl);
 void th_wait_time(Class* cl, float delay);
 
-#define LOCK(T) (th_lock((Class*) T))
-#define UNLOCK(T) (th_unlock((Class*) T))
+#define LOCK(C,T) (th_lock((Class*) C, T))
+#define UNLOCK(C, T) (th_unlock((Class*) C, T))
 
 #define WAIT(T) (th_wait((Class*) T))
 #define SIGNAL(T) (th_signal((Class*) T))

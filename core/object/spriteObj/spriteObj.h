@@ -23,6 +23,9 @@ typedef struct SpriteObject {
 } SpriteObject;
 
 SpriteObject* newSpriteObject(char* name, char* jsonPath, SDL_Rect* pos, short z);
-void initSpriteObj(SpriteObject* obj, char* name, char* path, SDL_Rect* pos, short z);
+SpriteObject* initSpriteObj(SpriteObject* obj, char* name, char* path, SDL_Rect* pos, short z);
+
+void footLand(Object* self, Object* target);
+void footFall(Object* self, Object* target);
 
 #endif

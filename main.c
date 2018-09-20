@@ -191,24 +191,22 @@ int main(int arc, char* argv[]) {
 	PlayerCtrl* player = spawnPlayer(1, "Player-1", "adventurer", &pos, 2);
 	Character* ch = player->character;
 
-
 	pos.x = 350;
 	PlayerCtrl* player2 = spawnPlayer(2, "Player-2", "adventurer", &pos, 2);
 
 	testObj = ch->obj;
-	pos.x = 15;
+	pos.x = 20;
 	pos.y = 30;
-	pos.w = 20;
+	pos.w = 10;
 	pos.h = 8;
 
 	Collision* col = collision_add(testObj, "TestCol", COL_OVERLAP, COL_PLAYER, pos, true);
+	col->blocks = 0;
+	col->overlaps = COL_WALL;
+	col->onOverlap = footLand;
+	col->onOverlap = footFall;
+
 	collision_add(player2->obj, "XD_COL", COL_OVERLAP, COL_PLAYER, pos, true);
-
-	logger->war(LOG_MAIN, "==== COLLISION READY: %s =====", col->name);
-
-	collision_handle();
-
-	return 0;
 
 	addControl("stop", release);
 	addControl("jump", topPress);
@@ -217,17 +215,26 @@ int main(int arc, char* argv[]) {
 
 	loadControl("SideScroll", "player-1", testObj);
 
-	logger->err(LOG_MAIN, "BIND EVENT Space");
 	KeyEvent* evt = bindKeyEvent("Space", SDLK_SPACE, NULL);
 	evt->pressed = spacePressed;
 
+	pos.x = 150;
+	pos.y = 350;
+	pos.h = 50;
+	pos.w = 60;
+	Object* wall = addSimpleObject("wall", NULL, &pos, 2);
+
+	pos.x = 0;
+	pos.y = 0;
+	//collision_add(wall, "Wall_COL", COL_BLOCK, COL_WALL, pos, true);
 
 	logger->inf(LOG_MAIN, "#### CREATE RENDER TRHEAD");
 	pthread_create(&pro->renderThread, NULL, renderThread, (void*)NULL);
 
-	logger->err(LOG_MAIN, "EVENT LOOP");
 	while (pro->status != PRO_CLOSE) {
 		handleEvents();
+		//collision_handle();
+		usleep(100);
 	}
 
 	logger->inf(LOG_MAIN, "#### JOIN RENDER TRHEAD");

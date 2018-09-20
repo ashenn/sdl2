@@ -5,6 +5,16 @@
 #include "./character/charObj.h"
 #include "../../movement/movement.h"
 
+void footLand(Object* self, Object* target) {
+	CharObj* obj = (CharObj*) self;
+	obj->ch->attr.inAir = false;
+}
+
+void footFall(Object* self, Object* target) {
+	CharObj* obj = (CharObj*) self;
+	obj->ch->attr.inAir = true;
+}
+
 bool Idl2Run(SpriteAnimParam* o) {
 	CharObj* obj = (CharObj*) o->obj;
 
@@ -307,10 +317,10 @@ short initAnims(int i, Node* n, short* delete, void* param, va_list* args) {
     return true;
 }
 
-void initSpriteObj(SpriteObject* obj, char* name, char* path, SDL_Rect* pos, short z) {
-	logger->dbg(LOG_SPRITE, "-- Init Simple Object");
+SpriteObject* initSpriteObj(SpriteObject* obj, char* name, char* path, SDL_Rect* pos, short z) {
+	logger->err(LOG_SPRITE, "-- Init Sprite Object: %s", name);
 	initSimpleObject((Object*)obj, name, NULL, pos, z);
-
+	LOCK(obj, "INIT SPRITE-0");
 
 	logger->dbg(LOG_SPRITE, "-- Init List");
 	obj->animList = initListMgr();
@@ -380,6 +390,9 @@ void initSpriteObj(SpriteObject* obj, char* name, char* path, SDL_Rect* pos, sho
 
 	obj->pos.h = obj->curClip.h;
 	obj->pos.w = obj->curClip.w;
+	UNLOCK(obj, "INIT SPRITE-1");
+
+	return obj;
 }
 
 SpriteObject* newSpriteObject(char* name, char* path, SDL_Rect* pos, short z) {

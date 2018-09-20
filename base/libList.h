@@ -60,7 +60,7 @@ void removeNode(ListManager* lstMgr, Node* node);
 void* deleteNode(ListManager* lstMgr, int id);
 Node* deleteNodeNoFree(ListManager* lstMgr, int id);
 Node* deleteNodeByNameNoFree(ListManager* lstMgr, char* name);
-void deleteNodeByName(ListManager* lstMgr, char* name);
+void deleteNodeByName(ListManager* lstMgr, const char* name);
 
 void freeNode(Node* n);
 void freeNodeKey(Node* n);
@@ -82,5 +82,11 @@ void listRevIterateFnc(ListManager* list, short (*fnc)(int , Node*, short*, void
 
 short listInsertAfter(ListManager* lst, Node* n, short id);
 void sortList(ListManager * lst, short (*fnc)(void*, void*));
+
+void lockList(ListManager* lst);
+void unlockList(ListManager* lst);
+
+void lockNode(Node* n);
+void unlockNode(Node* n);
 
 #endif

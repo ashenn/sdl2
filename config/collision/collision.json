@@ -23,7 +23,7 @@
 		"COL_ITEM": {
 			"COL_WALL": "COL_BLOCK",
 			"COL_ITEM": "COL_OVERLAP",
-			"COL_PLAYER": "COL_OVERLAP"
+			"COL_PLAYER": "COL_IGNORE"
 		}
 	}
 }

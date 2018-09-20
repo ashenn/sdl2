@@ -65,7 +65,7 @@ void printObject(Object* obj) {
     	SDL_FillRect(screen, &obj->pos, obj->color);
     }
     else if(obj->childs == NULL || !obj->childs->nodeCount){
-		logger->war(LOG_RENDER, "-- Surface Is NULL for object: %s", obj->name);
+		//logger->war(LOG_RENDER, "-- Surface Is NULL for object: %s", obj->name);
     }
 }
 /*

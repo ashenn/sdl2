@@ -3,8 +3,13 @@
 #include "../../base/json.h"
 #include "../object/spriteObj/character/charObj.h"
 
-Character* newCharacter() {
+Character* newCharacter(const char* name) {
 	Character* ch = new(Character);
+
+	int len = strlen(name) + 6;
+	ch->name = StrE(len);
+	snprintf(ch->name, len, "%s_Char", name);
+
 	ch->obj = NULL;
 	ch->ctrl = NULL;
 	ch->direction.x = 0;
@@ -67,7 +72,8 @@ Character* initCharacter(CharacterType type, char* name, char* jsonKey, SDL_Rect
 	char* sheet = jsonGetValue(data, "sheet", NULL);
 	logger->inf(LOG_CHAR, "-- Sheet: %s", sheet);
 
-	Character* ch = newCharacter();
+	Character* ch = newCharacter(name);
+
 	ch->obj = (Object*) newCharObj(name, sheet, pos, z, type, ch);
 
 	return ch;

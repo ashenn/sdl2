@@ -38,6 +38,6 @@ struct Controller {
 
 void stopMovement(Controller* ctrl);
 void moveDir(Controller* ctrl, DirectionEnum dir);
-void initController(Controller* ctrl, ControllerType type);
+void initController(Controller* ctrl, ControllerType type, const char* name);
 
 #endif

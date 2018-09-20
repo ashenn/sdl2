@@ -4,14 +4,22 @@
 	<Project>
 		<Option title="sdl2" />
 		<Option pch_mode="2" />
-		<Option compiler="sdl2_mingw73" />
+		<Option compiler="sd2_migwin" />
+		<MakeCommands>
+			<Build command="" />
+			<CompileFile command="" />
+			<Clean command="" />
+			<DistClean command="" />
+			<AskRebuildNeeded command="" />
+			<SilentBuild command=" &gt; $(CMD_NULL)" />
+		</MakeCommands>
 		<Build>
 			<Target title="Debug">
 				<Option output="bin/Debug/sdl2" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
-				<Option compiler="sdl2_mingw73" />
-				<Option parameters="--logLvl 0" />
+				<Option compiler="sd2_migwin" />
+				<Option parameters="--logLvl 0 --dbg obj --dbg move" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -20,7 +28,7 @@
 				<Option output="bin/Release/sdl2" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
-				<Option compiler="sdl2_mingw73" />
+				<Option compiler="sd2_migwin" />
 				<Compiler>
 					<Add option="-O2" />
 				</Compiler>
@@ -29,13 +37,6 @@
 				</Linker>
 			</Target>
 		</Build>
-		<Compiler>
-			<Add option="-Wall" />
-			<Add option="-pg" />
-		</Compiler>
-		<Linker>
-			<Add option="-pg -lgmon" />
-		</Linker>
 		<Unit filename="base/basic.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -85,6 +86,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="core/character/character.h" />
+		<Unit filename="core/collision/collision.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/collision/collision.h" />
 		<Unit filename="core/controller/controller.c">
 			<Option compilerVar="CC" />
 		</Unit>

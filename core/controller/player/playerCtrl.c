@@ -42,10 +42,9 @@ PlayerCtrl* spawnPlayer(int id, char* name, char* jsonKey, SDL_Rect* pos, int z)
 	logger->inf(LOG_CONTROLLER, "===== Instance Player Controller");
 	
 	PlayerCtrl* ctrl = new(PlayerCtrl);
-	ctrl->name = Str(name);
 
 	logger->inf(LOG_CONTROLLER, "===== Init Controller");
-	initController((Controller*) ctrl, CTRL_PLAYER);
+	initController((Controller*) ctrl, CTRL_PLAYER, name);
 
 	logger->inf(LOG_CONTROLLER, "===== Init Character");
 	Character* ch = initCharacter(CHAR_PLAYER, name, jsonKey, pos, z);

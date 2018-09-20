@@ -53,15 +53,19 @@ void* renderThread(void* arg) {
 	SDL_Renderer* rend = getRenderer();
 	ListManager* layerList = getLayers();
 
+	LOCK(pro, "Render Thread-0");
+	//logger->err(LOG_ANIM, "Lock Render Project");
+
 	int nextTick = SDL_GetTicks();
 	while (pro->status != PRO_CLOSE) {
-		UNLOCK(pro);
+		//logger->err(LOG_ANIM, "UnLock Render Project");
+		UNLOCK(pro, "Render Thread-1");
         nextTick += (1000 / FPS);
 
 
 		logger->inf(LOG_RENDER, "-- Clear View");
 		SDL_RenderClear(rend);
-		
+
 		logger->inf(LOG_RENDER, "-- Animating");
         animate();
 
@@ -79,9 +83,11 @@ void* renderThread(void* arg) {
 		logger->dbg(LOG_RENDER, "Frame Wait: %d ms", waited);
 
 		nextTick = SDL_GetTicks();
-		LOCK(pro);
+		LOCK(pro, "Render Thread-2");
+		//logger->err(LOG_ANIM, "Lock Render Project");
 	}
 
-	UNLOCK(pro);
+	//logger->err(LOG_ANIM, "UnLock Render Project");
+	UNLOCK(pro, "Render Thread-3");
 	return NULL;
 }

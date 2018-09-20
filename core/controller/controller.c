@@ -71,8 +71,10 @@ void moveDir(Controller* ctrl, DirectionEnum dir) {
 	}
 
 	Character* ch = ctrl->character;
-	LOCK(ctrl);
-	LOCK(ch);
+	//logger->err(LOG_ANIM, "Lock Move Ctrl");
+	LOCK(ctrl, "CTRL-0");
+	//logger->err(LOG_ANIM, "Lock Move Char");
+	LOCK(ch, "CTRL-1");
 
 	short fact = dir == DIR_RIGHT || dir == DIR_DOWN ? 1 : -1;
 	logger->err(LOG_CONTROLLER, "-- Factor: %d", fact);
@@ -91,9 +93,11 @@ void moveDir(Controller* ctrl, DirectionEnum dir) {
 
 	ch->attr.moving = true;
 	setVelocity(ctrl->obj, vel);
-	
-	UNLOCK(ch);
-	UNLOCK(ctrl);
+
+	//logger->err(LOG_ANIM, "UnLock Move ctrl");
+	UNLOCK(ch, "CTRL-2");
+	//logger->err(LOG_ANIM, "UnLock Move Char");
+	UNLOCK(ctrl, "CTRL-3");
 }
 
 void stopMovement(Controller* ctrl) {
@@ -113,13 +117,13 @@ void ctrlSetCharacter(Controller* ctrl, Character* c) {
 
 	logger->inf(LOG_CONTROLLER, "-- Get Char Obj");
 	CharObj* obj = (CharObj*) c->obj;
-	
+
 	logger->inf(LOG_CONTROLLER, "-- Setting Character");
 	ctrl->character = c;
 
 	logger->inf(LOG_CONTROLLER, "-- Setting Object");
 	ctrl->obj = (Object*) obj;
-	
+
 	logger->inf(LOG_CONTROLLER, "-- Setting Controller-0");
     c->ctrl = ctrl;
 
@@ -132,7 +136,7 @@ void ctrlRemoveCharacter(Controller* ctrl) {
 	ctrl->character = NULL;
 }
 
-void initController(Controller* ctrl, ControllerType type) {
+void initController(Controller* ctrl, ControllerType type, const char* name) {
 	ctrl->type = type;
 	ctrl->enabled = true;
 
@@ -141,4 +145,8 @@ void initController(Controller* ctrl, ControllerType type) {
 	ctrl->character = NULL;
 	ctrl->setCharacter = ctrlSetCharacter;
 	ctrl->removeCharacter = ctrlRemoveCharacter;
+
+	int len = strlen(name) + 6;
+	ctrl->name = StrE(len);
+	snprintf(ctrl->name, len, "%s_Ctrl", ctrl->name);
 }

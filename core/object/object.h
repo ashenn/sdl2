@@ -63,6 +63,8 @@ void setObjSurface(Object* obj, SDL_Surface* surf);
 
 // CHILDS
 bool addChild(Object* obj, Object* child);
+SDL_Rect getWorldPos(Object*, SDL_Rect pos);
+void removeChild(Object* obj, const char* name);
 
 
 // DELETING
