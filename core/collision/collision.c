@@ -376,6 +376,9 @@ void collision_callFncs(Collision* col, Collision* col2, CollisionType type, boo
 				logger->war(LOG_COLLISION, "Collision Function Is Null: %s | %d", col->obj->name, type);
 			}
 			break;
+
+        default:
+            break;
 	}
 }
 
@@ -420,10 +423,7 @@ bool collision_removeCollide(Collision* col, Collision* target) {
 }
 
 short collision_handleCompCol(int i, Node* n, short* delete, void* param, va_list* args) {
-	Object* obj = (Object*) param;
-	Object* comp = va_arg(*args, Object*);
-
-	Collision* objCol = va_arg(*args, Collision*);
+	Collision* objCol = (Collision*) param;
 	Collision* compCol = (Collision*) n->value;
 
 	//logger->err(LOG_ANIM, "Lock Comp Col");
@@ -461,8 +461,7 @@ short collision_handleCompCol(int i, Node* n, short* delete, void* param, va_lis
 
 
 short collision_handleObjCol(int i, Node* n, short* delete, void* param, va_list* args) {
-	Object* obj = (Object*) param;
-	Object* comp = va_arg(*args, Object*);
+	Object* comp = (Object*) param;
 	Collision* objCol = (Collision*) n->value;
 
 	//logger->err(LOG_ANIM, "Lock Obj Col Pos");
@@ -470,7 +469,7 @@ short collision_handleObjCol(int i, Node* n, short* delete, void* param, va_list
 	//logger->inf(LOG_COLLISION, "-- Object Collision: %s", objCol->name);
 
 	if (objCol->enabled && objCol->flag != COL_NONE) {
-		listIterateFnc(comp->collisions, collision_handleCompCol, NULL, obj, comp, objCol);
+		listIterateFnc(comp->collisions, collision_handleCompCol, NULL, objCol);
 	}
 	else{
 		//logger->inf(LOG_COLLISION, "-- Skipping Disabled");
@@ -491,7 +490,7 @@ short collision_handleCheck(int i, Node* n, short* delete, void* param, va_list*
 	//logger->inf(LOG_COLLISION, "-- Compare: %s", comp->name);
 
 	if (comp->enabled) {
-		listIterateFnc(obj->collisions, collision_handleObjCol, NULL, obj, comp);
+		listIterateFnc(obj->collisions, collision_handleObjCol, NULL, comp);
 	}
 	else{
 		//logger->inf(LOG_COLLISION, "-- Skipping Disabled");

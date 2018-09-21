@@ -3834,3 +3834,1795 @@ obj [2018-09-20 20:27:33] DEBUG:
 ===== DELETE OBJECT DONE ====
 
 
+ [2018-09-21 09:12:28] DEBUG:
+-- Init Project
+
+
+ [2018-09-21 09:12:28] INFO:
+==== INIT PROJECT ====
+
+
+ [2018-09-21 09:12:28] INFO:
+==== INIT PROJECT FLAGS ====
+
+
+char [2018-09-21 09:12:28] ERROR:
+-- New Char Obj: Player-1
+
+
+sprite [2018-09-21 09:12:28] ERROR:
+-- Init Sprite Object: Player-1
+
+
+obj [2018-09-21 09:12:28] ERROR:
+-- INIT SIMPLE OBJECT Player-1
+
+
+obj [2018-09-21 09:12:28] ERROR:
+-- TestLen: 8
+
+
+obj [2018-09-21 09:12:28] ERROR:
+-- Len: 16
+
+
+anim [2018-09-21 09:12:28] ERROR:
+UnLock Set Velocity: Player-1_Object
+
+
+sprite [2018-09-21 09:12:29] ERROR:
+-- Calling Sprite Animation: Player-1_Object #1 => Idle
+
+
+char [2018-09-21 09:12:29] ERROR:
+-- New Char Obj: Player-2
+
+
+sprite [2018-09-21 09:12:29] ERROR:
+-- Init Sprite Object: Player-2
+
+
+obj [2018-09-21 09:12:29] ERROR:
+-- INIT SIMPLE OBJECT Player-2
+
+
+obj [2018-09-21 09:12:29] ERROR:
+-- TestLen: 8
+
+
+obj [2018-09-21 09:12:29] ERROR:
+-- Len: 16
+
+
+anim [2018-09-21 09:12:29] ERROR:
+UnLock Set Velocity: Player-2_Object
+
+
+sprite [2018-09-21 09:12:29] ERROR:
+-- Calling Sprite Animation: Player-2_Object #1 => Idle
+
+
+obj [2018-09-21 09:12:29] ERROR:
+-- INIT SIMPLE OBJECT wall
+
+
+obj [2018-09-21 09:12:29] ERROR:
+-- TestLen: 4
+
+
+obj [2018-09-21 09:12:29] ERROR:
+-- Len: 12
+
+
+anim [2018-09-21 09:12:29] ERROR:
+UnLock Set Velocity: wall_Object
+
+
+sprite [2018-09-21 09:12:29] ERROR:
+Right Pressed !!!
+
+
+sprite [2018-09-21 09:12:29] ERROR:
+CALL MOVE DIR Pressed !!!
+
+
+controller [2018-09-21 09:12:29] ERROR:
+=== MOVE DIR ===
+
+
+controller [2018-09-21 09:12:29] ERROR:
+-- Factor: 1
+
+
+controller [2018-09-21 09:12:29] ERROR:
+-- Max: 60
+
+
+controller [2018-09-21 09:12:29] ERROR:
+-- Set Velocity
+
+
+controller [2018-09-21 09:12:29] ERROR:
+-- X: 60
+
+
+controller [2018-09-21 09:12:29] ERROR:
+-- Y: 0
+
+
+anim [2018-09-21 09:12:29] ERROR:
+UnLock Set Velocity: Player-1_Object
+
+
+sprite [2018-09-21 09:12:29] ERROR:
+-- Calling Sprite Animation: Player-1_Object #2 => Run
+
+
+sprite [2018-09-21 09:12:31] ERROR:
+BTN Realeased !!!
+
+
+anim [2018-09-21 09:12:31] ERROR:
+UnLock Set Velocity: Player-1_Object
+
+
+sprite [2018-09-21 09:12:31] ERROR:
+===== !!!! Run2Idle !!!! ====
+
+
+sprite [2018-09-21 09:12:31] ERROR:
+-- Calling Sprite Animation: Player-1_Object #1 => Idle
+
+
+sprite [2018-09-21 09:12:32] ERROR:
+Right Pressed !!!
+
+
+sprite [2018-09-21 09:12:32] ERROR:
+CALL MOVE DIR Pressed !!!
+
+
+controller [2018-09-21 09:12:32] ERROR:
+=== MOVE DIR ===
+
+
+controller [2018-09-21 09:12:32] ERROR:
+-- Factor: -1
+
+
+controller [2018-09-21 09:12:32] ERROR:
+-- Max: 60
+
+
+controller [2018-09-21 09:12:32] ERROR:
+-- Set Velocity
+
+
+controller [2018-09-21 09:12:32] ERROR:
+-- X: -60
+
+
+controller [2018-09-21 09:12:32] ERROR:
+-- Y: 0
+
+
+anim [2018-09-21 09:12:32] ERROR:
+UnLock Set Velocity: Player-1_Object
+
+
+sprite [2018-09-21 09:12:32] ERROR:
+-- Calling Sprite Animation: Player-1_Object #2 => Run
+
+
+sprite [2018-09-21 09:12:33] ERROR:
+BTN Realeased !!!
+
+
+anim [2018-09-21 09:12:33] ERROR:
+UnLock Set Velocity: Player-1_Object
+
+
+sprite [2018-09-21 09:12:33] ERROR:
+===== !!!! Run2Idle !!!! ====
+
+
+sprite [2018-09-21 09:12:33] ERROR:
+-- Calling Sprite Animation: Player-1_Object #1 => Idle
+
+
+sprite [2018-09-21 09:12:33] ERROR:
+Right Pressed !!!
+
+
+sprite [2018-09-21 09:12:33] ERROR:
+CALL MOVE DIR Pressed !!!
+
+
+controller [2018-09-21 09:12:33] ERROR:
+=== MOVE DIR ===
+
+
+controller [2018-09-21 09:12:33] ERROR:
+-- Factor: 1
+
+
+controller [2018-09-21 09:12:33] ERROR:
+-- Max: 60
+
+
+controller [2018-09-21 09:12:33] ERROR:
+-- Set Velocity
+
+
+controller [2018-09-21 09:12:33] ERROR:
+-- X: 60
+
+
+controller [2018-09-21 09:12:33] ERROR:
+-- Y: 0
+
+
+anim [2018-09-21 09:12:33] ERROR:
+UnLock Set Velocity: Player-1_Object
+
+
+sprite [2018-09-21 09:12:33] ERROR:
+-- Calling Sprite Animation: Player-1_Object #2 => Run
+
+
+sprite [2018-09-21 09:12:33] ERROR:
+BTN Realeased !!!
+
+
+anim [2018-09-21 09:12:33] ERROR:
+UnLock Set Velocity: Player-1_Object
+
+
+sprite [2018-09-21 09:12:33] ERROR:
+===== !!!! Run2Idle !!!! ====
+
+
+sprite [2018-09-21 09:12:33] ERROR:
+-- Calling Sprite Animation: Player-1_Object #1 => Idle
+
+
+sprite [2018-09-21 09:12:33] ERROR:
+Down Pressed !!!
+
+
+main [2018-09-21 09:12:33] WARNING:
+-- NOT IN AIR !!!!
+
+
+sprite [2018-09-21 09:12:33] ERROR:
+-- Calling Sprite Animation: Player-1_Object #3 => Down
+
+
+timer [2018-09-21 09:12:34] ERROR:
+=== RESUMING DELAYED: delayedFnc-0 ===
+
+
+sprite [2018-09-21 09:12:34] ERROR:
+Top Pressed !!!
+
+
+main [2018-09-21 09:12:34] WARNING:
+-- NOT IN AIR !!!!
+
+
+anim [2018-09-21 09:12:34] ERROR:
+UnLock Set Velocity: Player-1_Object
+
+
+sprite [2018-09-21 09:12:34] ERROR:
+-- Calling Sprite Animation: Player-1_Object #4 => Jump
+
+
+sprite [2018-09-21 09:12:34] ERROR:
+-- Calling Sprite Animation: Player-1_Object #5 => Fall
+
+
+main [2018-09-21 09:12:34] ERROR:
+Trying To Unlock Thread None Locked Mutex: Player-1_Object | FROM ANIMMATE-SPRITE-1
+
+
+main [2018-09-21 09:12:34] ERROR:
+-- Locked By ANIMMATE-SPRITE-0
+
+
+main [2018-09-21 09:12:34] ERROR:
+-- UnLocked By Set Velocity Y-1
+
+
+sprite [2018-09-21 09:12:34] ERROR:
+-- Calling Sprite Animation: Player-1_Object #6 => Land
+
+
+main [2018-09-21 09:12:34] ERROR:
+Trying To Unlock Thread None Locked Mutex: Player-1_Object | FROM ANIMMATE-SPRITE-1
+
+
+main [2018-09-21 09:12:34] ERROR:
+-- Locked By ANIMMATE-SPRITE-0
+
+
+main [2018-09-21 09:12:34] ERROR:
+-- UnLocked By Set Velocity Y-1
+
+
+sprite [2018-09-21 09:12:34] ERROR:
+Down Pressed !!!
+
+
+main [2018-09-21 09:12:34] WARNING:
+-- NOT IN AIR !!!!
+
+
+timer [2018-09-21 09:12:34] ERROR:
+=== RESUMING DELAYED: delayedFnc-1 ===
+
+
+sprite [2018-09-21 09:12:34] ERROR:
+Top Pressed !!!
+
+
+main [2018-09-21 09:12:34] WARNING:
+-- NOT IN AIR !!!!
+
+
+anim [2018-09-21 09:12:34] ERROR:
+UnLock Set Velocity: Player-1_Object
+
+
+sprite [2018-09-21 09:12:34] ERROR:
+-- Calling Sprite Animation: Player-1_Object #1 => Idle
+
+
+sprite [2018-09-21 09:12:34] ERROR:
+-- Calling Sprite Animation: Player-1_Object #5 => Fall
+
+
+main [2018-09-21 09:12:34] ERROR:
+Trying To Unlock Thread None Locked Mutex: Player-1_Object | FROM ANIMMATE-SPRITE-1
+
+
+main [2018-09-21 09:12:34] ERROR:
+-- Locked By ANIMMATE-SPRITE-0
+
+
+main [2018-09-21 09:12:34] ERROR:
+-- UnLocked By Set Velocity Y-1
+
+
+sprite [2018-09-21 09:12:34] ERROR:
+-- Calling Sprite Animation: Player-1_Object #6 => Land
+
+
+main [2018-09-21 09:12:34] ERROR:
+Trying To Unlock Thread None Locked Mutex: Player-1_Object | FROM ANIMMATE-SPRITE-1
+
+
+main [2018-09-21 09:12:34] ERROR:
+-- Locked By ANIMMATE-SPRITE-0
+
+
+main [2018-09-21 09:12:34] ERROR:
+-- UnLocked By Set Velocity Y-1
+
+
+sprite [2018-09-21 09:12:34] ERROR:
+-- Calling Sprite Animation: Player-1_Object #1 => Idle
+
+
+sprite [2018-09-21 09:12:36] ERROR:
+Down Pressed !!!
+
+
+main [2018-09-21 09:12:36] WARNING:
+-- NOT IN AIR !!!!
+
+
+sprite [2018-09-21 09:12:36] ERROR:
+-- Calling Sprite Animation: Player-1_Object #3 => Down
+
+
+timer [2018-09-21 09:12:36] ERROR:
+=== RESUMING DELAYED: delayedFnc-2 ===
+
+
+sprite [2018-09-21 09:12:36] ERROR:
+Top Pressed !!!
+
+
+main [2018-09-21 09:12:36] WARNING:
+-- NOT IN AIR !!!!
+
+
+anim [2018-09-21 09:12:36] ERROR:
+UnLock Set Velocity: Player-1_Object
+
+
+sprite [2018-09-21 09:12:36] ERROR:
+-- Calling Sprite Animation: Player-1_Object #4 => Jump
+
+
+sprite [2018-09-21 09:12:36] ERROR:
+Down Pressed !!!
+
+
+sprite [2018-09-21 09:12:36] ERROR:
+-- Calling Sprite Animation: Player-1_Object #5 => Fall
+
+
+main [2018-09-21 09:12:36] ERROR:
+Trying To Unlock Thread None Locked Mutex: Player-1_Object | FROM ANIMMATE-SPRITE-1
+
+
+main [2018-09-21 09:12:36] ERROR:
+-- Locked By ANIMMATE-SPRITE-0
+
+
+main [2018-09-21 09:12:36] ERROR:
+-- UnLocked By Set Velocity Y-1
+
+
+timer [2018-09-21 09:12:36] ERROR:
+=== RESUMING DELAYED: delayedFnc-3 ===
+
+
+sprite [2018-09-21 09:12:36] ERROR:
+Top Pressed !!!
+
+
+main [2018-09-21 09:12:36] WARNING:
+-- IN AIR
+
+
+main [2018-09-21 09:12:36] WARNING:
+-- Set Double Jump
+
+
+anim [2018-09-21 09:12:36] ERROR:
+UnLock Set Velocity: Player-1_Object
+
+
+sprite [2018-09-21 09:12:36] ERROR:
+===== !!!!  Jump2DoubleJump !!!! ====
+
+
+sprite [2018-09-21 09:12:36] ERROR:
+-- Calling Sprite Animation: Player-1_Object #7 => DoubleJump
+
+
+main [2018-09-21 09:12:36] ERROR:
+Trying To Unlock Thread None Locked Mutex: Player-1_Object | FROM ANIMMATE-SPRITE-1
+
+
+main [2018-09-21 09:12:36] ERROR:
+-- Locked By ANIMMATE-SPRITE-0
+
+
+main [2018-09-21 09:12:36] ERROR:
+-- UnLocked By Set Velocity Y-1
+
+
+sprite [2018-09-21 09:12:36] ERROR:
+-- Calling Sprite Animation: Player-1_Object #5 => Fall
+
+
+main [2018-09-21 09:12:36] ERROR:
+Trying To Unlock Thread None Locked Mutex: Player-1_Object | FROM ANIMMATE-SPRITE-1
+
+
+main [2018-09-21 09:12:36] ERROR:
+-- Locked By ANIMMATE-SPRITE-0
+
+
+main [2018-09-21 09:12:36] ERROR:
+-- UnLocked By Set Velocity Y-1
+
+
+sprite [2018-09-21 09:12:37] ERROR:
+-- Calling Sprite Animation: Player-1_Object #6 => Land
+
+
+main [2018-09-21 09:12:37] ERROR:
+Trying To Unlock Thread None Locked Mutex: Player-1_Object | FROM ANIMMATE-SPRITE-1
+
+
+main [2018-09-21 09:12:37] ERROR:
+-- Locked By ANIMMATE-SPRITE-0
+
+
+main [2018-09-21 09:12:37] ERROR:
+-- UnLocked By Set Velocity Y-1
+
+
+sprite [2018-09-21 09:12:37] ERROR:
+-- Calling Sprite Animation: Player-1_Object #1 => Idle
+
+
+sprite [2018-09-21 09:12:38] ERROR:
+Down Pressed !!!
+
+
+main [2018-09-21 09:12:38] WARNING:
+-- NOT IN AIR !!!!
+
+
+sprite [2018-09-21 09:12:38] ERROR:
+-- Calling Sprite Animation: Player-1_Object #3 => Down
+
+
+timer [2018-09-21 09:12:38] ERROR:
+=== RESUMING DELAYED: delayedFnc-4 ===
+
+
+sprite [2018-09-21 09:12:38] ERROR:
+Top Pressed !!!
+
+
+main [2018-09-21 09:12:38] WARNING:
+-- NOT IN AIR !!!!
+
+
+anim [2018-09-21 09:12:38] ERROR:
+UnLock Set Velocity: Player-1_Object
+
+
+sprite [2018-09-21 09:12:38] ERROR:
+-- Calling Sprite Animation: Player-1_Object #4 => Jump
+
+
+sprite [2018-09-21 09:12:38] ERROR:
+-- Calling Sprite Animation: Player-1_Object #5 => Fall
+
+
+main [2018-09-21 09:12:38] ERROR:
+Trying To Unlock Thread None Locked Mutex: Player-1_Object | FROM ANIMMATE-SPRITE-1
+
+
+main [2018-09-21 09:12:38] ERROR:
+-- Locked By ANIMMATE-SPRITE-0
+
+
+main [2018-09-21 09:12:38] ERROR:
+-- UnLocked By Set Velocity Y-1
+
+
+sprite [2018-09-21 09:12:38] ERROR:
+Down Pressed !!!
+
+
+sprite [2018-09-21 09:12:38] ERROR:
+-- Calling Sprite Animation: Player-1_Object #6 => Land
+
+
+main [2018-09-21 09:12:38] ERROR:
+Trying To Unlock Thread None Locked Mutex: Player-1_Object | FROM ANIMMATE-SPRITE-1
+
+
+main [2018-09-21 09:12:38] ERROR:
+-- Locked By ANIMMATE-SPRITE-0
+
+
+main [2018-09-21 09:12:38] ERROR:
+-- UnLocked By Set Velocity Y-1
+
+
+timer [2018-09-21 09:12:38] ERROR:
+=== RESUMING DELAYED: delayedFnc-5 ===
+
+
+sprite [2018-09-21 09:12:38] ERROR:
+Top Pressed !!!
+
+
+main [2018-09-21 09:12:38] WARNING:
+-- NOT IN AIR !!!!
+
+
+anim [2018-09-21 09:12:38] ERROR:
+UnLock Set Velocity: Player-1_Object
+
+
+sprite [2018-09-21 09:12:38] ERROR:
+-- Calling Sprite Animation: Player-1_Object #1 => Idle
+
+
+sprite [2018-09-21 09:12:38] ERROR:
+-- Calling Sprite Animation: Player-1_Object #5 => Fall
+
+
+main [2018-09-21 09:12:38] ERROR:
+Trying To Unlock Thread None Locked Mutex: Player-1_Object | FROM ANIMMATE-SPRITE-1
+
+
+main [2018-09-21 09:12:38] ERROR:
+-- Locked By ANIMMATE-SPRITE-0
+
+
+main [2018-09-21 09:12:38] ERROR:
+-- UnLocked By Set Velocity Y-1
+
+
+sprite [2018-09-21 09:12:39] ERROR:
+-- Calling Sprite Animation: Player-1_Object #6 => Land
+
+
+main [2018-09-21 09:12:39] ERROR:
+Trying To Unlock Thread None Locked Mutex: Player-1_Object | FROM ANIMMATE-SPRITE-1
+
+
+main [2018-09-21 09:12:39] ERROR:
+-- Locked By ANIMMATE-SPRITE-0
+
+
+main [2018-09-21 09:12:39] ERROR:
+-- UnLocked By Set Velocity Y-1
+
+
+sprite [2018-09-21 09:12:39] ERROR:
+-- Calling Sprite Animation: Player-1_Object #1 => Idle
+
+
+sprite [2018-09-21 09:12:44] ERROR:
+Down Pressed !!!
+
+
+main [2018-09-21 09:12:44] WARNING:
+-- NOT IN AIR !!!!
+
+
+sprite [2018-09-21 09:12:44] ERROR:
+-- Calling Sprite Animation: Player-1_Object #3 => Down
+
+
+timer [2018-09-21 09:12:44] ERROR:
+=== RESUMING DELAYED: delayedFnc-6 ===
+
+
+sprite [2018-09-21 09:12:44] ERROR:
+Top Pressed !!!
+
+
+main [2018-09-21 09:12:44] WARNING:
+-- NOT IN AIR !!!!
+
+
+anim [2018-09-21 09:12:44] ERROR:
+UnLock Set Velocity: Player-1_Object
+
+
+sprite [2018-09-21 09:12:44] ERROR:
+-- Calling Sprite Animation: Player-1_Object #4 => Jump
+
+
+sprite [2018-09-21 09:12:44] ERROR:
+-- Calling Sprite Animation: Player-1_Object #5 => Fall
+
+
+main [2018-09-21 09:12:44] ERROR:
+Trying To Unlock Thread None Locked Mutex: Player-1_Object | FROM ANIMMATE-SPRITE-1
+
+
+main [2018-09-21 09:12:44] ERROR:
+-- Locked By ANIMMATE-SPRITE-0
+
+
+main [2018-09-21 09:12:44] ERROR:
+-- UnLocked By Set Velocity Y-1
+
+
+sprite [2018-09-21 09:12:44] ERROR:
+-- Calling Sprite Animation: Player-1_Object #6 => Land
+
+
+main [2018-09-21 09:12:44] ERROR:
+Trying To Unlock Thread None Locked Mutex: Player-1_Object | FROM ANIMMATE-SPRITE-1
+
+
+main [2018-09-21 09:12:44] ERROR:
+-- Locked By ANIMMATE-SPRITE-0
+
+
+main [2018-09-21 09:12:44] ERROR:
+-- UnLocked By Set Velocity Y-1
+
+
+sprite [2018-09-21 09:12:45] ERROR:
+-- Calling Sprite Animation: Player-1_Object #1 => Idle
+
+
+sprite [2018-09-21 09:12:46] ERROR:
+Down Pressed !!!
+
+
+main [2018-09-21 09:12:46] WARNING:
+-- NOT IN AIR !!!!
+
+
+sprite [2018-09-21 09:12:46] ERROR:
+-- Calling Sprite Animation: Player-1_Object #3 => Down
+
+
+timer [2018-09-21 09:12:46] ERROR:
+=== RESUMING DELAYED: delayedFnc-7 ===
+
+
+sprite [2018-09-21 09:12:46] ERROR:
+Top Pressed !!!
+
+
+main [2018-09-21 09:12:46] WARNING:
+-- NOT IN AIR !!!!
+
+
+anim [2018-09-21 09:12:46] ERROR:
+UnLock Set Velocity: Player-1_Object
+
+
+sprite [2018-09-21 09:12:46] ERROR:
+-- Calling Sprite Animation: Player-1_Object #4 => Jump
+
+
+sprite [2018-09-21 09:12:46] ERROR:
+-- Calling Sprite Animation: Player-1_Object #5 => Fall
+
+
+main [2018-09-21 09:12:46] ERROR:
+Trying To Unlock Thread None Locked Mutex: Player-1_Object | FROM ANIMMATE-SPRITE-1
+
+
+main [2018-09-21 09:12:46] ERROR:
+-- Locked By ANIMMATE-SPRITE-0
+
+
+main [2018-09-21 09:12:46] ERROR:
+-- UnLocked By Set Velocity Y-1
+
+
+sprite [2018-09-21 09:12:46] ERROR:
+-- Calling Sprite Animation: Player-1_Object #6 => Land
+
+
+main [2018-09-21 09:12:46] ERROR:
+Trying To Unlock Thread None Locked Mutex: Player-1_Object | FROM ANIMMATE-SPRITE-1
+
+
+main [2018-09-21 09:12:46] ERROR:
+-- Locked By ANIMMATE-SPRITE-0
+
+
+main [2018-09-21 09:12:46] ERROR:
+-- UnLocked By Set Velocity Y-1
+
+
+sprite [2018-09-21 09:12:46] ERROR:
+-- Calling Sprite Animation: Player-1_Object #1 => Idle
+
+
+sprite [2018-09-21 09:12:47] ERROR:
+Down Pressed !!!
+
+
+main [2018-09-21 09:12:47] WARNING:
+-- NOT IN AIR !!!!
+
+
+sprite [2018-09-21 09:12:47] ERROR:
+-- Calling Sprite Animation: Player-1_Object #3 => Down
+
+
+timer [2018-09-21 09:12:47] ERROR:
+=== RESUMING DELAYED: delayedFnc-8 ===
+
+
+sprite [2018-09-21 09:12:47] ERROR:
+Top Pressed !!!
+
+
+main [2018-09-21 09:12:47] WARNING:
+-- NOT IN AIR !!!!
+
+
+anim [2018-09-21 09:12:47] ERROR:
+UnLock Set Velocity: Player-1_Object
+
+
+sprite [2018-09-21 09:12:47] ERROR:
+-- Calling Sprite Animation: Player-1_Object #4 => Jump
+
+
+sprite [2018-09-21 09:12:47] ERROR:
+-- Calling Sprite Animation: Player-1_Object #5 => Fall
+
+
+main [2018-09-21 09:12:47] ERROR:
+Trying To Unlock Thread None Locked Mutex: Player-1_Object | FROM ANIMMATE-SPRITE-1
+
+
+main [2018-09-21 09:12:47] ERROR:
+-- Locked By ANIMMATE-SPRITE-0
+
+
+main [2018-09-21 09:12:47] ERROR:
+-- UnLocked By Set Velocity Y-1
+
+
+sprite [2018-09-21 09:12:47] ERROR:
+Down Pressed !!!
+
+
+sprite [2018-09-21 09:12:47] ERROR:
+-- Calling Sprite Animation: Player-1_Object #6 => Land
+
+
+main [2018-09-21 09:12:47] ERROR:
+Trying To Unlock Thread None Locked Mutex: Player-1_Object | FROM ANIMMATE-SPRITE-1
+
+
+main [2018-09-21 09:12:47] ERROR:
+-- Locked By ANIMMATE-SPRITE-0
+
+
+main [2018-09-21 09:12:47] ERROR:
+-- UnLocked By Set Velocity Y-1
+
+
+timer [2018-09-21 09:12:47] ERROR:
+=== RESUMING DELAYED: delayedFnc-9 ===
+
+
+sprite [2018-09-21 09:12:47] ERROR:
+Top Pressed !!!
+
+
+main [2018-09-21 09:12:47] WARNING:
+-- NOT IN AIR !!!!
+
+
+anim [2018-09-21 09:12:47] ERROR:
+UnLock Set Velocity: Player-1_Object
+
+
+sprite [2018-09-21 09:12:47] ERROR:
+-- Calling Sprite Animation: Player-1_Object #1 => Idle
+
+
+sprite [2018-09-21 09:12:48] ERROR:
+-- Calling Sprite Animation: Player-1_Object #5 => Fall
+
+
+main [2018-09-21 09:12:48] ERROR:
+Trying To Unlock Thread None Locked Mutex: Player-1_Object | FROM ANIMMATE-SPRITE-1
+
+
+main [2018-09-21 09:12:48] ERROR:
+-- Locked By ANIMMATE-SPRITE-0
+
+
+main [2018-09-21 09:12:48] ERROR:
+-- UnLocked By Set Velocity Y-1
+
+
+sprite [2018-09-21 09:12:48] ERROR:
+-- Calling Sprite Animation: Player-1_Object #6 => Land
+
+
+main [2018-09-21 09:12:48] ERROR:
+Trying To Unlock Thread None Locked Mutex: Player-1_Object | FROM ANIMMATE-SPRITE-1
+
+
+main [2018-09-21 09:12:48] ERROR:
+-- Locked By ANIMMATE-SPRITE-0
+
+
+main [2018-09-21 09:12:48] ERROR:
+-- UnLocked By Set Velocity Y-1
+
+
+sprite [2018-09-21 09:12:48] ERROR:
+-- Calling Sprite Animation: Player-1_Object #1 => Idle
+
+
+event [2018-09-21 09:12:58] ERROR:
+############# Event: Quit ##################
+
+
+timer [2018-09-21 09:12:58] WARNING:
+##### CLEARING DELAYED FUNCTIONS #####
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing DELAYED: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing Un Completed DELAYED Function: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+##### Killing Delayed Function #####
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: Ask-LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Breaking Function
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: UN-LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE CONDITION KILL FUNCTION THREAD
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE KILL FUNCTION THREAD
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE KILL FUNCTION THREAD CALLED
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- KILL LAUNCHER THREAD SUCCESS !!!
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing Un Completed DELAYED Function: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing DELAYED: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing Un Completed DELAYED Function: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+##### Killing Delayed Function #####
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: Ask-LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Breaking Function
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: UN-LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE CONDITION KILL FUNCTION THREAD
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE KILL FUNCTION THREAD
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE KILL FUNCTION THREAD CALLED
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- KILL LAUNCHER THREAD SUCCESS !!!
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing Un Completed DELAYED Function: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing DELAYED: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing Un Completed DELAYED Function: Timer Thread ===
+
+
+main [2018-09-21 09:12:58] ERROR:
+Trying To Unlock Thread None Locked Mutex: delayedFnc-0 | FROM Call Delayed-7
+
+
+main [2018-09-21 09:12:58] ERROR:
+-- Locked By Call Delayed-6
+
+
+main [2018-09-21 09:12:58] ERROR:
+-- UnLocked By Kill Launcher-1
+
+
+main [2018-09-21 09:12:58] ERROR:
+Trying To Unlock Thread None Locked Mutex: delayedFnc-1 | FROM Call Delayed-7
+
+
+main [2018-09-21 09:12:58] ERROR:
+-- Locked By Call Delayed-6
+
+
+main [2018-09-21 09:12:58] ERROR:
+-- UnLocked By Kill Launcher-1
+
+
+timer [2018-09-21 09:12:58] WARNING:
+##### Killing Delayed Function #####
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: Ask-LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Breaking Function
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: UN-LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE CONDITION KILL FUNCTION THREAD
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE KILL FUNCTION THREAD
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE KILL FUNCTION THREAD CALLED
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- KILL LAUNCHER THREAD SUCCESS !!!
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing Un Completed DELAYED Function: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing DELAYED: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing Un Completed DELAYED Function: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+##### Killing Delayed Function #####
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: Ask-LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Breaking Function
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: UN-LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE CONDITION KILL FUNCTION THREAD
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE KILL FUNCTION THREAD
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE KILL FUNCTION THREAD CALLED
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- KILL LAUNCHER THREAD SUCCESS !!!
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing Un Completed DELAYED Function: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing DELAYED: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing Un Completed DELAYED Function: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+##### Killing Delayed Function #####
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: Ask-LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Breaking Function
+
+
+main [2018-09-21 09:12:58] ERROR:
+Trying To Unlock Thread None Locked Mutex: delayedFnc-3 | FROM Call Delayed-7
+
+
+main [2018-09-21 09:12:58] ERROR:
+-- Locked By Call Delayed-6
+
+
+main [2018-09-21 09:12:58] ERROR:
+-- UnLocked By Kill Launcher-1
+
+
+main [2018-09-21 09:12:58] ERROR:
+Trying To Unlock Thread None Locked Mutex: delayedFnc-4 | FROM Call Delayed-7
+
+
+main [2018-09-21 09:12:58] ERROR:
+-- Locked By Call Delayed-6
+
+
+main [2018-09-21 09:12:58] ERROR:
+-- UnLocked By Kill Launcher-1
+
+
+main [2018-09-21 09:12:58] ERROR:
+Trying To Unlock Thread None Locked Mutex: delayedFnc-2 | FROM Call Delayed-7
+
+
+main [2018-09-21 09:12:58] ERROR:
+-- Locked By Call Delayed-6
+
+
+main [2018-09-21 09:12:58] ERROR:
+-- UnLocked By Kill Launcher-1
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: UN-LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE CONDITION KILL FUNCTION THREAD
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE KILL FUNCTION THREAD
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE KILL FUNCTION THREAD CALLED
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- KILL LAUNCHER THREAD SUCCESS !!!
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing Un Completed DELAYED Function: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing DELAYED: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing Un Completed DELAYED Function: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+##### Killing Delayed Function #####
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: Ask-LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Breaking Function
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: UN-LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE CONDITION KILL FUNCTION THREAD
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE KILL FUNCTION THREAD
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE KILL FUNCTION THREAD CALLED
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- KILL LAUNCHER THREAD SUCCESS !!!
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing Un Completed DELAYED Function: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing DELAYED: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing Un Completed DELAYED Function: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+##### Killing Delayed Function #####
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: Ask-LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Breaking Function
+
+
+main [2018-09-21 09:12:58] ERROR:
+Trying To Unlock Thread None Locked Mutex: delayedFnc-5 | FROM Call Delayed-7
+
+
+main [2018-09-21 09:12:58] ERROR:
+-- Locked By Call Delayed-6
+
+
+main [2018-09-21 09:12:58] ERROR:
+-- UnLocked By Kill Launcher-1
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: UN-LOCK
+
+
+main [2018-09-21 09:12:58] ERROR:
+Trying To Unlock Thread None Locked Mutex: delayedFnc-6 | FROM Call Delayed-7
+
+
+main [2018-09-21 09:12:58] ERROR:
+-- Locked By Call Delayed-6
+
+
+main [2018-09-21 09:12:58] ERROR:
+-- UnLocked By Kill Launcher-1
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE CONDITION KILL FUNCTION THREAD
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE KILL FUNCTION THREAD
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE KILL FUNCTION THREAD CALLED
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- KILL LAUNCHER THREAD SUCCESS !!!
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing Un Completed DELAYED Function: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing DELAYED: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing Un Completed DELAYED Function: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+##### Killing Delayed Function #####
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: Ask-LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Breaking Function
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: UN-LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE CONDITION KILL FUNCTION THREAD
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE KILL FUNCTION THREAD
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE KILL FUNCTION THREAD CALLED
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- KILL LAUNCHER THREAD SUCCESS !!!
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing Un Completed DELAYED Function: Timer Thread ===
+
+
+main [2018-09-21 09:12:58] ERROR:
+Trying To Unlock Thread None Locked Mutex: delayedFnc-7 | FROM Call Delayed-7
+
+
+main [2018-09-21 09:12:58] ERROR:
+-- Locked By Call Delayed-6
+
+
+main [2018-09-21 09:12:58] ERROR:
+-- UnLocked By Kill Launcher-1
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing DELAYED: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing Un Completed DELAYED Function: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+##### Killing Delayed Function #####
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: Ask-LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Breaking Function
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: UN-LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE CONDITION KILL FUNCTION THREAD
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE KILL FUNCTION THREAD
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE KILL FUNCTION THREAD CALLED
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- KILL LAUNCHER THREAD SUCCESS !!!
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing Un Completed DELAYED Function: Timer Thread ===
+
+
+main [2018-09-21 09:12:58] ERROR:
+Trying To Unlock Thread None Locked Mutex:  | FROM Call Delayed-7
+
+
+main [2018-09-21 09:12:58] ERROR:
+-- Locked By Call Delayed-6
+
+
+main [2018-09-21 09:12:58] ERROR:
+-- UnLocked By Kill Launcher-1
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing DELAYED: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing Un Completed DELAYED Function: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+##### Killing Delayed Function #####
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: Ask-LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Breaking Function
+
+
+timer [2018-09-21 09:12:58] WARNING:
+KILL: UN-LOCK
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE CONDITION KILL FUNCTION THREAD
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE KILL FUNCTION THREAD
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- FORCE KILL FUNCTION THREAD CALLED
+
+
+timer [2018-09-21 09:12:58] WARNING:
+-- KILL LAUNCHER THREAD SUCCESS !!!
+
+
+timer [2018-09-21 09:12:58] WARNING:
+=== Clearing Un Completed DELAYED Function: Timer Thread ===
+
+
+timer [2018-09-21 09:12:58] WARNING:
+##### DELETING TIMER #####
+
+
+main [2018-09-21 09:12:58] ERROR:
+Trying To Unlock Thread None Locked Mutex: delayedFnc-9 | FROM Call Delayed-7
+
+
+main [2018-09-21 09:12:58] ERROR:
+-- Locked By Call Delayed-6
+
+
+ [2018-09-21 09:15:45] DEBUG:
+-- Init Project
+
+
+ [2018-09-21 09:15:45] INFO:
+==== INIT PROJECT ====
+
+
+ [2018-09-21 09:15:45] INFO:
+==== INIT PROJECT FLAGS ====
+
+
+char [2018-09-21 09:15:45] ERROR:
+-- New Char Obj: Player-1
+
+
+sprite [2018-09-21 09:15:45] ERROR:
+-- Init Sprite Object: Player-1
+
+
+obj [2018-09-21 09:15:45] ERROR:
+-- INIT SIMPLE OBJECT Player-1
+
+
+obj [2018-09-21 09:15:45] ERROR:
+-- TestLen: 8
+
+
+obj [2018-09-21 09:15:45] ERROR:
+-- Len: 16
+
+
+anim [2018-09-21 09:15:45] ERROR:
+UnLock Set Velocity: Player-1_Object
+
+
+sprite [2018-09-21 09:15:45] ERROR:
+-- Calling Sprite Animation: Player-1_Object #1 => Idle
+
+
+char [2018-09-21 09:15:45] ERROR:
+-- New Char Obj: Player-2
+
+
+sprite [2018-09-21 09:15:45] ERROR:
+-- Init Sprite Object: Player-2
+
+
+obj [2018-09-21 09:15:45] ERROR:
+-- INIT SIMPLE OBJECT Player-2
+
+
+obj [2018-09-21 09:15:45] ERROR:
+-- TestLen: 8
+
+
+obj [2018-09-21 09:15:45] ERROR:
+-- Len: 16
+
+
+anim [2018-09-21 09:15:45] ERROR:
+UnLock Set Velocity: Player-2_Object
+
+
+sprite [2018-09-21 09:15:45] ERROR:
+-- Calling Sprite Animation: Player-2_Object #1 => Idle
+
+
+obj [2018-09-21 09:15:45] ERROR:
+-- INIT SIMPLE OBJECT wall
+
+
+obj [2018-09-21 09:15:45] ERROR:
+-- TestLen: 4
+
+
+obj [2018-09-21 09:15:45] ERROR:
+-- Len: 12
+
+
+anim [2018-09-21 09:15:45] ERROR:
+UnLock Set Velocity: wall_Object
+
+
+sprite [2018-09-21 09:15:46] ERROR:
+Right Pressed !!!
+
+
+sprite [2018-09-21 09:15:46] ERROR:
+CALL MOVE DIR Pressed !!!
+
+
+controller [2018-09-21 09:15:46] ERROR:
+=== MOVE DIR ===
+
+
+controller [2018-09-21 09:15:46] ERROR:
+-- Factor: 1
+
+
+controller [2018-09-21 09:15:46] ERROR:
+-- Max: 60
+
+
+controller [2018-09-21 09:15:46] ERROR:
+-- Set Velocity
+
+
+controller [2018-09-21 09:15:46] ERROR:
+-- X: 60
+
+
+controller [2018-09-21 09:15:46] ERROR:
+-- Y: 0
+
+
+anim [2018-09-21 09:15:46] ERROR:
+UnLock Set Velocity: Player-1_Object
+
+
+sprite [2018-09-21 09:15:46] ERROR:
+-- Calling Sprite Animation: Player-1_Object #2 => Run
+
+
+sprite [2018-09-21 09:15:47] ERROR:
+BTN Realeased !!!
+
+
+anim [2018-09-21 09:15:47] ERROR:
+UnLock Set Velocity: Player-1_Object
+
+
+sprite [2018-09-21 09:15:47] ERROR:
+===== !!!! Run2Idle !!!! ====
+
+
+sprite [2018-09-21 09:15:47] ERROR:
+-- Calling Sprite Animation: Player-1_Object #1 => Idle
+
+
+sprite [2018-09-21 09:15:48] ERROR:
+Right Pressed !!!
+
+
+sprite [2018-09-21 09:15:48] ERROR:
+CALL MOVE DIR Pressed !!!
+
+
+controller [2018-09-21 09:15:48] ERROR:
+=== MOVE DIR ===
+
+
+controller [2018-09-21 09:15:48] ERROR:
+-- Factor: -1
+
+
+controller [2018-09-21 09:15:48] ERROR:
+-- Max: 60
+
+
+controller [2018-09-21 09:15:48] ERROR:
+-- Set Velocity
+
+
+controller [2018-09-21 09:15:48] ERROR:
+-- X: -60
+
+
+controller [2018-09-21 09:15:48] ERROR:
+-- Y: 0
+
+
+anim [2018-09-21 09:15:48] ERROR:
+UnLock Set Velocity: Player-1_Object
+
+
+sprite [2018-09-21 09:15:48] ERROR:
+-- Calling Sprite Animation: Player-1_Object #2 => Run
+
+
+sprite [2018-09-21 09:15:48] ERROR:
+BTN Realeased !!!
+
+
+anim [2018-09-21 09:15:48] ERROR:
+UnLock Set Velocity: Player-1_Object
+
+
+sprite [2018-09-21 09:15:48] ERROR:
+===== !!!! Run2Idle !!!! ====
+
+
+sprite [2018-09-21 09:15:48] ERROR:
+-- Calling Sprite Animation: Player-1_Object #1 => Idle
+
+
+event [2018-09-21 09:15:49] ERROR:
+############# Event: Quit ##################
+
+
+timer [2018-09-21 09:15:49] WARNING:
+##### CLEARING DELAYED FUNCTIONS #####
+
+
+timer [2018-09-21 09:15:49] WARNING:
+##### DELETING TIMER #####
+
+
+ [2018-09-21 09:22:25] DEBUG:
+-- Init Project
+
+
+ [2018-09-21 09:22:25] INFO:
+==== INIT PROJECT ====
+
+
+ [2018-09-21 09:22:25] INFO:
+==== INIT PROJECT FLAGS ====
+
+
+main [2018-09-21 09:22:25] ERROR:
+Trying To Unlock Thread None Locked Mutex: (null) | FROM TEST-7
+
+
+main [2018-09-21 09:22:25] ERROR:
+-- Locked By TEST-5
+
+
+main [2018-09-21 09:22:25] ERROR:
+-- UnLocked By TEST-6
+
+
+ [2018-09-21 09:23:00] DEBUG:
+-- Init Project
+
+
+ [2018-09-21 09:23:00] INFO:
+==== INIT PROJECT ====
+
+
+ [2018-09-21 09:23:00] INFO:
+==== INIT PROJECT FLAGS ====
+
+
+main [2018-09-21 09:23:00] ERROR:
+Trying To Unlock Thread None Locked Mutex: TEST Class | FROM TEST-7
+
+
+main [2018-09-21 09:23:00] ERROR:
+-- Locked By TEST-5
+
+
+main [2018-09-21 09:23:00] ERROR:
+-- UnLocked By TEST-6
+
+
+ [2018-09-21 09:24:11] DEBUG:
+-- Init Project
+
+
+ [2018-09-21 09:24:11] INFO:
+==== INIT PROJECT ====
+
+
+ [2018-09-21 09:24:11] INFO:
+==== INIT PROJECT FLAGS ====
+
+
+main [2018-09-21 09:24:11] ERROR:
+Trying To Unlock Thread None Locked Mutex: (null) | FROM MAIN-7
+
+
+main [2018-09-21 09:24:11] ERROR:
+-- Locked By MAIN-5
+
+
+main [2018-09-21 09:24:11] ERROR:
+-- UnLocked By MAIN-6
+
+
+main [2018-09-21 09:24:11] ERROR:
+Trying To Unlock Thread None Locked Mutex: TEST Class | FROM TEST-7
+
+
+main [2018-09-21 09:24:11] ERROR:
+-- Locked By TEST-5
+
+
+main [2018-09-21 09:24:11] ERROR:
+-- UnLocked By TEST-6
+
+

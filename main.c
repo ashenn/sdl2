@@ -173,11 +173,51 @@ void* spacePressed(void* evt) {
 	return false;
 }
 
+void testTh(void* param) {
+	Class* cl = (Class*) param;
+
+
+	LOCK(cl, "TEST-0");
+	UNLOCK(cl, "TEST-1");
+
+	LOCK(cl, "TEST-2");
+	LOCK(cl, "TEST-3");
+	UNLOCK(cl, "TEST-4");
+
+	LOCK(cl, "TEST-5");
+	UNLOCK(cl, "TEST-6");
+	UNLOCK(cl, "TEST-7");
+
+	free(cl->name);
+	return 0;
+}
+
 int main(int arc, char* argv[]) {
 	logger = initLogger(arc, argv);
 
 	logger->dbg(LOG_MAIN, "-- Init Project");
 	Project* pro = initProject(arc, argv);
+
+
+	Class* cl = new(Class);
+	cl->name = Str("TEST Class");
+
+
+	LOCK(cl, "MAIN-0");
+	UNLOCK(cl, "MAIN-1");
+
+	LOCK(cl, "MAIN-2");
+	LOCK(cl, "MAIN-3");
+	UNLOCK(cl, "MAIN-4");
+
+	LOCK(cl, "MAIN-5");
+	UNLOCK(cl, "MAIN-6");
+	UNLOCK(cl, "MAIN-7");
+
+
+	pthread th;
+	pthread_create(&th, NULL, testTh, (void*)cl);
+	return 0;
 
 	collision_init();
 	logger->dbg(LOG_MAIN, "-- Init SDL");
@@ -226,7 +266,7 @@ int main(int arc, char* argv[]) {
 
 	pos.x = 0;
 	pos.y = 0;
-	//collision_add(wall, "Wall_COL", COL_BLOCK, COL_WALL, pos, true);
+	collision_add(wall, "Wall_COL", COL_BLOCK, COL_WALL, pos, true);
 
 	logger->inf(LOG_MAIN, "#### CREATE RENDER TRHEAD");
 	pthread_create(&pro->renderThread, NULL, renderThread, (void*)NULL);

@@ -141,8 +141,10 @@ void deleteObject(Object* obj) {
 	if (obj->childs != NULL) {
 		logger->dbg(LOG_OBJ, "-- Delete Object Childs");
 
+
+		/*
 		Node* childNode = NULL;
-		/*while((childNode = listIterate(obj->childs, childNode)) != NULL) {
+		while((childNode = listIterate(obj->childs, childNode)) != NULL) {
 			Object* child = (Object*) childNode->value;
 
 			logger->dbg(LOG_OBJ, "-- Child: %s", child->name);
@@ -151,7 +153,8 @@ void deleteObject(Object* obj) {
 			logger->dbg(LOG_OBJ, "-- Delete Node");
 			deleteNode(obj->childs, childNode->id);
 			childNode = NULL;
-		}*/
+		}
+		*/
 
 		deleteList(obj->childs);
 		logger->dbg(LOG_OBJ, "-- Childs Cleared");
