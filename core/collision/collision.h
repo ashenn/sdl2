@@ -27,7 +27,7 @@ typedef struct Collision
 	SDL_Rect pos;
 
 	bool enabled;
-	bool continuous;
+	bool continious;
 
 	unsigned int flag;
 	unsigned int blocks;
@@ -51,7 +51,9 @@ Collision* collision_getByName(Object* obj, const char* name);
 
 Collision* collision_add(Object* obj, const char* name, CollisionType type, unsigned int flag, SDL_Rect pos, bool enabled);
 
-void collision_handle();
+void collision_handleIterate();
+void* collision_handle(void* arg);
+
 const char* collision_getFlagName(unsigned int id);
 const char* collision_getChannelName(const unsigned int id);
 
@@ -61,11 +63,15 @@ unsigned int collision_getFlagValue(const char* flag);
 CollisionType collision_getTypeByName(const char* type);
 bool collision_flagsMatch(const char* flag1, const char* flag2);
 
+ListManager* colllision_getContinious(Object* obj);
+
 #define COL_NONE 	collision_getFlagValue("COL_NONE")
 #define COL_ALL 	collision_getFlagValue("COL_ALL")
 #define COL_WALL 	collision_getFlagValue("COL_WALL")
 #define COL_ITEM 	collision_getFlagValue("COL_ITEM")
 #define COL_PLAYER 	collision_getFlagValue("COL_PLAYER")
 
+
+vector canMoveTo(Object* obj, int x, int y);
 
 #endif

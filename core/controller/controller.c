@@ -55,7 +55,7 @@ bool move(Controller* ctrl, SDL_Rect pos) {
 }
 
 void moveDir(Controller* ctrl, DirectionEnum dir) {
-	logger->err(LOG_CONTROLLER, "=== MOVE DIR ===");
+	logger->inf(LOG_CONTROLLER, "=== MOVE DIR ===");
 
 	if (ctrl == NULL) {
         logger->err(LOG_CONTROLLER, "-- Controller Is NULL");
@@ -72,13 +72,13 @@ void moveDir(Controller* ctrl, DirectionEnum dir) {
 
 	Character* ch = ctrl->character;
 	//logger->err(LOG_ANIM, "Lock Move Ctrl");
-	LOCK(ctrl, "CTRL-0");
+	bool b = LOCK(ctrl, "CTRL-0");
 	//logger->err(LOG_ANIM, "Lock Move Char");
-	LOCK(ch, "CTRL-1");
+	bool b1 = LOCK(ch, "CTRL-1");
 
 	short fact = dir == DIR_RIGHT || dir == DIR_DOWN ? 1 : -1;
-	logger->err(LOG_CONTROLLER, "-- Factor: %d", fact);
-	logger->err(LOG_CONTROLLER, "-- Max: %d", ch->attr.maxMoveSpeed);
+	logger->dbg(LOG_CONTROLLER, "-- Factor: %d", fact);
+	logger->dbg(LOG_CONTROLLER, "-- Max: %d", ch->attr.maxMoveSpeed);
 
 	if (dir == DIR_RIGHT || dir == DIR_LEFT) {
 		vel.x = (double) ((int) ch->attr.maxMoveSpeed * ((int) fact));
@@ -87,17 +87,17 @@ void moveDir(Controller* ctrl, DirectionEnum dir) {
 		vel.y = (double) ((int) ch->attr.maxMoveSpeed * ((int) fact));
 	}
 
-	logger->err(LOG_CONTROLLER, "-- Set Velocity");
-	logger->err(LOG_CONTROLLER, "-- X: %d", (int) vel.x);
-	logger->err(LOG_CONTROLLER, "-- Y: %d", (int) vel.y);
+	logger->dbg(LOG_CONTROLLER, "-- Set Velocity");
+	logger->dbg(LOG_CONTROLLER, "-- X: %d", (int) vel.x);
+	logger->dbg(LOG_CONTROLLER, "-- Y: %d", (int) vel.y);
 
 	ch->attr.moving = true;
 	setVelocity(ctrl->obj, vel);
 
 	//logger->err(LOG_ANIM, "UnLock Move ctrl");
-	UNLOCK(ch, "CTRL-2");
+	UNLOCK(ch, "CTRL-2", b);
 	//logger->err(LOG_ANIM, "UnLock Move Char");
-	UNLOCK(ctrl, "CTRL-3");
+	UNLOCK(ctrl, "CTRL-3", b1);
 }
 
 void stopMovement(Controller* ctrl) {

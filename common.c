@@ -23,7 +23,7 @@ Class* newClass(size_t s) {
 	return cl;
 }
 
-void th_lock(Class* cl, const char* tag) {
+bool th_lock(Class* cl, const char* tag) {
 	//logger->err(LOG_MAIN, "TEST: %s", cl->name);
 	pid_t curTH = getpid();
 	//logger->err(LOG_MAIN, "LOCKING: %d", curTH);
@@ -31,18 +31,16 @@ void th_lock(Class* cl, const char* tag) {
 
 	if (cl == NULL) {
 		logger->err(LOG_MAIN, "Trying To LOCK NULL Object FROM: %s", tag);
-		return;
+		return false;
 	}
 
 	if (curTH == cl->pid) {
-		//logger->err(LOG_MAIN, "LOCKING Object IN SAME THREAD");
-		//assert(1);
-		return;
+		return false;
 	}
 
 	cl->pid = curTH;
 
-	
+
 	if (cl->lockTag != NULL) {
 		free(cl->lockTag);
 	}
@@ -56,9 +54,14 @@ void th_lock(Class* cl, const char* tag) {
 
 	//logger->err(LOG_MAIN, "Locked By: %d", cl->pid);
 	pthread_mutex_lock(&cl->mutex);
+	return true;
 }
 
-void th_unlock(Class* cl, const char* tag) {
+void th_unlock(Class* cl, const char* tag, bool b) {
+	if (!b) {
+		return;
+	}
+
 	if (cl == NULL) {
 		logger->err(LOG_MAIN, "Trying To UN-LOCK NULL Object | FROM: %s", tag);
 		return;

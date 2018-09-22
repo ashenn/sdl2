@@ -113,7 +113,7 @@ SpriteAnimParam* spriteCallAnim(SpriteObject* obj, SpriteAnimData* anim, unsigne
 	logger->inf(LOG_SPRITE, "-- Removing Old Sprite Anim");
 	spriteRemoveObject((Object*) obj);
 	
-	logger->err(LOG_SPRITE, "-- Calling Sprite Animation: %s #%d => %s", obj->name, anim->animID, anim->name);
+	logger->inf(LOG_SPRITE, "-- Calling Sprite Animation: %s #%d => %s", obj->name, anim->animID, anim->name);
 
 
 

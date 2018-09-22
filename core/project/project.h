@@ -30,6 +30,7 @@ typedef struct Project
 	ListManager* flagList;
 
 	pthread_t renderThread;
+	pthread_t collisionThread;
 } Project;
 
 Project* getProject();

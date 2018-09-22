@@ -1,6 +1,7 @@
 #include "render.h"
 #include "../../project/project.h"
 #include "../../animation/animation.h"
+#include "../../collision/collision.h"
 #include <stdarg.h>
 
 void renderObject(Object* obj) {
@@ -59,7 +60,7 @@ void* renderThread(void* arg) {
 	int nextTick = SDL_GetTicks();
 	while (pro->status != PRO_CLOSE) {
 		//logger->err(LOG_ANIM, "UnLock Render Project");
-		UNLOCK(pro, "Render Thread-1");
+		UNLOCK(pro, "Render Thread-1", true);
         nextTick += (1000 / FPS);
 
 
@@ -79,6 +80,8 @@ void* renderThread(void* arg) {
 		logger->inf(LOG_RENDER, "-- Print View");
 		SDL_RenderPresent(rend);
 
+		collision_handleIterate();
+
 		int waited = tickWait(nextTick);
 		logger->dbg(LOG_RENDER, "Frame Wait: %d ms", waited);
 
@@ -88,6 +91,6 @@ void* renderThread(void* arg) {
 	}
 
 	//logger->err(LOG_ANIM, "UnLock Render Project");
-	UNLOCK(pro, "Render Thread-3");
+	UNLOCK(pro, "Render Thread-3", true);
 	return NULL;
 }

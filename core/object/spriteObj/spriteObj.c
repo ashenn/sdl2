@@ -44,9 +44,12 @@ bool Idl2Jump(SpriteAnimParam* obj) {
 
 bool Fall2Land(SpriteAnimParam* o) {
 	CharObj* obj = (CharObj*) o->obj;
-	logger->inf(LOG_SPRITE, "===== !!!! Fall2Land !!!! ====");
 
-	obj->ch->attr.inAir = false;
+	if (obj->ch->attr.inAir) {
+		return false;
+	}
+
+	logger->err(LOG_SPRITE, "===== !!!! Fall2Land !!!! ====");
 	obj->ch->attr.doubleJump = false;
 	obj->ch->attr.hasDoubleJump = false;
 
@@ -60,7 +63,7 @@ bool Idle2Fall(SpriteAnimParam* o) {
 	if (obj->ch->attr.inAir) {
 		logger->inf(LOG_SPRITE, "===== !!!! Idle2Fall !!!! ====");
 
-		setVelocityY((Object*) obj, 30);
+		setVelocityY((Object*) obj, 50);
 		return true;
 	}
 
@@ -93,7 +96,7 @@ bool Run2Idle(SpriteAnimParam* o) {
 	CharObj* obj = (CharObj*) o->obj;
 
 	if (!obj->ch->attr.moving) {
-		logger->err(LOG_SPRITE, "===== !!!! Run2Idle !!!! ====");
+		logger->inf(LOG_SPRITE, "===== !!!! Run2Idle !!!! ====");
 
 		return true;
 	}
@@ -105,7 +108,7 @@ bool Run2Jump(SpriteAnimParam* o) {
 	CharObj* obj = (CharObj*) o->obj;
 
 	if (obj->ch->attr.inAir) {
-		logger->err(LOG_SPRITE, "===== !!!! Run2Jump !!!! ====");
+		logger->inf(LOG_SPRITE, "===== !!!! Run2Jump !!!! ====");
 		return true;
 	}
 
@@ -117,7 +120,7 @@ bool Jump2DoubleJump(SpriteAnimParam* o) {
 
 	if (!obj->ch->attr.hasDoubleJump && obj->ch->attr.doubleJump) {
 		obj->ch->attr.hasDoubleJump = true;
-		logger->err(LOG_SPRITE, "===== !!!!  Jump2DoubleJump !!!! ====");
+		logger->inf(LOG_SPRITE, "===== !!!!  Jump2DoubleJump !!!! ====");
 		setVelocityY((Object*) obj, -45);
 		return true;
 	}
@@ -318,9 +321,9 @@ short initAnims(int i, Node* n, short* delete, void* param, va_list* args) {
 }
 
 SpriteObject* initSpriteObj(SpriteObject* obj, char* name, char* path, SDL_Rect* pos, short z) {
-	logger->err(LOG_SPRITE, "-- Init Sprite Object: %s", name);
+	logger->inf(LOG_SPRITE, "-- Init Sprite Object: %s", name);
 	initSimpleObject((Object*)obj, name, NULL, pos, z);
-	LOCK(obj, "INIT SPRITE-0");
+	bool b = LOCK(obj, "INIT SPRITE-0");
 
 	logger->dbg(LOG_SPRITE, "-- Init List");
 	obj->animList = initListMgr();
@@ -390,7 +393,7 @@ SpriteObject* initSpriteObj(SpriteObject* obj, char* name, char* path, SDL_Rect*
 
 	obj->pos.h = obj->curClip.h;
 	obj->pos.w = obj->curClip.w;
-	UNLOCK(obj, "INIT SPRITE-1");
+	UNLOCK(obj, "INIT SPRITE-1", b);
 
 	return obj;
 }

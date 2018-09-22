@@ -64,14 +64,16 @@ typedef enum bool
 Class* newClass(size_t s);
 #define new(T) ((T*) newClass(sizeof(T)))
 
-void th_lock(Class* cl, const char* tag);
 void th_wait(Class* cl);
-void th_unlock(Class* cl, const char* tag);
 void th_signal(Class* cl);
 void th_wait_time(Class* cl, float delay);
 
+bool th_lock(Class* cl, const char* tag);
+void th_unlock(Class* cl, const char* tag, bool b);
+
+
 #define LOCK(C,T) (th_lock((Class*) C, T))
-#define UNLOCK(C, T) (th_unlock((Class*) C, T))
+#define UNLOCK(C, T, B) (th_unlock((Class*) C, T, B))
 
 #define WAIT(T) (th_wait((Class*) T))
 #define SIGNAL(T) (th_signal((Class*) T))

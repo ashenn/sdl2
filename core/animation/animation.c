@@ -58,15 +58,31 @@ void initAnimParam(AnimParam* param, Object* obj, float time, float delay, void*
 	//logger->inf(LOG_ANIM, "=== PARAM READY ===");
 }
 
-
-void animSetPosition(Object* obj, int x, int y) {
+bool animSetPosition(Object* obj, int x, int y) {
 	//logger->err(LOG_ANIM, "Lock Anim Set Pos");
-	logger->inf(LOG_ANIM, "=== Set Object Position %s => Y: %d | Y: %d", obj->name, x, y);
+	bool b = LOCK(obj, "Anim SET POS-0");
+	logger->err(LOG_ANIM, "=== Set Object Position %s => X: %d | Y: %d", obj->name, x, y);
+	logger->err(LOG_ANIM, "=== FROM X: %d | Y: %d", obj->pos.x, obj->pos.y);
 
-	obj->pos.x = x;
-	obj->pos.y = y;
 
-	//logger->err(LOG_ANIM, "UnLock Anim Set Pos");
+	bool res = true;
+	logger->err(LOG_ANIM, "-- Call Can Move");
+	vector move = canMoveTo(obj, x, y);
+
+	if (move.x != x || move.y != y) {
+		logger->err(LOG_ANIM, "#### CHANGE POSITION ####");
+		logger->err(LOG_ANIM, "-- X: %lf", move.x);
+		logger->err(LOG_ANIM, "-- Y: %lf", move.y);
+
+		res = false;
+	}
+
+	//logger->err(LOG_ANIM, "-- Can Move Result: X: %d | %d", (int) move.x, (int) move.y);
+	obj->pos.x = (int) move.x;
+	obj->pos.y = (int) move.y;
+
+	UNLOCK(obj, "Anim SET POS-1", b);
+	return res;
 }
 
 Animator* getAnimator() {
@@ -192,7 +208,7 @@ void animMoveTo(AnimMoveParam* param) {
 
 	//logger->dbg(LOG_ANIM, "-- Moving Coords: X = %d | Y = %d", xMove, yMove);
 
-	animSetPosition(
+	bool breakAnim = !animSetPosition(
 		obj,
 		obj->pos.x + xMove,
 		obj->pos.y + yMove
@@ -206,7 +222,7 @@ void animMoveTo(AnimMoveParam* param) {
 			lockNode(childNode);
 
 			Object* child = (Object*) childNode->value;
-			LOCK(child, "Anim MOVE-0");
+			bool b = LOCK(child, "Anim MOVE-0");
 
 			logger->dbg(LOG_ANIM, "-- Child: %s\nvisible: %d", child->name, child->visible);
 
@@ -219,7 +235,7 @@ void animMoveTo(AnimMoveParam* param) {
 			}
 
 
-			UNLOCK(child, "Anim MOVE-1");
+			UNLOCK(child, "Anim MOVE-1", b);
 			unlockNode(childNode);
 		}
 
@@ -238,6 +254,10 @@ void animMoveTo(AnimMoveParam* param) {
 		}
 	}
 
+	if (breakAnim) {
+		param->breakAnim = true;
+	}
+
 	logger->inf(LOG_ANIM, "==== ANIM Move DONE ====");
 }
 
@@ -252,7 +272,7 @@ AnimMoveParam* newMoveParam(Object* obj, float time, float delay, void* fnc) {
 }
 
 AnimParam* moveTo(Object* obj, int x, int y, float time, float delay) {
-	//LOCK(obj);
+	bool b = LOCK(obj, "MoveTo-0");
 	logger->inf(LOG_ANIM, "==== Animation: Moving: %s to %d | %d (%fs) ====", obj->name, x, y, time);
 
 	SDL_Rect targetPos;
@@ -283,7 +303,7 @@ AnimParam* moveTo(Object* obj, int x, int y, float time, float delay) {
 
     logger->inf(LOG_ANIM, "==== Animation Added ====");
 
-	//UNLOCK(obj);
+	UNLOCK(obj, "MoveTo-1", b);
     return (AnimParam*) param;
 }
 
@@ -319,16 +339,16 @@ short animateObject(int index, Node* n, short* delete, void* data, va_list* args
 		Object* obj = param->obj;
 		if (param->fnc != NULL) {
 			//logger->dbg(LOG_ANIM, "-- Calling Anim Function: %s", param->obj->name);
-			LOCK(obj, "ANIMMATE-0");
+			bool b = LOCK(obj, "ANIMMATE-0");
 			param->fnc(param);
-			UNLOCK(obj, "ANIMMATE-1");
+			UNLOCK(obj, "ANIMMATE-1", b);
 		}
 
 		if (param->stepFnc != NULL) {
 			//logger->dbg(LOG_ANIM, "-- Calling Custom Step Function");
-			LOCK(obj, "ANIMMATE-2");
+			bool b = LOCK(obj, "ANIMMATE-2");
 			param->stepFnc(param);
-			UNLOCK(obj, "ANIMMATE-3");
+			UNLOCK(obj, "ANIMMATE-3", b);
 		}
 
 		param->frames--;
@@ -342,9 +362,9 @@ short animateObject(int index, Node* n, short* delete, void* data, va_list* args
 
 		if (param->callback != NULL) {
 			//logger->err(LOG_ANIM, "-- Calling CallBack: %p", param);
-			LOCK(obj, "ANIMMATE-4");
+			bool b = LOCK(obj, "ANIMMATE-4");
 			param->callback(param);
-			UNLOCK(obj, "ANIMMATE-5");
+			UNLOCK(obj, "ANIMMATE-5", b);
 		}
 
 		if (param->loop) {
@@ -410,7 +430,7 @@ short animateSprite(int index, Node* n, short* delete, void* data, va_list* args
 	SpriteAnimParam* param = (SpriteAnimParam*) n->value;
 
 	Object* obj = (Object*) param->obj;
-	LOCK(obj, "ANIMMATE-SPRITE-0");
+	bool b = LOCK(obj, "ANIMMATE-SPRITE-0");
 
 	if (param->fnc != NULL) {
 		//logger->inf(LOG_SPRITE, "== PRE WAITING #%d: %d ==", param->id, param->wait);
@@ -440,7 +460,7 @@ short animateSprite(int index, Node* n, short* delete, void* data, va_list* args
 	updateSpriteAnim(param);
 	//logger->inf(LOG_SPRITE, "##### Anim SPRITE DONE #####");
 
-	UNLOCK(obj, "ANIMMATE-SPRITE-1");
+	UNLOCK(obj, "ANIMMATE-SPRITE-1", b);
 	return true;
 }
 

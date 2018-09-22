@@ -131,7 +131,8 @@ void clearObjects() {
 void deleteObject(Object* obj) {
 	logger->inf(LOG_OBJ, "===== Deleting Object ====");
 	logger->dbg(LOG_OBJ, "-- Name: %s", obj->name);
-	Node* layer = getNode(getLayers(), obj->z);
+
+	bool isChild = obj->parent != NULL;
 
 	if (obj->onDelete != NULL) {
 		logger->dbg(LOG_OBJ, "-- Calling On Delete Func");
@@ -141,58 +142,37 @@ void deleteObject(Object* obj) {
 	if (obj->childs != NULL) {
 		logger->dbg(LOG_OBJ, "-- Delete Object Childs");
 
-
-		/*
-		Node* childNode = NULL;
-		while((childNode = listIterate(obj->childs, childNode)) != NULL) {
-			Object* child = (Object*) childNode->value;
-
-			logger->dbg(LOG_OBJ, "-- Child: %s", child->name);
-			deleteObject(child);
-
-			logger->dbg(LOG_OBJ, "-- Delete Node");
-			deleteNode(obj->childs, childNode->id);
-			childNode = NULL;
-		}
-		*/
-
 		deleteList(obj->childs);
 		logger->dbg(LOG_OBJ, "-- Childs Cleared");
 	}
 
-	if (layer != NULL) {
-		logger->dbg(LOG_OBJ, "-- Deleting From : %s", layer->name);
-		deleteNode(layer->value, obj->id);
+	if (!isChild) {
+		logger->dbg(LOG_OBJ, "-- Deleting Layers");
+		Node* layer =  getNode(getLayers(), obj->z);
 
-		logger->dbg(LOG_OBJ, "-- Remove From Anim");
-		animRemoveObject(obj);
+		if (layer != NULL) {
+			logger->dbg(LOG_OBJ, "-- Deleting From : %s", layer->name);
+			deleteNode(layer->value, obj->id);
+
+			logger->dbg(LOG_OBJ, "-- Remove From Anim");
+			animRemoveObject(obj);
+		}
 	}
-
-	/*if (obj->container != NULL) {
-		deleteContainer(obj->container, obj->containerType);
-		obj->container = NULL;
-	}*/
-
-	/*if (obj->collision != NULL) {
-		ListManager* hitObjects = getHitObjectList();
-		logger->dbg(LOG_OBJ, "-- Removing collision: %s", obj->name);
-		deleteNode(hitObjects, obj->collision->id);
-
-		free(obj->collision);
-	}*/
 
 	logger->dbg(LOG_OBJ, "-- Delete Object");
 	free(obj->name);
 	obj->name = NULL;
 
-	ListManager* objects = getObjectList();
-	deleteNode(objects, obj->id);
+	if (!isChild) {
+		ListManager* objects = getObjectList();
+		deleteNode(objects, obj->id);
+	}
 
 	logger->dbg(LOG_OBJ, "===== DELETE OBJECT DONE ====");
 }
 
 void initSimpleObject(Object* obj, const char* name, void* comp, SDL_Rect* pos, short z) {
-	logger->err(LOG_OBJ, "-- INIT SIMPLE OBJECT %s", name);
+	logger->inf(LOG_OBJ, "-- INIT SIMPLE OBJECT %s", name);
 	obj->z = z;
 	obj->visible = 1;
 	obj->enabled = 1;
@@ -201,8 +181,6 @@ void initSimpleObject(Object* obj, const char* name, void* comp, SDL_Rect* pos, 
 	logger->inf(LOG_OBJ, "-- Set Name");
 
 	int len = strlen(name) + 8;
-	logger->err(LOG_OBJ, "-- TestLen: %d", strlen(name));
-	logger->err(LOG_OBJ, "-- Len: %d", len);
 	obj->name = StrE(len);
 	snprintf(obj->name, len, "%s_Object", name);
 
@@ -226,6 +204,7 @@ void initSimpleObject(Object* obj, const char* name, void* comp, SDL_Rect* pos, 
 	obj->delete = NULL;
 
 	obj->collisions = NULL;
+	obj->childs = initListMgr();
 
 	if (pos != NULL) {
 		obj->pos.x = pos->x;
@@ -245,10 +224,11 @@ void initSimpleObject(Object* obj, const char* name, void* comp, SDL_Rect* pos, 
 
 void deleteChild(Node* n) {
 	Object* child = (Object*) n->value;
-	logger->war(LOG_OBJ, "-- Delete Child");
-	logger->war(LOG_OBJ, "-- Child Name: %s", child->name);
+	logger->dbg(LOG_OBJ, "-- Delete Child");
+	logger->dbg(LOG_OBJ, "-- Child Name: %s", child->name);
 
 	deleteObject(child);
+	logger->dbg(LOG_OBJ, "-- Deleted");
 }
 
 void removeChild(Object* obj, const char* name) {
@@ -264,9 +244,9 @@ void removeChild(Object* obj, const char* name) {
 
 bool addChild(Object* obj, Object* child) {
 	//logger->err(LOG_ANIM, "Lock Add Child");
-	LOCK(obj, "ADD CHILD-0");
+	bool b = LOCK(obj, "ADD CHILD-0");
 	//logger->err(LOG_ANIM, "Lock Child");
-	LOCK(child, "ADD CHILD-1");
+	bool b1 = LOCK(child, "ADD CHILD-1");
 
 	logger->inf(LOG_OBJ, "==== Adding Child %s ====", child->name);
 
@@ -287,9 +267,9 @@ bool addChild(Object* obj, Object* child) {
 	if (n == NULL) {
 		logger->err(LOG_OBJ, "==== FAIL TO ADD CHILD NODE =====");
 		//logger->err(LOG_ANIM, "UnLock Add Child");
-		UNLOCK(obj, "ADD CHILD-2");
+		UNLOCK(obj, "ADD CHILD-2", b);
 		//logger->err(LOG_ANIM, "UnLock Child");
-		UNLOCK(child, "ADD CHILD-3");
+		UNLOCK(child, "ADD CHILD-3", b1);
 
 		return false;
 	}
@@ -307,9 +287,9 @@ bool addChild(Object* obj, Object* child) {
 	n->del = deleteChild;
 
 	//logger->err(LOG_ANIM, "UnLock Add Child");
-	UNLOCK(obj, "ADD CHILD-4");
+	UNLOCK(obj, "ADD CHILD-4", b);
 	//logger->err(LOG_ANIM, "UnLock Child");
-	UNLOCK(child, "ADD CHILD-5");
+	UNLOCK(child, "ADD CHILD-5", b1);
 
 	return true;
 }

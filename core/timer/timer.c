@@ -42,7 +42,7 @@ static void cleanLauncher(void* arg) {
 
 
 	if (launcher->fnc_thread != NULL) {
-		UNLOCK(launcher, "CLEAN LAUNCHER-1");
+		UNLOCK(launcher, "CLEAN LAUNCHER-1", true);
 		logger->inf(LOG_TIMER, "CLEAN: UN-LOCK");
 
 		logger->inf(LOG_TIMER, "-- Killing Function Thread");
@@ -60,7 +60,7 @@ static void cleanLauncher(void* arg) {
 	}
 
 	//logger->err(LOG_ANIM, "UnLock Launcher");
-	UNLOCK(launcher, "CLEAN LAUNCHER-2");
+	UNLOCK(launcher, "CLEAN LAUNCHER-2", true);
 	logger->inf(LOG_TIMER, "CLEAN: UN-LOCK");
 }
 
@@ -71,7 +71,7 @@ void* callDelayedFunction(void* param) {
     DelayedFunction* fncParam = (DelayedFunction*) param;
     DelayedFncLauncher* launcher = fncParam->launcher;
 
-	logger->inf(LOG_TIMER, "-- Prepare Launcher CallBack");
+	logger->dbg(LOG_TIMER, "-- Prepare Launcher CallBack");
 	pthread_cleanup_push(cleanLauncher, (void*) launcher);
 
 	Project* pro = getProject();
@@ -82,16 +82,16 @@ void* callDelayedFunction(void* param) {
 	LOCK(fncParam, "Call Delayed-0.1");
 	while (!fncParam->doBreak && pro->status != PRO_CLOSE) {
 		//logger->err(LOG_ANIM, "UnLock Launcher");
-		UNLOCK(launcher, "Call Delayed-1");
+		UNLOCK(launcher, "Call Delayed-1", true);
 		if (fncParam->delay != 0) {
 
-			logger->inf(LOG_TIMER, "-- Waiting: %f", fncParam->delay);
+			logger->dbg(LOG_TIMER, "-- Waiting: %f", fncParam->delay);
 			WAIT_TIME(launcher, fncParam->delay);
 			//pthread_cond_timedwait(&launcher->cond, &launcher->mutex, &waitTime);
 		}
 
 		if (fncParam->doBreak) {
-			logger->inf(LOG_TIMER, "-- Break Timer");
+			logger->dbg(LOG_TIMER, "-- Break Timer");
 			break;
 		}
 		else if (launcher->paused) {
@@ -99,67 +99,67 @@ void* callDelayedFunction(void* param) {
 			WAIT(launcher);
 		}
 
-		logger->inf(LOG_TIMER, "-- Calling Thread");
+		logger->dbg(LOG_TIMER, "-- Calling Thread");
 		pthread_create(&fncParam->thread, NULL, fncParam->fnc, (void*) fncParam);
 
-		logger->inf(LOG_TIMER, "-- Waiting Thread End");
+		logger->dbg(LOG_TIMER, "-- Waiting Thread End");
 
 		pthread_join(*th, NULL);
 		//logger->err(LOG_ANIM, "Lock Delayed Func");
 		LOCK(fncParam, "Call Delayed-2");
 
-		logger->inf(LOG_TIMER, "-- Do Break Result: %d", fncParam->doBreak);
+		logger->dbg(LOG_TIMER, "-- Do Break Result: %d", fncParam->doBreak);
 
 		if (!fncParam->loop || fncParam->doBreak) {
-			logger->inf(LOG_TIMER, "-- Break Timer");
+			logger->dbg(LOG_TIMER, "-- Break Timer");
 			break;
 		}
 	}
 
-	logger->inf(LOG_TIMER, "-- Loop Ended");
+	logger->dbg(LOG_TIMER, "-- Loop Ended");
 
 	if (fncParam->callback != NULL) {
-		logger->inf(LOG_TIMER, "-- Calling CallBack");
+		logger->dbg(LOG_TIMER, "-- Calling CallBack");
 		//logger->err(LOG_ANIM, "UnLock Delayed Func");
-		UNLOCK(fncParam, "Call Delayed-3");
+		UNLOCK(fncParam, "Call Delayed-3", true);
 		fncParam->callback(fncParam);
 		//logger->err(LOG_ANIM, "Lock Delayed Func");
 		LOCK(fncParam, "Call Delayed-4");
 	}
 
-	logger->inf(LOG_TIMER, "-- Set Completed");
+	logger->dbg(LOG_TIMER, "-- Set Completed");
 	fncParam->completed = !fncParam->killed;
 
-	logger->inf(LOG_TIMER, "-- Close Args");
+	logger->dbg(LOG_TIMER, "-- Close Args");
 	va_end(*(fncParam->args));
 
-	logger->inf(LOG_TIMER, "-- REMOVE DELAYED NODE");
+	logger->dbg(LOG_TIMER, "-- REMOVE DELAYED NODE");
 	removeNode(delayedFncs, fncParam->node);
 
-	logger->inf(LOG_TIMER, "-- FREE PARAM NAME");
+	logger->dbg(LOG_TIMER, "-- FREE PARAM NAME");
 	free(fncParam->name);
 
-	logger->inf(LOG_TIMER, "-- FREE PARAM");
+	logger->dbg(LOG_TIMER, "-- FREE PARAM");
 	//logger->err(LOG_ANIM, "UnLock Delayed Func");
-	UNLOCK(fncParam, "Call Delayed-5");
+	UNLOCK(fncParam, "Call Delayed-5", true);
 	free(fncParam);
 
-	logger->inf(LOG_TIMER, "-- CALL: Ask-Lock");
+	logger->dbg(LOG_TIMER, "-- CALL: Ask-Lock");
 	//logger->err(LOG_ANIM, "Lock Launcher");
-	LOCK(launcher, "Call Delayed-6");
-	logger->inf(LOG_TIMER, "-- CALL: Lock");
-	logger->inf(LOG_TIMER, "-- Clean Launcher Pointers");
+	//LOCK(launcher, "Call Delayed-6");
+	logger->dbg(LOG_TIMER, "-- CALL: Lock");
+	logger->dbg(LOG_TIMER, "-- Clean Launcher Pointers");
 
 	launcher->fnc = NULL;
 	launcher->fnc_node = NULL;
 	launcher->completed = true;
 	launcher->fnc_thread = NULL;
 	//logger->err(LOG_ANIM, "UnLock Launcher");
-	UNLOCK(launcher, "Call Delayed-7");
+	//UNLOCK(launcher, "Call Delayed-7", true);
 
-	logger->inf(LOG_TIMER, "-- CALL: UN-Lock");
+	logger->dbg(LOG_TIMER, "-- CALL: UN-Lock");
 
-	logger->inf(LOG_TIMER, "-- Delayed Done !!!!");
+	logger->dbg(LOG_TIMER, "-- Delayed Done !!!!");
 	pthread_cleanup_pop(1);
 
 	return NULL;
@@ -239,15 +239,15 @@ DelayedFncLauncher* delayed(double delay, bool loop, void* (*fnc)(void*), void* 
 }
 
 short clearDelayed(int i, Node* n, short* delete, void* param, va_list* args) {
-	logger->war(LOG_TIMER, "=== Clearing DELAYED: %s ===", n->name);
+	logger->inf(LOG_TIMER, "=== Clearing DELAYED: %s ===", n->name);
 	DelayedFncLauncher* launcher = n->value;
 
 	if (!launcher->killed && !launcher->completed) {
-		logger->war(LOG_TIMER, "=== Clearing Un Completed DELAYED Function: %s ===", n->name);
+		logger->inf(LOG_TIMER, "=== Clearing Un Completed DELAYED Function: %s ===", n->name);
 		killDelayedFunction(launcher, true, false);
 	}
 
-	logger->war(LOG_TIMER, "=== Clearing Un Completed DELAYED Function: %s ===", n->name);
+	logger->inf(LOG_TIMER, "=== Clearing Un Completed DELAYED Function: %s ===", n->name);
 
 	free(launcher->name);
 
@@ -255,14 +255,14 @@ short clearDelayed(int i, Node* n, short* delete, void* param, va_list* args) {
 }
 
 void clearDelayedFunctions() {
-	logger->war(LOG_TIMER, "##### CLEARING DELAYED FUNCTIONS #####");
+	logger->inf(LOG_TIMER, "##### CLEARING DELAYED FUNCTIONS #####");
 	ListManager* launchers = getLaunchers();
 
 	if (launchers->nodeCount) {
 		listIterateFnc(launchers, clearDelayed, NULL, NULL);
 	}
 
-	logger->war(LOG_TIMER, "##### DELETING TIMER #####");
+	logger->inf(LOG_TIMER, "##### DELETING TIMER #####");
 
 	deleteList(launchers);
 	deleteList(getDelayedFunctions());
@@ -270,22 +270,22 @@ void clearDelayedFunctions() {
 
 
 bool killDelayedFunction(DelayedFncLauncher* launcher, bool force, bool join) {
-	logger->war(LOG_TIMER, "##### Killing Delayed Function #####");
+	logger->inf(LOG_TIMER, "##### Killing Delayed Function #####");
 	if (launcher == NULL) {
 		logger->war(LOG_TIMER, "=== Trying To Kill A Delayed Function But Launcher Pointer Is Null.");
 		return false;
 	}
 
-	logger->war(LOG_TIMER, "KILL: Ask-LOCK");
+	logger->inf(LOG_TIMER, "KILL: Ask-LOCK");
 	LOCK(launcher, "Kill Launcher-0");
-	logger->war(LOG_TIMER, "KILL: LOCK");
+	logger->inf(LOG_TIMER, "KILL: LOCK");
 
 	launcher->killed = true;
 
 	if (launcher->fnc != NULL) {
         launcher->fnc->killed = true;
         launcher->fnc->doBreak = true;
-		logger->war(LOG_TIMER, "=== Breaking Function");
+		logger->inf(LOG_TIMER, "=== Breaking Function");
 	}
 	else {
 		logger->war(LOG_TIMER, "=== Trying To Kill A Delayed Function But Launcher->fnc Pointer Is Null.");
@@ -293,27 +293,27 @@ bool killDelayedFunction(DelayedFncLauncher* launcher, bool force, bool join) {
 	}
 
 	pthread_t th = launcher->thread;
-	UNLOCK(launcher, "Kill Launcher-1");
-	logger->war(LOG_TIMER, "KILL: UN-LOCK");
+	UNLOCK(launcher, "Kill Launcher-1", true);
+	logger->inf(LOG_TIMER, "KILL: UN-LOCK");
 
 	if (force) {
-		logger->war(LOG_TIMER, "-- FORCE CONDITION KILL FUNCTION THREAD");
+		logger->inf(LOG_TIMER, "-- FORCE CONDITION KILL FUNCTION THREAD");
 		SIGNAL(launcher);
 
-		logger->war(LOG_TIMER, "-- FORCE KILL FUNCTION THREAD");
+		logger->inf(LOG_TIMER, "-- FORCE KILL FUNCTION THREAD");
 		pthread_kill(th, 1);
 
-		logger->war(LOG_TIMER, "-- FORCE KILL FUNCTION THREAD CALLED");
+		logger->inf(LOG_TIMER, "-- FORCE KILL FUNCTION THREAD CALLED");
 	}
 
 
 	if (join) {
-		logger->war(LOG_TIMER, "-- KILL JOINING LAUNCHER THREAD");
+		logger->inf(LOG_TIMER, "-- KILL JOINING LAUNCHER THREAD");
 		pthread_join(th, NULL);
-		logger->war(LOG_TIMER, "-- KILL LAUNCHER THREAD JOINED !!!");
+		logger->inf(LOG_TIMER, "-- KILL LAUNCHER THREAD JOINED !!!");
 	}
 
-	logger->war(LOG_TIMER, "-- KILL LAUNCHER THREAD SUCCESS !!!");
+	logger->inf(LOG_TIMER, "-- KILL LAUNCHER THREAD SUCCESS !!!");
 	return true;
 }
 
@@ -326,7 +326,7 @@ bool pauseDelayedFunction(DelayedFncLauncher* launcher) {
 	logger->err(LOG_TIMER, "=== PAUSING DELAYED: %s ===", launcher->name);
 	LOCK(launcher, "PAUSE Launcher-0");
 	launcher->paused = true;
-	UNLOCK(launcher, "PAUSE Launcher-1");
+	UNLOCK(launcher, "PAUSE Launcher-1", true);
 
 	return true;
 }
@@ -337,7 +337,7 @@ bool resumeDelayedFunction(DelayedFncLauncher* launcher) {
 		return false;
 	}
 
-	logger->err(LOG_TIMER, "=== RESUMING DELAYED: %s ===", launcher->name);
+	logger->inf(LOG_TIMER, "=== RESUMING DELAYED: %s ===", launcher->name);
 	launcher->paused = false;
 	SIGNAL(launcher);
 

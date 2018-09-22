@@ -29,7 +29,7 @@
 Object* testObj = NULL;
 
 void* leftPress(void* e) {
-	logger->err(LOG_SPRITE, "LEFT Pressed !!!");
+	logger->inf(LOG_CONTROL, "LEFT Pressed !!!");
 	testObj->flip = FLIP_H;
 
 	KeyEvent* evt = e;
@@ -41,7 +41,7 @@ void* leftPress(void* e) {
 	}
 
 	if (obj->ch == NULL) {
-		logger->err(LOG_SPRITE, "Char Object Character Is Null !!!", &obj->ch->attr);
+		logger->err(LOG_CONTROL, "Char Object Character Is Null !!!", &obj->ch->attr);
 		return NULL;
 	}
 
@@ -52,7 +52,7 @@ void* leftPress(void* e) {
 }
 
 void* release(void* e) {
-	logger->err(LOG_SPRITE, "BTN Realeased !!!");
+	logger->inf(LOG_CONTROL, "BTN Realeased !!!");
 
 	KeyEvent* evt = e;
 	CharObj* obj = (CharObj*) evt->target;
@@ -64,7 +64,7 @@ void* release(void* e) {
 
 
 void* movePress(void* e) {
-	logger->err(LOG_SPRITE, "Right Pressed !!!");
+	logger->inf(LOG_CONTROL, "Right Pressed !!!");
 
 	KeyEvent* evt = (KeyEvent*) e;
 
@@ -79,13 +79,13 @@ void* movePress(void* e) {
 	}
 
 	CharObj* obj = (CharObj*) evt->target;
-	logger->err(LOG_SPRITE, "CALL MOVE DIR Pressed !!!");
+	logger->inf(LOG_CONTROL, "CALL MOVE DIR Pressed !!!");
 	moveDir(obj->ctrl, dir);
 	return false;
 }
 
 void* downPress(void* e) {
-	logger->err(LOG_SPRITE, "Down Pressed !!!");
+	logger->inf(LOG_CONTROL, "Down Pressed !!!");
 	KeyEvent* evt = e;
 
 	CharObj* obj = (CharObj*) evt->target;
@@ -95,12 +95,11 @@ void* downPress(void* e) {
 	}
 
 	if (obj->ch == NULL) {
-		logger->err(LOG_SPRITE, "Char Object Character Is Null!!!", &obj->ch->attr);
+		logger->err(LOG_CONTROL, "Char Object Character Is Null!!!", &obj->ch->attr);
 		return NULL;
 	}
 
 	if (!obj->ch->attr.inAir) {
-		logger->war(LOG_MAIN, "-- NOT IN AIR !!!!");
 		obj->ch->attr.crouch = true;
 	}
 
@@ -108,61 +107,50 @@ void* downPress(void* e) {
 }
 
 void land(AnimParam* anim) {
-	logger->err(LOG_SPRITE, "-- CALLING LAND");
+	logger->inf(LOG_SPRITE, "-- CALLING LAND");
 	//anim = (AnimParam*) spriteAnimByName((SpriteObject*) testObj, "Land", 0);
 	//anim->callback = release;
 	//anim->deleteOnDone = false;
 
-	logger->err(LOG_SPRITE, "-- LAND CALLED");
-}
-
-void inAir(AnimParam* anim) {
-	static int i = 50;
-	if (--i == 0) {
-		i = 25;
-		anim->breakAnim = true;
-	}
-	else{
-		logger->err(LOG_SPRITE, "-- In Air: %d", i);
-	}
+	logger->inf(LOG_SPRITE, "-- LAND CALLED");
 }
 
 void jumpEnd(AnimParam* anim) {
-	logger->err(LOG_SPRITE, "==== JUMP ENDED ====");
+	logger->inf(LOG_SPRITE, "==== JUMP ENDED ====");
 	//	anim = (AnimParam*) spriteAnimByName((SpriteObject*) testObj, "Fall", 0);
 	//	anim->stepFnc = inAir;
 	//	anim->callback = land;
 }
 
 void* topPress(void* e) {
-	logger->err(LOG_SPRITE, "Top Pressed !!!");
+	logger->inf(LOG_SPRITE, "Top Pressed !!!");
 	KeyEvent* evt = e;
 
 	CharObj* obj = (CharObj*) evt->target;
 	if (obj == NULL) {
-		logger->war(LOG_MAIN, "EVENT OBJ IS NULL");
+		logger->war(LOG_CONTROL, "EVENT OBJ IS NULL");
 		return NULL;
 	}
 
 	if (obj->ch == NULL) {
-		logger->err(LOG_SPRITE, "Char Object Character Is Null!!!", &obj->ch->attr);
+		logger->err(LOG_CONTROL, "Char Object Character Is Null!!!", &obj->ch->attr);
 		return NULL;
 	}
 
 	if (obj->ch->attr.inAir) {
-		logger->war(LOG_MAIN, "-- IN AIR");
+		logger->inf(LOG_CONTROL, "-- IN AIR");
 		if (obj->ch->attr.canDoubleJump && !obj->ch->attr.doubleJump) {
-			logger->war(LOG_MAIN, "-- Set Double Jump");
+			logger->inf(LOG_CONTROL, "-- Set Double Jump");
 			obj->ch->attr.doubleJump = true;
 		}
 	}
 	else {
-		logger->war(LOG_MAIN, "-- NOT IN AIR !!!!");
+		logger->inf(LOG_CONTROL, "-- NOT IN AIR !!!!");
 		obj->ch->attr.inAir = true;
 		obj->ch->attr.crouch = false;
 	}
 
-	vector v = {0, -30};
+	vector v = {0, -150};
 	addVelocity((Object*) obj, v);
 
 	return NULL;
@@ -173,51 +161,11 @@ void* spacePressed(void* evt) {
 	return false;
 }
 
-void testTh(void* param) {
-	Class* cl = (Class*) param;
-
-
-	LOCK(cl, "TEST-0");
-	UNLOCK(cl, "TEST-1");
-
-	LOCK(cl, "TEST-2");
-	LOCK(cl, "TEST-3");
-	UNLOCK(cl, "TEST-4");
-
-	LOCK(cl, "TEST-5");
-	UNLOCK(cl, "TEST-6");
-	UNLOCK(cl, "TEST-7");
-
-	free(cl->name);
-	return 0;
-}
-
 int main(int arc, char* argv[]) {
 	logger = initLogger(arc, argv);
 
 	logger->dbg(LOG_MAIN, "-- Init Project");
 	Project* pro = initProject(arc, argv);
-
-
-	Class* cl = new(Class);
-	cl->name = Str("TEST Class");
-
-
-	LOCK(cl, "MAIN-0");
-	UNLOCK(cl, "MAIN-1");
-
-	LOCK(cl, "MAIN-2");
-	LOCK(cl, "MAIN-3");
-	UNLOCK(cl, "MAIN-4");
-
-	LOCK(cl, "MAIN-5");
-	UNLOCK(cl, "MAIN-6");
-	UNLOCK(cl, "MAIN-7");
-
-
-	pthread th;
-	pthread_create(&th, NULL, testTh, (void*)cl);
-	return 0;
 
 	collision_init();
 	logger->dbg(LOG_MAIN, "-- Init SDL");
@@ -232,7 +180,7 @@ int main(int arc, char* argv[]) {
 	Character* ch = player->character;
 
 	pos.x = 350;
-	PlayerCtrl* player2 = spawnPlayer(2, "Player-2", "adventurer", &pos, 2);
+	/*PlayerCtrl* player2 = spawnPlayer(2, "Player-2", "adventurer", &pos, 2);*/
 
 	testObj = ch->obj;
 	pos.x = 20;
@@ -241,12 +189,13 @@ int main(int arc, char* argv[]) {
 	pos.h = 8;
 
 	Collision* col = collision_add(testObj, "TestCol", COL_OVERLAP, COL_PLAYER, pos, true);
-	col->blocks = 0;
-	col->overlaps = COL_WALL;
-	col->onOverlap = footLand;
-	col->onOverlap = footFall;
+	col->overlaps = 0;
+	col->onHit = NULL;
+	col->blocks = COL_WALL;
+	col->continious = true;
+	col->onHitEnd = NULL;
 
-	collision_add(player2->obj, "XD_COL", COL_OVERLAP, COL_PLAYER, pos, true);
+	/*collision_add(player2->obj, "XD_COL", COL_OVERLAP, COL_PLAYER, pos, true);*/
 
 	addControl("stop", release);
 	addControl("jump", topPress);
@@ -262,18 +211,29 @@ int main(int arc, char* argv[]) {
 	pos.y = 350;
 	pos.h = 50;
 	pos.w = 60;
-	Object* wall = addSimpleObject("wall", NULL, &pos, 2);
+	Object* wall = addSimpleObject("wall", NULL, &pos, 0);
 
 	pos.x = 0;
 	pos.y = 0;
 	collision_add(wall, "Wall_COL", COL_BLOCK, COL_WALL, pos, true);
 
+	pos.x = 0;
+	pos.y = SCREEN_H - 10;
+	pos.h = 50;
+	pos.w = SCREEN_W;
+	//Object* ground = addSimpleObject("Ground", NULL, &pos, 0);
+
+	pos.x = 0;
+	pos.y = 0;
+	//collision_add(ground, "Ground_COL", COL_BLOCK, COL_WALL, pos, true);
+
+
+
 	logger->inf(LOG_MAIN, "#### CREATE RENDER TRHEAD");
-	pthread_create(&pro->renderThread, NULL, renderThread, (void*)NULL);
+	pthread_create(&pro->renderThread, NULL, renderThread, NULL);
 
 	while (pro->status != PRO_CLOSE) {
 		handleEvents();
-		//collision_handle();
 		usleep(100);
 	}
 

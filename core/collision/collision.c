@@ -171,8 +171,6 @@ void collision_setFlags(Collision* col) {
 	if (channel == NULL) {
 		logger->war(LOG_COLLISION, "Fail To Find Channel: #%d | %s", col->flag, channelName);
 		ListManager* channels = collision_getChannels();
-		printNodes(channels);
-
 		return;
 	}
 
@@ -217,7 +215,7 @@ Collision* collision_add(Object* obj, const char* name, unsigned int type, unsig
 	col->type = type;
 
 	col->enabled = enabled;
-	col->continuous = false;
+	col->continious = false;
 
 	col->name = Str(colName);
 	col->blocks = 0;
@@ -261,64 +259,44 @@ Collision* collision_add(Object* obj, const char* name, unsigned int type, unsig
 	return col;
 }
 
-bool collision_positionCollides(Collision* col, Collision* col2) {
-	logger->inf(LOG_COLLISION, "-- Checking Positions");
-
-	SDL_Rect pos = getWorldPos(col->obj, col->pos);
-	SDL_Rect pos2 = getWorldPos(col2->obj, col2->pos);
-
-	logger->inf(LOG_COLLISION, "-- Col1: X: %d | Y: %d | W: %d | H: %d", pos.x, pos.y, pos.w, pos.h);
-	logger->inf(LOG_COLLISION, "-- Col2: X: %d | Y: %d | W: %d | H: %d", pos2.x, pos2.y, pos2.w, pos2.h);
-
+bool collision_positionCollides(SDL_Rect* pos, SDL_Rect* pos2) {
 	bool width1 =
-		(pos2.x + pos2.w >= pos.x)
+		(pos2->x + pos2->w >= pos->x)
 		&&
-		(pos2.x + pos2.w <= (pos.x + pos.w))
+		(pos2->x + pos2->w <= (pos->x + pos->w))
     ;
 
 	bool width2 =
-		(pos.x + pos.w >= pos2.x)
+		(pos->x + pos->w >= pos2->x)
 		&&
-		(pos.x + pos.w <= pos2.x + pos2.w)
+		(pos->x + pos->w <= pos2->x + pos2->w)
     ;
 
     bool height1 =
-    	(pos2.y + pos2.h >= pos.y)
+    	(pos2->y + pos2->h >= pos->y)
     	&&
-		(pos2.y + pos2.h <= pos.y + pos.h)
+		(pos2->y + pos2->h <= pos->y + pos->h)
     ;
 
     bool height2 =
-    	(pos.y + pos.h >= pos2.y)
+    	(pos->y + pos->h >= pos2->y)
     	&&
-		(pos.y + pos.h <= pos2.y + pos2.h)
+		(pos->y + pos->h <= pos2->y + pos2->h)
     ;
 
     bool collides = (width1 || width2) && (height1 || height2);
-	logger->inf(LOG_COLLISION, "-- Positions Collides: %d", collides);
-
     return collides;
 }
 
 CollisionType collision_flagsCollides(Collision* col, Collision* col2) {
 	CollisionType type = COL_IGNORE;
 
-	logger->inf(LOG_COLLISION, "-- Checking Flags: %s | %s", collision_getFlagName(col->flag), collision_getFlagName(col2->flag));
 	bool block = col->blocks & col2->flag;
 	bool overlaps = col->overlaps & col2->flag;
 
-	logger->inf(LOG_COLLISION, "-- Block: %d", block);
-	logger->inf(LOG_COLLISION, "-- Overlap: %d", overlaps);
-
 	bool apply = (col2->blocks & col->flag) || (col2->overlaps & col->flag);
-	logger->inf(LOG_COLLISION, "-- Apply: %d", apply);
-	logger->inf(LOG_COLLISION, "-- Col2 Block: %d", (col2->blocks & col->flag));
-	logger->inf(LOG_COLLISION, "-- Col2 Block Test: %d", col2->blocks);
-	logger->inf(LOG_COLLISION, "-- Col2 Overlap: %d", (col2->overlaps & col->flag));
-	logger->inf(LOG_COLLISION, "-- Col2 Overlap Test: %d", col2->overlaps);
 
 	apply = apply && (block || overlaps);
-	logger->inf(LOG_COLLISION, "-- Final Apply: %d", apply);
 
 	if (apply && block) {
 		type = COL_BLOCK;
@@ -327,53 +305,26 @@ CollisionType collision_flagsCollides(Collision* col, Collision* col2) {
 		type = COL_OVERLAP;
 	}
 
-	logger->inf(LOG_COLLISION, "-- Result Type: %s", COL_TYPE_STRING[type]);
     return type;
-}
-
-
-
-CollisionType collision_collides(Collision* col, Collision* col2) {
-	CollisionType type = COL_IGNORE;
-
-	if (collision_positionCollides(col, col2)) {
-		logger->inf(LOG_COLLISION, "-- Position Collides !!!");
-		type = collision_flagsCollides(col, col2);
-	}
-	else {
-		logger->inf(LOG_COLLISION, "-- Skipping Pisition Does Not Collide");
-	}
-
-	return type;
 }
 
 void collision_callFncs(Collision* col, Collision* col2, CollisionType type, bool start) {
 	switch (type) {
 		case COL_BLOCK:
-			if (col->onHit != NULL) {
-				if (start) {
-					col->onHit(col->obj, col2->obj);
-				}
-				else {
-					col->onHitEnd(col->obj, col2->obj);
-				}
+			if (start && col->onHit != NULL) {
+				col->onHit(col->obj, col2->obj);
 			}
-			else {
-				logger->war(LOG_COLLISION, "Collision Function Is Null: %s | %d", col->obj->name, type);
+			else if (!start && col->onHitEnd != NULL){
+				col->onHitEnd(col->obj, col2->obj);
 			}
 			break;
 
 		case COL_OVERLAP:
-			if (col->onOverlap != NULL) {
-				if (start) {
-					col->onOverlap(col->obj, col2->obj);
-				}
-				else {
-					col->onOverlapEnd(col->obj, col2->obj);
-				}
+			if (start && col->onOverlap != NULL) {
+				col->onOverlap(col->obj, col2->obj);
 			}
-			else {
-				logger->war(LOG_COLLISION, "Collision Function Is Null: %s | %d", col->obj->name, type);
+			else if (!start && col->onOverlapEnd != NULL){
+				col->onOverlapEnd(col->obj, col2->obj);
 			}
 			break;
 
@@ -388,10 +339,10 @@ bool collision_addCollide(Collision* col, Collision* target) {
 		return false;
 	}
 
-	logger->inf(LOG_COLLISION, "-- Adding Collide: %p | %s", col->collisions, target->name);
-	logger->inf(LOG_COLLISION, "-- Current Size: %d", col->collisions->nodeCount);
+	logger->dbg(LOG_COLLISION, "-- Adding Collide : %s", target->name);
 	addNodeV(col->collisions, target->name, target, 0);
-	logger->inf(LOG_COLLISION, "-- Added");
+
+
 
 	n = getNodeByName(col->obj->childs, col->name);
 	if (n != NULL) {
@@ -408,15 +359,18 @@ bool collision_removeCollide(Collision* col, Collision* target) {
 		return false;
 	}
 
-	logger->inf(LOG_COLLISION, "-- Removing Collide: %s", target->name);
+	logger->dbg(LOG_COLLISION, "-- Removing Collide: %s", target->name);
 	deleteNodeByName(col->collisions, target->name);
-	logger->inf(LOG_COLLISION, "-- Collides Left: %d", col->collisions->nodeCount);
 
 	if (!col->collisions->nodeCount) {
-		n = getNodeByName(col->obj->childs, col->name);
+		if (col->obj->childs != NULL) {
+			n = getNodeByName(col->obj->childs, col->name);
 
-		Object* colObj = (Object*) n->value;
-		colObj->clip->x = 0;
+			if (n != NULL) {
+				Object* colObj = (Object*) n->value;
+				colObj->clip->x = 0;
+			}
+		}
 	}
 
 	return true;
@@ -426,36 +380,49 @@ short collision_handleCompCol(int i, Node* n, short* delete, void* param, va_lis
 	Collision* objCol = (Collision*) param;
 	Collision* compCol = (Collision*) n->value;
 
-	//logger->err(LOG_ANIM, "Lock Comp Col");
-	LOCK(compCol, "HANDLE COMP COL-0");
+	//logger->err(LOG_COLLISION, "Lock Comp Col");
+	bool b = LOCK(compCol, "HANDLE COMP COL-0");
 
 	// logger->inf(LOG_COLLISION, "-- Comp Collision: %s", compCol->name);
 	if (compCol->enabled && compCol->flag != COL_NONE) {
 		// logger->inf(LOG_COLLISION, "-- Comparing Collisions: %s | %s", objCol->name, compCol->name);
 
+		SDL_Rect pos = getWorldPos(objCol->obj, objCol->pos);
+		SDL_Rect pos2 = getWorldPos(compCol->obj, compCol->pos);
+		bool posCollide = collision_positionCollides(&pos, &pos2);
+		if (posCollide) {
+			logger->dbg(LOG_COLLISION, "Objects Collides: %s | %s", objCol->name, compCol->name);
+		}
+
 		CollisionType type = collision_flagsCollides(objCol, compCol);
 		// logger->inf(LOG_COLLISION, "-- Collision Flag Result: %s", COL_TYPE_STRING[type]);
 
-		if (type != COL_IGNORE && collision_positionCollides(objCol, compCol)) {
+		if (type != COL_IGNORE && posCollide) {
 			if (collision_addCollide(objCol, compCol)) {
-				//logger->inf(LOG_COLLISION, "-- Call Fnc");
+				logger->inf(LOG_COLLISION, "-- Call Fnc");
 				collision_callFncs(objCol, compCol, type, true);
 				collision_callFncs(compCol, objCol, type, true);
 			}
 		}
 		else  if (collision_removeCollide(objCol, compCol)) {
+			logger->inf(LOG_COLLISION, "-- Call Stop Fnc");
+
 			collision_callFncs(objCol, compCol, type, false);
+			logger->inf(LOG_COLLISION, "-- Call END-1");
+
 			collision_callFncs(compCol, objCol, type, false);
+			logger->inf(LOG_COLLISION, "-- Call END-2");
 		}
+
 
 	}
 	else{
-		//logger->inf(LOG_COLLISION, "-- Skipping Disabled");
+		logger->inf(LOG_COLLISION, "-- Skipping Disabled");
 	}
 
 
-	//logger->err(LOG_ANIM, "UnLock Comp Col");
-	UNLOCK(compCol, "HANDLE COMP COL-2");
+	//logger->err(LOG_COLLISION, "UnLock Comp Col");
+	UNLOCK(compCol, "HANDLE COMP COL-2", b);
 	return true;
 }
 
@@ -464,19 +431,19 @@ short collision_handleObjCol(int i, Node* n, short* delete, void* param, va_list
 	Object* comp = (Object*) param;
 	Collision* objCol = (Collision*) n->value;
 
-	//logger->err(LOG_ANIM, "Lock Obj Col Pos");
-	LOCK(objCol, "HANDLE OBJ COL-0");
-	//logger->inf(LOG_COLLISION, "-- Object Collision: %s", objCol->name);
+	//logger->err(LOG_COLLISION, "Lock Obj Col Pos");
+	bool b = LOCK(objCol, "HANDLE OBJ COL-0");
+	logger->inf(LOG_COLLISION, "-- Object Collision: %s", objCol->name);
 
 	if (objCol->enabled && objCol->flag != COL_NONE) {
 		listIterateFnc(comp->collisions, collision_handleCompCol, NULL, objCol);
 	}
 	else{
-		//logger->inf(LOG_COLLISION, "-- Skipping Disabled");
+		logger->inf(LOG_COLLISION, "-- Skipping Disabled");
 	}
 
-	//logger->err(LOG_ANIM, "UnLock Obj Col Pos");
-	UNLOCK(objCol, "HANDLE COMP COL-1");
+	//logger->err(LOG_COLLISION, "UnLock Obj Col Pos");
+	UNLOCK(objCol, "HANDLE COMP COL-1", b);
 	return true;
 }
 
@@ -484,61 +451,78 @@ short collision_handleCheck(int i, Node* n, short* delete, void* param, va_list*
 	Object* obj = (Object*) param;
 	Object* comp = (Object*) n->value;
 
-	//logger->inf(LOG_COLLISION, "\n\n+++++++++++++++++++++\n");
-	//logger->err(LOG_ANIM, "Lock Comp Pos");
-	LOCK(comp, "HANDLE CHECK-0");
-	//logger->inf(LOG_COLLISION, "-- Compare: %s", comp->name);
+	logger->inf(LOG_COLLISION, "\n\n+++++++++++++++++++++\n");
+	//logger->err(LOG_COLLISION, "Lock Comp Pos");
+	bool b = LOCK(comp, "HANDLE CHECK-0");
+	logger->inf(LOG_COLLISION, "-- Compare: %s", comp->name);
 
 	if (comp->enabled) {
 		listIterateFnc(obj->collisions, collision_handleObjCol, NULL, comp);
 	}
 	else{
-		//logger->inf(LOG_COLLISION, "-- Skipping Disabled");
+		logger->inf(LOG_COLLISION, "-- Skipping Disabled");
 	}
 
-	//logger->err(LOG_ANIM, "UnLock Comp Pos");
-	UNLOCK(comp, "HANDLE CHECK-1");
+	//logger->err(LOG_COLLISION, "UnLock Comp Pos");
+	UNLOCK(comp, "HANDLE CHECK-1", b);
 	return true;
 }
 
-short collision_handleIterate(int i, Node* n, short* delete, void* param, va_list* args) {
-
-	return true;
-}
-
-void collision_handle() {
-	//logger->inf(LOG_COLLISION, "======== HANDELING COLLISIONS =======");
-	ListManager* list = collision_getObjects();
+void collision_handleIterate() {
+	logger->inf(LOG_COLLISION, "======== HANDELING COLLISIONS =======");
 
 	Node* n = NULL;
+	ListManager* list = collision_getObjects();
 	while ((n = listIterate(list, n)) != NULL) {
 		if (n->next == NULL) {
 			break;
 		}
 
-		//logger->inf(LOG_COLLISION, "\n\n---------------------------------------------------\n");
+		logger->inf(LOG_COLLISION, "\n\n---------------------------------------------------\n");
 		Object* obj = (Object*) n->value;
 
-		//logger->err(LOG_ANIM, "Lock Obj Pos");
-		LOCK(obj, "HANDLE-0");
-		//logger->inf(LOG_COLLISION, "-- Object: %s", obj->name);
+		//logger->err(LOG_COLLISION, "Lock Obj Pos");
+		bool b = LOCK(obj, "HANDLE-0");
+		logger->inf(LOG_COLLISION, "-- Object: %s", obj->name);
 
 		if (obj->enabled) {
 			ListManager* list = collision_getObjects();
 			listIterateFnc(list, collision_handleCheck, n->next, obj);
 		}
 		else{
-			//logger->inf(LOG_COLLISION, "-- Skipping Disabled");
+			logger->inf(LOG_COLLISION, "-- Skipping Disabled");
 		}
 
 
-		//logger->err(LOG_ANIM, "UnLock Obj Pos");
-		UNLOCK(obj, "HANDLE-1");
+		//logger->err(LOG_COLLISION, "UnLock Obj Pos");
+		UNLOCK(obj, "HANDLE-1", b);
 	}
 
 //	listIterateFnc(list, collision_handleIterate, NULL, NULL);
 
-	//logger->inf(LOG_COLLISION, "======== HANDELe COLLISIONS DONE =======");
+	logger->inf(LOG_COLLISION, "======== HANDELe COLLISIONS DONE =======");
+
+	return;
+}
+
+void* collision_handle(void* arg) {
+	Project* pro = getProject();
+	LOCK(pro, "Collision Handle Start");
+
+	int nextTick = SDL_GetTicks();
+	while (pro->status < PRO_END) {
+		UNLOCK(pro, "Collision Handle UNLock Loop", true);
+		nextTick += (1500 / FPS);
+
+		collision_handleIterate();
+
+		int waited = tickWait(nextTick);
+		logger->dbg(LOG_COLLISION, "Collision Wait: %d ms", waited);
+
+		LOCK(pro, "Collision Handle Lock Loop");
+	}
+
+	UNLOCK(pro, "Collision Handle END", true);
 }
 
 
@@ -652,4 +636,156 @@ bool collision_flagsMatch(const char* flag1, const char* flag2) {
 	unsigned int f2 = collision_getFlagValue(flag2);
 
 	return f2 & f1;
+}
+
+
+
+ListManager* findColAtPos(SDL_Rect pos, unsigned int flag, unsigned int blocks, unsigned int overlaps, Object* ignore) {
+	Node* objN = NULL;
+	ListManager* result = initListMgr();
+	ListManager* objects = collision_getObjects();
+
+	Collision testCol;
+
+	testCol.pos = pos;
+	testCol.flag = flag;
+	testCol.enabled = true;
+	testCol.blocks = blocks;
+	testCol.overlaps = overlaps;
+
+
+	while ((objN = listIterate(objects, objN)) != NULL) {
+		Object* obj = (Object*) objN->value;
+		if (obj == ignore) {
+			continue;
+		}
+
+
+		Node* colN = NULL;
+		if (obj->collisions != NULL)
+		{
+			while ((colN = listIterate(obj->collisions, colN)) != NULL) {
+				Collision* col = (Collision*) colN->value;
+
+				SDL_Rect pos2 = getWorldPos(col->obj, col->pos);
+				if (collision_flagsCollides(&testCol, col) && collision_positionCollides(&testCol.pos, &pos2)) {
+					addNodeV(result, "col", col, false);
+				}
+			}
+		}
+	}
+
+	return result;
+}
+
+short checkMoveTo(int i, Node* n, short* delete, void* param, va_list* args) {
+	Collision* col = (Collision*) n->value;
+	logger->err(LOG_COLLISION, "\n\n\n######### Check Can Move: %s", col->name);
+	if (!col->enabled) {
+		logger->err(LOG_COLLISION, "-- Skip");
+		return true;
+	}
+
+	bool b = LOCK(col, "Check Move START");
+
+	vector* target = (vector*) param;
+    Object* obj = col->obj;
+	SDL_Rect pos = getWorldPos(obj, col->pos);
+
+	vector final;
+	final.x = target->x + col->pos.x;
+	final.y = target->y + col->pos.y;
+
+	int xFact = 0;
+	if (pos.x != (int) final.x) {
+		xFact = pos.x < (int) final.x ? 1 : -1;
+	}
+
+	int yFact = 0;
+	if (pos.y != (int) final.y) {
+		yFact = pos.y < (int) final.y ? 1 : -1;
+	}
+
+	bool block = false;
+	int a = 0;
+	while (pos.x != final.x || pos.y != final.y) {
+		pos.x += xFact;
+		pos.y += yFact;
+
+		ListManager* cols = findColAtPos(pos, col->flag, col->blocks, col->overlaps, col->obj);
+
+		if (cols->nodeCount) {
+			Node* n = NULL;
+			
+			while ((n = listIterate(cols, n)) != NULL) {
+				Collision* col2 = (Collision*) n->value;
+				CollisionType type = collision_flagsCollides(col, col2);
+				collision_callFncs(col, col2, type, true);
+
+				if (collision_addCollide(col, col2)) {
+					if (type == COL_BLOCK && !block) {
+						target->x = (double) (pos.x - xFact) - col->pos.x;
+						target->y = (double) (pos.y - yFact) - col->pos.y;
+
+						block = true;
+					}
+				}
+				else if(collision_removeCollide(col,col2)) {
+					collision_callFncs(col, col2, type, false);
+				}
+			}
+		}
+
+		deleteList(cols);
+		if (block) {
+			break;
+		}
+	}
+
+	UNLOCK(col, "Check Move END", b);
+	return true;
+}
+
+vector canMoveTo(Object* obj, int x, int y) {
+	logger->inf(LOG_COLLISION, "=== CALL CAN MOVE ===");
+	vector res;
+	res.x = x;
+	res.y = y;
+
+	ListManager* cols = colllision_getContinious(obj);
+	if (cols == NULL || !cols->nodeCount) {
+		return res;
+	}
+
+	listIterateFnc(cols, checkMoveTo, NULL, &res);
+
+	logger->inf(LOG_COLLISION, "=== CAN MOVE END ===");
+	return res;
+}
+
+short colllision_searchContinious(int i, Node* n, short* delete, void* param, va_list* args) {
+	Collision* col = (Collision*) n->value;
+	ListManager* lst = (ListManager*) param;
+
+	if (col->enabled && col->continious) {
+		addNodeV(lst, "col", col, 0);
+	}
+
+	return true;
+}
+
+ListManager* colllision_getContinious(Object* obj) {
+	if (obj == NULL || obj->collisions == NULL || !obj->collisions->nodeCount) {
+		return NULL;
+	}
+
+	ListManager* res = initListMgr();
+	listIterateFnc(obj->collisions, colllision_searchContinious, NULL, res);
+
+	if (res->nodeCount) {
+		return res;
+	}
+
+	deleteList(res);
+	return NULL;
 }

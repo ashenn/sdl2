@@ -2,10 +2,10 @@
 #include "../../../../common.h"
 
 CharObj* newCharObj(char* name, char* charName, SDL_Rect* pos, short z, CharacterType type, Character* ch) {
-	logger->err(LOG_CHAR, "-- New Char Obj: %s", name);
+	logger->inf(LOG_CHAR, "-- New Char Obj: %s", name);
 
 	CharObj* obj = (CharObj*) initSpriteObj((SpriteObject*) new(CharObj), name, charName, pos, z);
-	LOCK(obj, "NEW CHAR-0");
+	bool b = LOCK(obj, "NEW CHAR-0");
 
 
 	logger->dbg(LOG_CHAR, "-- INIT SpriteObj: %s", name);
@@ -21,6 +21,6 @@ CharObj* newCharObj(char* name, char* charName, SDL_Rect* pos, short z, Characte
 
 	logger->dbg(LOG_CHAR, "-- Char Obj Ready: %s", name);
 
-	UNLOCK(obj, "NEW CHAR-0");
+	UNLOCK(obj, "NEW CHAR-1", b);
 	return obj;
 }

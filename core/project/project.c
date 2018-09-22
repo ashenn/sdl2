@@ -159,7 +159,7 @@ void changeStatus(ProjectState state) {
 	logger->inf(LOG_PROJECT, "GOT PROJECT");
 
 	logger->inf(LOG_PROJECT, "-- Project: ASK-LOCK");
-	LOCK(pro, "Change Status-0");
+	bool b = LOCK(pro, "Change Status-0");
 	//logger->err(LOG_ANIM, "Lock Project");
 	logger->inf(LOG_PROJECT, "-- Project: LOCKED");
 
@@ -169,7 +169,7 @@ void changeStatus(ProjectState state) {
 
 
 	//logger->err(LOG_ANIM, "UnLock Project");
-	UNLOCK(pro, "Change Status-1");
+	UNLOCK(pro, "Change Status-1", b);
 	logger->inf(LOG_PROJECT, "-- Project: UN-LOCK");
 }
 

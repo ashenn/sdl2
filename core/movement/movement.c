@@ -72,17 +72,17 @@ void _setVelocityY(Object* obj, double y) {
 }
 
 void setVelocityX(Object* obj, double x) {
-	LOCK(obj, "Set Velocity X-0");
+	bool b = LOCK(obj, "Set Velocity X-0");
 	_setVelocityX(obj, x);
 	velocityUpdated(obj);
-	UNLOCK(obj, "Set Velocity X-1");
+	UNLOCK(obj, "Set Velocity X-1", b);
 }
 
 void setVelocityY(Object* obj, double y) {
-	LOCK(obj, "Set Velocity Y-0");
+	bool b = LOCK(obj, "Set Velocity Y-0");
 	_setVelocityY(obj, y);
 	velocityUpdated(obj);
-	UNLOCK(obj, "Set Velocity Y-1");
+	UNLOCK(obj, "Set Velocity Y-1", b);
 }
 
 void setVelocity(Object* obj, vector vel) {
@@ -91,7 +91,7 @@ void setVelocity(Object* obj, vector vel) {
 	logger->dbg(LOG_MOVE, "-- Obj: %s", obj->name);
 	logger->dbg(LOG_MOVE, "-- vel: X: %d | Y: %d", (int) vel.x, (int) vel.y);
 
-	LOCK(obj, "Set Velocity-0");
+	bool b = LOCK(obj, "Set Velocity-0");
 
 	_setVelocityX(obj, vel.x);
 	_setVelocityY(obj, vel.y);
@@ -107,8 +107,7 @@ void setVelocity(Object* obj, vector vel) {
 	logger->inf(LOG_MOVE, "-- UpdatingVelocity");
 	velocityUpdated(obj);
 
-	logger->err(LOG_ANIM, "UnLock Set Velocity: %s", obj->name);
-	UNLOCK(obj, "Set Velocity-1");
+	UNLOCK(obj, "Set Velocity-1", b);
 	logger->inf(LOG_MOVE, "-- Set Velocity Done");
 }
 
